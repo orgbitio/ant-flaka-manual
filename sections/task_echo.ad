@@ -62,7 +62,6 @@ This tasks supports all attributes inherited from Ant's echo task. In addition, 
 | `debug`   | boolean | false   | Enables additional debug output for this particular task.
 | `comment` | string  | `;`      | Allows for comments. 
 | `shift`   | string  | ``       | Allows to prefix each line with `shift` characters. See also Behaviour below. 
-| `ic`      | string  | `>`       | Allows to set the indentation character (see explanation below). 
 |=============================
 
 Notice that *debug* output will be written on stream `stderr` regardless whether `debug` has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. 
@@ -143,129 +142,65 @@ which would dump:
 [c:echo] foobar
 -------------------------------------
 
+This all works because comment lines are removed from the input *after* the position of the first non-whitespace character gets determined. It obviously means that this kind of comments do matter and can't simply be stripped off. They may carry some semantics, so it's probably best to avoid this kind of trick. Make use of it when approbriate. 
 
-Here we have a situation like in real life's politics. There are thousand opinions how to do it proper and finally we end up in a mess. For example, take your favorite editor and format the above and you will end up in something like
-
--------------------------------------
-
-<echo>
-..foobar
-</echo>
-
--------------------------------------
-
-To better illustrate the point, I have used `.` to indicate a whitespace character (typically either the blank or tab character). Running the _formatted_ build script again, we end up in
-
--------------------------------------
-
-[echo]
-[echo] ..foobar
-
--------------------------------------
-
-As already mentioned, this is like politics because now we get something we definitly didn't want to have in the first place: _Two_ lines are printed and additionally those whitespace characters are popping up. Oh no ..
-
-Let's try and see Flaka's `echo` behaviour:
-
--------------------------------------
-
+We have seen how to force leading empty lines in the example above. What needs to be done if some leading whitespace is intended? Again there are two options. First you may attack the problem using the comment line trick:
+------------------------------------
 <c:echo>
+..; dummy comment
+.......foobar
+</c:echo>
+-------------------------------------
+
+This would produce like `[c:echo] .....foobar`. Or you may use the *shift* attribute to right-shift the whole output by an arbitrary amount of characters like
+
+------------------------------------
+<c:echo shift="5">
 ..foobar
 </c:echo>
-
 -------------------------------------
 
-This ouputs 
+producing the same as before, namely
 
 -------------------------------------
-
-[c:echo] foobar
-
+[c:echo] .....foobar
 -------------------------------------
 
-and this is exactly what we want to have. Only a single line is printend and now matter how much whitespace there is in front of `foobar`, it's all discarded.
+Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different _shift_ character sequence as show next:
 
-Another example where, again, character `.` indicates a whitespace character:
-
--------------------------------------
-
-<c:echo>
-..hello,
-....world
+------------------------------------
+<c:echo shift="5>">
+..foobar
 </c:echo>
-
 -------------------------------------
 
-The author's intention is to have `world` intended by two characters. Again, the overall problem is that formatting this snippet with some (XML) editor will very likely remove this extra indentation level. Let's see how Flaka behaves:
+This produces `>>>>>` as shift character sequence for every line dumped as shown next:
 
 -------------------------------------
-
-[c:echo] hello
-[c:echo] world
-
+[c:echo] >>>>>foobar
 -------------------------------------
 
-All _extra_ whitespace has been removed! Ok, that's not what we wanted. However, there is something called a `indentation character`, `ic` for short:
+Notice that every character after the integral number counts. Thus `5> ` would produce
 
 -------------------------------------
+[c:echo] > > > > > foobar
+-------------------------------------
 
-<c:echo ic=">">
-..hello
-..>>world
+instead.
+
+This feature also allows to create some horizontal lines which might be useful to get attention for a particular message of importance like
+
+-------------------------------------
+[c:echo] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+-------------------------------------
+
+Those line of 40 per cent character `%` got created using 
+
+------------------------------------
+<c:echo shift="39%">
+..%
 </c:echo>
-
 -------------------------------------
-
-The overall idea is simply to treat the indendentation characgter as whitespace character if appearing before the first non-whitespace character in each line. Then all leading whitespace would be discarded and all `indentation` characters would be printed as whitespace. This gives:
-
--------------------------------------
-
-[c:echo] hello
-[c:echo] ..world
-
--------------------------------------
-
-Excellent, now our output is idempotent regarding XML formatting.
-
-As a last wish, how about shifting the whole output by `N` whitespace characters? This is achieved by setting attribute `shift` to the desired level. For example:
-
--------------------------------------
-
-<c:echo shift="2">
-..hello
-..>>world
-</c:echo>
-
--------------------------------------
-
-Notice that attribute `ic` is not used here cause `>` is the default ic character. This gives
-
--------------------------------------
-
-[c:echo] ..hello
-[c:echo] ....World
-
--------------------------------------
-
-
-If you want to use a different prefix character, use `amount*character` as argument for attribute `shift` as shown below:
-
--------------------------------------
-
-<c:echo shift="3*%">
-        >
-</c:echo>
-
--------------------------------------
-
-This gives:
-
--------------------------------------
-
-[c:echo] %%%
-
--------------------------------------
-
 
 === Further Links ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Echo.html[Javadoc]

@@ -1095,12 +1095,6 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara>``</simpara></entry>
 <entry align="left" valign="top"><simpara>Allows to prefix each line with <literal>shift</literal> characters. See also Behaviour below.</simpara></entry>
 </row>
-<row>
-<entry align="left" valign="top"><simpara><literal>ic</literal></simpara></entry>
-<entry align="left" valign="top"><simpara>string</simpara></entry>
-<entry align="left" valign="top"><simpara><literal>&gt;</literal></simpara></entry>
-<entry align="left" valign="top"><simpara>Allows to set the indentation character (see explanation below).</simpara></entry>
-</row>
 </tbody>
 </tgroup>
 </informaltable>
@@ -1149,52 +1143,33 @@ rowsep="1" colsep="1"
 <screen>[c:echo]
 [c:echo]
 [c:echo] foobar</screen>
-<simpara>Here we have a situation like in real life&#8217;s politics. There are thousand opinions how to do it proper and finally we end up in a mess. For example, take your favorite editor and format the above and you will end up in something like</simpara>
-<screen>&lt;echo&gt;
-..foobar
-&lt;/echo&gt;</screen>
-<simpara>To better illustrate the point, I have used <literal>.</literal> to indicate a whitespace character (typically either the blank or tab character). Running the <emphasis>formatted</emphasis> build script again, we end up in</simpara>
-<screen>[echo]
-[echo] ..foobar</screen>
-<simpara>As already mentioned, this is like politics because now we get something we definitly didn&#8217;t want to have in the first place: <emphasis>Two</emphasis> lines are printed and additionally those whitespace characters are popping up. Oh no ..</simpara>
-<simpara>Let&#8217;s try and see Flaka&#8217;s <literal>echo</literal> behaviour:</simpara>
+<simpara>This all works because comment lines are removed from the input <emphasis role="strong">after</emphasis> the position of the first non-whitespace character gets determined. It obviously means that this kind of comments do matter and can&#8217;t simply be stripped off. They may carry some semantics, so it&#8217;s probably best to avoid this kind of trick. Make use of it when approbriate.</simpara>
+<simpara>We have seen how to force leading empty lines in the example above. What needs to be done if some leading whitespace is intended? Again there are two options. First you may attack the problem using the comment line trick:</simpara>
 <screen>&lt;c:echo&gt;
+..; dummy comment
+.......foobar
+&lt;/c:echo&gt;</screen>
+<simpara>This would produce like <literal>[c:echo] .....foobar</literal>. Or you may use the <emphasis role="strong">shift</emphasis> attribute to right-shift the whole output by an arbitrary amount of characters like</simpara>
+<screen>&lt;c:echo shift="5"&gt;
 ..foobar
 &lt;/c:echo&gt;</screen>
-<simpara>This ouputs</simpara>
-<screen>[c:echo] foobar</screen>
-<simpara>and this is exactly what we want to have. Only a single line is printend and now matter how much whitespace there is in front of <literal>foobar</literal>, it&#8217;s all discarded.</simpara>
-<simpara>Another example where, again, character <literal>.</literal> indicates a whitespace character:</simpara>
-<screen>&lt;c:echo&gt;
-..hello,
-....world
+<simpara>producing the same as before, namely</simpara>
+<screen>[c:echo] .....foobar</screen>
+<simpara>Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different <emphasis>shift</emphasis> character sequence as show next:</simpara>
+<screen>&lt;c:echo shift="5&gt;"&gt;
+..foobar
 &lt;/c:echo&gt;</screen>
-<simpara>The author&#8217;s intention is to have <literal>world</literal> intended by two characters. Again, the overall problem is that formatting this snippet with some (XML) editor will very likely remove this extra indentation level. Let&#8217;s see how Flaka behaves:</simpara>
-<screen>[c:echo] hello
-[c:echo] world</screen>
-<simpara>All <emphasis>extra</emphasis> whitespace has been removed! Ok, that&#8217;s not what we wanted. However, there is something called a <literal>indentation character</literal>, <literal>ic</literal> for short:</simpara>
-<screen>&lt;c:echo ic="&gt;"&gt;
-..hello
-..&gt;&gt;world
+<simpara>This produces <literal>&gt;&gt;&gt;&gt;&gt;</literal> as shift character sequence for every line dumped as shown next:</simpara>
+<screen>[c:echo] &gt;&gt;&gt;&gt;&gt;foobar</screen>
+<simpara>Notice that every character after the integral number counts. Thus `5&gt; ` would produce</simpara>
+<screen>[c:echo] &gt; &gt; &gt; &gt; &gt; foobar</screen>
+<simpara>instead.</simpara>
+<simpara>This feature also allows to create some horizontal lines which might be useful to get attention for a particular message of importance like</simpara>
+<screen>[c:echo] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</screen>
+<simpara>Those line of 40 per cent character <literal>%</literal> got created using</simpara>
+<screen>&lt;c:echo shift="39%"&gt;
+..%
 &lt;/c:echo&gt;</screen>
-<simpara>The overall idea is simply to treat the indendentation characgter as whitespace character if appearing before the first non-whitespace character in each line. Then all leading whitespace would be discarded and all <literal>indentation</literal> characters would be printed as whitespace. This gives:</simpara>
-<screen>[c:echo] hello
-[c:echo] ..world</screen>
-<simpara>Excellent, now our output is idempotent regarding XML formatting.</simpara>
-<simpara>As a last wish, how about shifting the whole output by <literal>N</literal> whitespace characters? This is achieved by setting attribute <literal>shift</literal> to the desired level. For example:</simpara>
-<screen>&lt;c:echo shift="2"&gt;
-..hello
-..&gt;&gt;world
-&lt;/c:echo&gt;</screen>
-<simpara>Notice that attribute <literal>ic</literal> is not used here cause <literal>&gt;</literal> is the default ic character. This gives</simpara>
-<screen>[c:echo] ..hello
-[c:echo] ....World</screen>
-<simpara>If you want to use a different prefix character, use <literal>amount*character</literal> as argument for attribute <literal>shift</literal> as shown below:</simpara>
-<screen>&lt;c:echo shift="3*%"&gt;
-        &gt;
-&lt;/c:echo&gt;</screen>
-<simpara>This gives:</simpara>
-<screen>[c:echo] %%%</screen>
 </section>
 <section id="_further_links">
 <title>Further Links</title>
