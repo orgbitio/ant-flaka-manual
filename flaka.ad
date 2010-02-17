@@ -705,20 +705,22 @@ See further down which properties are available on various data types.
 Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with _something_, [EL] allows the implementation to provide _implicit_ objects and [#Functions top level functions (see below)]. 
 
 The following implicit objects are defined by Flaka:
-|| Implicit Object || Type || Description ||
-|| _name_          ||      || If _name_ is not a predefined name as listed in the rest of this table, then _name_ will be the same as `var[name]`, i.e. _name_ will resolve to the object associated with variable _name_. ||
-|| project         || ||  Ant's underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. ||
-|| property || || Use this object to query project properties. ||
-|| var || || A object containing all project references.  ||
-|| reference || || Same as `var` ||
-|| target|| || Use this object to query a target ||
-|| taskdef|| || Query taskdefs ||
-|| macrodefs|| || Macros ||
-|| tasks|| ||  Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. ||
-|| filter|| ||  A object containing all filters defined in this project. ||
-|| e || double || The mathematical http://en.wikipedia.org/wiki/E_(mathematical_constant)[constant e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number. || 
-|| pi || double || The  mathematical http://en.wikipedia.org/wiki/P[constant pi] || 
 
+|==================================
+| Implicit Object | Type | Description 
+| _name_          |      | If _name_ is not a predefined name as listed in the rest of this table, then _name_ will be the same as `var[name]`, i.e. _name_ will resolve to the object associated with variable _name_. 
+| project         | |  Ant's underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. 
+| property | | Use this object to query project properties. 
+| var | | A object containing all project references.  
+| reference | | Same as `var` 
+| target| | Use this object to query a target 
+| taskdef| | Query taskdefs 
+| macrodefs| | Macros 
+| tasks| |  Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. 
+| filter| |  A object containing all filters defined in this project. 
+| e | double | The mathematical http://en.wikipedia.org/wiki/E_(mathematical_constant)[constant e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number.
+| pi | double | The  mathematical http://en.wikipedia.org/wiki/P[constant pi] 
+|==================================
 
 An example for an EL expression fetching property `foo` is:
 
@@ -747,40 +749,42 @@ project.references.foo  -- (4)
 
 _EL_ also allows the implementation to provide top level functions. The following sections describe functions provided by Flaka. Some functions take an arbitrary number of arguments (inclusive no argument at all). This is denoted by two dots (`..`). An example of such a function is `list(object..)` which takes an arbitrary number of object to create a list.
 
-|| Function || Type || Meaning ||
-|| `typeof(object)` || string || The type of `object`, `int`, `string`, `file` etc ||
-|| `size(object)`   || int  || Returns the object's size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying `size()` method or `size` or `length` attribute of the object in question. || 
-|| `sizeof(object)` || int  || same as `size(object)`, see above ||
-|| `null(object)`    || bool || Evaluates to `true` if object is the `nil` entity; otherwise `false`. This function can be used to check whether a reference (var) or property exists. Operator `empty` can't be used for this task, cause `empty` returns `true` if either not existing or if literatly _empty_ (for example the empty string). ||
-|| `file(object)`   || File || Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise, the object is streamed into a string and that string is taken as the file's path name. ||
-|| concat(object..) || string || Creates a string by concatenating all stringized objects. If no object is provided, the empty string is returned. ||
-|| list(object..) || list || Returns a list where the list's elements consists of the objects provided. If no objects are provided, the empty list is returned. ||
-|| append(object..) || list || This function is similar to `list`. It takes the objects in order and creates a list elements out of them. If a object is a list, then elements of that list are inserted instead of the list object itself. For example `append('a,list('b'),'c')` evaluates to list `('a','b','c')` ||
+|=================================
+| Function | Type | Meaning 
+| `typeof(object)` | string | The type of `object`, `int`, `string`, `file` etc 
+| `size(object)`   | int  | Returns the object's size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying `size()` method or `size` or `length` attribute of the object in question. 
+| `sizeof(object)` | int  | same as `size(object)`, see above 
+| `null(object)`    | bool | Evaluates to `true` if object is the `nil` entity; otherwise `false`. This function can be used to check whether a reference (var) or property exists. Operator `empty` can't be used for this task, cause `empty` returns `true` if either not existing or if literatly _empty_ (for example the empty string). 
+| `file(object)`   | File | Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise, the object is streamed into a string and that string is taken as the file's path name. 
+| concat(object..) | string | Creates a string by concatenating all stringized objects. If no object is provided, the empty string is returned. 
+| list(object..) | list | Returns a list where the list's elements consists of the objects provided. If no objects are provided, the empty list is returned. 
+| append(object..) | list | This function is similar to `list`. It takes the objects in order and creates a list elements out of them. If a object is a list, then elements of that list are inserted instead of the list object itself. For example `append('a,list('b'),'c')` evaluates to list `('a','b','c')` 
+|=================================
 
 Some mathematical functions are defined as well:
 
-|| sin(double) || double || The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[sine] function ||
-|| cos(double) || double || The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[cosine] function ||
-|| tan(double) || double || The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[tangent] function ||
-|| exp(double) || double || The mathematical exponential function, `e` raised to the power of the given argument ||
-|| log(double) || double || The mathematical logarithm function of base `e` ||
-|| pow(double) || double || Returns the value of the first argument raised to the power of the second argument. || 
-|| sqrt(double) || double || Returns the correctly rounded positive square root of a double value. ||
-|| abs(double) || double || Returns the absolute value of a double value. ||
-|| min(double,double) || double || Returns the smaller of two double values. ||
-|| max(double,double) || double || Returns the larget of two double values. ||
-|| rand()      || double || Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. ||
+|=================================
+| sin(double) | double | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[sine] function 
+| cos(double) | double | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[cosine] function 
+| tan(double) | double | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[tangent] function 
+| exp(double) | double | The mathematical exponential function, `e` raised to the power of the given argument 
+| log(double) | double | The mathematical logarithm function of base `e` 
+| pow(double) | double | Returns the value of the first argument raised to the power of the second argument. 
+| sqrt(double) | double | Returns the correctly rounded positive square root of a double value. 
+| abs(double) | double | Returns the absolute value of a double value. 
+| min(double,double) | double | Returns the smaller of two double values. 
+| max(double,double) | double | Returns the larget of two double values. 
+| rand()      | double | Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. 
+|=================================
 
 === Available Properties ===
 
 In general properties are mapped as _attribute_ on the underlying data object. In Java, every _getX_ method taking no arguments identifies property _x_. As an example, assume that we have 
 
 -------------------------------------
-
 public class Foo {
  public .. getBar() { .. }
 }
-
 -------------------------------------
 
 then an data object of type _Foo_ will have property _bar_ and thus the following expression `x.bar` would eventually call `Foo.getBar()` assuming that `x` evaluates to an object of type `Foo`. Such properties are the *natural* properties of a type.
@@ -794,9 +798,7 @@ Primite data types (int, double, bool, null) have no properties.
 Besides their _natural_ properties (see discussion above) are _index_ properties available:
 
 -------------------------------------
-
 list('a','b')[1]  => 'b'
-
 -------------------------------------
 
 Negative indexes are currently not supported. If an index is specfies an not existing element, `null` is returned.
@@ -806,13 +808,15 @@ Negative indexes are currently not supported. If an index is specfies an not exi
 
 Besides _natural_ properties (see discussion above) are the following properties supported:
 
-|| Property || Type || Description ||
-|| length   || int  || number of characters in this string ||
-|| size     || int  || same as property `length` ||
-|| tolower  || string || return this string in lowercase characters only ||
-|| toupper  || string || return this string in uppercase characters only ||
-|| trim     || string || remove leading and trailing whitespace characters ||
-|| tofile   || file  || create a file based on this string; the so created will be relative to the current build file's base folder if the string's value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project's base folder (i.e. the folder containing the build script currently executed). Notice that `.` and `..` denote absolute paths, not relative ones. || 
+|=================================
+| Property | Type | Description 
+| length   | int  | number of characters in this string 
+| size     | int  | same as property `length` 
+| tolower  | string | return this string in lowercase characters only 
+| toupper  | string | return this string in uppercase characters only 
+| trim     | string | remove leading and trailing whitespace characters 
+| tofile   | file  | create a file based on this string; the so created will be relative to the current build file's base folder if the string's value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project's base folder (i.e. the folder containing the build script currently executed). Notice that `.` and `..` denote absolute paths, not relative ones. 
+|=================================
 
 === File Properties ===
 
@@ -827,53 +831,60 @@ Files and folders is Ant's bread and butter. A couple of properties are defined 
 In this example of an EL expression, string `myfolder` is converted in a File object using property `tofile`. In addition, the so created object is checked whether it is a folder or not.
 
 The following _properties_ are defined on File objects:
-|| Property || Type || Description ||
-|| `parent` || File || parent of file or folder as file object ||
-|| `toabs`|| File || file or folder as absolute file object ||
-|| `exists` || bool || check whether file or folder exists ||
-|| `isfile` || bool || check whether a file ||
-|| `isdir`  || bool || check whether a folder (directory) ||
-|| `ishidden` || bool || check whether a hidden file or folder ||
-|| `isread` || bool || check whether a file or folder is readable ||
-|| `iswrite` || bool || check whether a file or folder is writable ||
-|| `size`   || int  || number of bytes in a (existing) file; 0 otherwise||
-|| `length` || int  || same as `size` ||
-|| `mtime`  || Date || last modification date  ||
-|| `list`   || File[] || array of files in folder ; otherwise `null` ||
-|| `tostr` || String || file name as string object ||
-|| `touri`    || URI  || file as URI object ||
-|| `tourl`    || URL  || file as URL object ||
-|| `delete` || bool || deletes the file or folder (true); false otherwise ||
-|| `mkdir`  || bool || creates the folder (and intermediate) folders (true); false otherwise ||
+|=================================
+| Property | Type | Description 
+| `parent` | File | parent of file or folder as file object 
+| `toabs`| File | file or folder as absolute file object 
+| `exists` | bool | check whether file or folder exists 
+| `isfile` | bool | check whether a file 
+| `isdir`  | bool | check whether a folder (directory) 
+| `ishidden` | bool | check whether a hidden file or folder 
+| `isread` | bool | check whether a file or folder is readable 
+| `iswrite` | bool | check whether a file or folder is writable 
+| `size`   | int  | number of bytes in a (existing) file; 0 otherwise
+| `length` | int  | same as `size` 
+| `mtime`  | Date | last modification date  
+| `list`   | File[] | array of files in folder ; otherwise `null` 
+| `tostr` | String | file name as string object 
+| `touri`    | URI  | file as URI object 
+| `tourl`    | URL  | file as URL object 
+| `delete` | bool | deletes the file or folder (true); false otherwise 
+| `mkdir`  | bool | creates the folder (and intermediate) folders (true); false otherwise 
+|=================================
 
 === Matcher Properties ===
 
 A _matcher object_ is created by task [Tasks#switch switch] if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).
 
-|| Property || Type     || Description ||
-|| `start`   || int     || The position within the input where the match starts. ||
-|| `s`       || int     || Same as `start` ||
-|| `end`     || int     || The position within the input where the match ends (the character at `end` is the last matching character)  ||
-|| `e`       || int     || Same as `end`   ||
-|| `groups`  || int     || The number of capturing groups in the (regular) expression. ||
-|| `size`    || int     || Same as `groups` ||
-|| `length`  || int     || Same as `groups` ||
-|| `n`       || int     || Same as `groups` ||
-|| `pattern` || string  || The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions. ||
-|| `p`       || string  || Same as `pattern` ||
-|| _i_       || matcher || The matcher object for _i_'th capturing group. See task [Tasks#switch switch] for examples. ||
+|=================================
+| Property | Type     | Description |
+| `start`   | int     | The position within the input where the match starts. 
+| `s`       | int     | Same as `start` 
+| `end`     | int     | The position within the input where the match ends (the character at `end` is the last matching character)  
+| `e`       | int     | Same as `end`   
+| `groups`  | int     | The number of capturing groups in the (regular) expression. 
+| `size`    | int     | Same as `groups` 
+| `length`  | int     | Same as `groups` 
+| `n`       | int     | Same as `groups` 
+| `pattern` | string  | The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions. 
+| `p`       | string  | Same as `pattern` 
+| _i_       | matcher | The matcher object for _i_'th capturing group. See task [Tasks#switch switch] for examples. 
+|=================================
 
 
 === Evaluating in a boolean context ===
 
 When evaluation a expr in a string context, a string representation of the final object is created. Similar, when a evaluation in a boolean context takes place, a conversion into a boolean value of the evaluated object takes place. The following table describes this boolean conversion:
 
-|| evaluated object type || `true` || `false` ||
-|| file                  || if the file exists || `false` otherwise ||
-|| string                || if string is empty || `false` otherwise ||
-|| null                  || never  || always || 
-|| boolean               || if true || otherwise ||
-|| _other_               || always  || never ||
+|=================================
+| evaluated object type | `true` | `false` 
+| file                  | if the file exists | `false` otherwise 
+| string                | if string is empty | `false` otherwise 
+| null                  | never  | always 
+| boolean               | if true | otherwise 
+| _other_               | always  | never 
+|=================================
+
 
 //
 //include::howto.ad[]
@@ -883,9 +894,10 @@ When evaluation a expr in a string context, a string representation of the final
 
 here I'm listing all task, types and macros.
 
-//include::sections/task_echo.ad[]
+include::sections/task_echo.ad[]
 include::sections/task_let.ad[]
 include::sections/task_list.ad[]
+include::sections/install-property-handler.ad[]
 //include::sections/task_properties.ad[]
 //include::sections/todo.ad[]
 //include::sections/not-yet-ready.ad[]

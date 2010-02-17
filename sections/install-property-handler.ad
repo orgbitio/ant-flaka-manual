@@ -1,0 +1,47 @@
+
+
+
+== install-property-handler ==
+
+A task to install Flaka's property handler. When installed, Ant _understands_  [EL] references like `#{..}` in addition to standard property references `${..}`. 
+
+An example will illustrate this:
+
+-------------------------------------
+ <c:let>
+    ;; let variable foo to string 'bar'
+    foo = 'bar'
+ <c:let>
+ <echo>
+    [1] #{foo}
+ </echo>
+ <c:install-reference-handler />
+ <echo>
+    [2] #{foo}
+ </echo>
+-------------------------------------
+
+Assume in this example, that the standard Ant property handler is installed. In the first `<c:let/>` task you can use EL because this task is provided by Flaka and thus EL aware. This is not the case for the `<echo/>` task following. Thus something like `#{foo}` has no meaning. However, after Flaka's property handler is installed, the situation changed. 
+
+This is the output of above's snippet:
+
+-------------------------------------
+ [echo] [1] #{foo}
+ [echo] [2] bar
+-------------------------------------
+
+
+=== Attributes ===
+|==========================
+| Attributes | Type    | Default  | EL  | Description 
+| type       | string  | `elonly` | #{} | Install handler with certain additional features  enabled (see below)
+|==========================
+      
+=== Behaviour ===
+
+If `type` is `elonly` (exactly as written), then the new handler will only handle `#{..}` in addition. If `type` is `remove`, then unresolved property references are discarded.
+
+=== Further Links ===
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/PropertyHelper.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/PropertyHelper.java[Source]
+

@@ -1,41 +1,73 @@
+
+
 == echo ==
-This task is an extension of Ant's standard `echo` task. The following is a typical example to print the famous `Hello, World` message.
+
+Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example. 
 
 -------------------------------------
+<echo>foobar</echo>
+-------------------------------------
 
-<c:echo shift=" 3*." >
-  ; ignore \
-  me (still a comment here) 
-  Hello\
-      >,
->>World.
+When executed by Ant, this dumps 
+
+-------------------------------------
+[echo] foobar
+-------------------------------------
+
+However, one day you reformat your XML build file footnote::[ http://xmlsoft.org/xmllint.html[xmlint] is a good choice] and you end up in
+
+-------------------------------------
+<echo>
+...foobar
+</echo>
+-------------------------------------
+
+Notice that I'm using here the dot character `.` to make whitespace characters (except line ending characters) visible. If you execute this, you will get 
+-------------------------------------
+[echo] 
+[echo] ...foobar
+[echo]
+-------------------------------------
+
+This is definitly not what you had in mind.
+
+Task `<c:echo/> is an extension of Ant's standard `echo` task. It uses Ant's standard `echo` task for doing the low level work, i.e. dumping text on streams on loggers while some features have been implemented intented to generate nicly formatted output.
+
+Here is the `foobar` example again:
+
+-------------------------------------
+<c:echo>
+
+  foo\
+  bar
+  ; supports continuation and \
+  comment lines
 </c:echo>
-
 -------------------------------------
-
 
 This would output
 
-
+-------------------------------------
+[c:echo] foobar
 -------------------------------------
 
-[c:echo] Hello...,
-[c:echo] ......World.
-
--------------------------------------
-
-
-Notice the support of comment and continuation lines. Furthermore, not more than two lines are printed - the _empty_ line after the opening `<c:echo>` tag is ignored. Leading whitespace is ignored. Finally, each character `>` is replaced by `...` which is `3` _times_ `.` (3*.).
+which I believe is just what you had in mind.
 
 === Attributes ===
 
 This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
+[cols="3*15%,55%"]
+|=============================
+| Attribute | Type    | Default | Description 
+| `debug`   | boolean | false   | Enables additional debug output for this particular task.
+| `comment` | string  | `;`      | Allows for comments. 
+| `shift`   | string  | ``       | Allows to prefix each line with `shift` characters. See also Behaviour below. 
+| `ic`      | string  | `>`       | Allows to set the indentation character (see explanation below). 
+|=============================
 
-|| Attribute || Type    || Default || Description ||
-|| `debug`   || boolean || false   || Enables additional debug output for this particular task. As usual, such additional output will be written to stderr regardless of whether debug has been globally enabled on Ant or not. The standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. ||
-|| `comment` || string  || `;`      || Allows for comments. The attribute's (trimmed) value is used to construct a regular expression like `^\s*{<escaped(comment)>}`. Every line matching this regular expression will not show up in the output. Notice the usage of `escaped(comment)`. This means that `comment` is interpreted as is and not a regular expression. Thus something like `[;#]` does _not_ mean either `;` or `#`. Instead it means that a line starting with `[;#]` (and possible leading whitespace) is ignored from output. By default, line starting with character `;` (like in Lisp) are ignored.||
-|| `shift`   || string  || ``       || Allows to prefix each line with `shift` characters. See also Behaviour below. ||
-|| `ic`      || string  || `>`       || Allows to set the indentation character (see explanation below). ||
+Notice that *debug* output will be written on stream `stderr` regardless whether `debug` has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. 
+
+The trimmed *`comment`* attribute value is used to construct a regular expression like `^\s*\Q<<comment>>\E`. Every line matching this regular expression will not show up in the output. Notice that the comment value given does not allow for regular expression meta characters. Thus something like `(;|#)` does _not_ mean either `;` or `#`. Instead it means that a line starting with `(;#)` is ignored from output. By default, lines starting with character `;` - like in Lisp - are ignored.
 
 === Elements ===
 
@@ -44,39 +76,73 @@ This task accepts implicit text. Text may contain Ant property references `${..}
 
 === Behaviour ===
 
-*Continuation Lines* are physical lines ending with the character sequence `\$` where `$` shall denote here the end-of-line character sequence (Unix: `LF`, Windows: `CR LF`). Such a line is continued, i.e. the line will be accumulated with the next line (which could also be a continuation line). 
+*Continuation Lines* are lines where the last character before the line termination character is the backslash character. Such a line is continued, i.e. the line will be merged with the next one (which could also be a continuation line).   
 
-A (accumulated) line starting with the characters given in attribute `comment` (perhaps lead by whitespace characters) is a *comment line*. Such lines are removed from output. Notice that continuation lines are supported on comment lines as well.
+A (merge continuation) line starting with an arbitrary number of whitespace characters followed by the characters given in attribute `comment` is a *comment line*. Such lines are removed from output. The characters given are taken literaly and have no meta character functionality. To disable comment lines altogether use an empty string footnote::[A string consisting only of whitespace characters].
 
-A rather anoying feature of Ant's standard task is to print the echo's text including _all_ whitespace and line ending characters. This makes pretty formatting rather cruel and worse, subject to the formatting of your favorite XML editor. To allow a *decent formatting*, a couple of features have been implemented which are presented now. Let's start with simple message:
+To allow a *decent formatting* unnecessary whitespace characters are removed. The process is illustrated footnote::[Again character dot `.` is used to illustrate a whitespace character with the exception of line ending characters] using the introduction example used above:
 
+------------------------------------
+<c:echo>
 
+..foo\
+..bar
+</c:echo>
 -------------------------------------
 
-<echo>
-foobar
-</echo>
+In a first step is the first non-whitespace character determined. In the example above, this is character `f`. From there Flaka counts backwards until a line termination character or the begin of input is reached. The counted number is the amount of whitespace characters stripped from the begin of each line. If a line starts with less than that amount of whitespace characters, then only those available are removed. Additionally, all whitespace characters before the first non-whitespace character are removed from the input.
+
+There are two whitespace characters before `foo\`. If support for continuation lines would have been disabled, Flaka would dump the following:
 
 -------------------------------------
-
-
-Notice the usage of the standard Ant `echo` task. This would give:
-
+[c:echo] foo\
+[c:echo] bar
 -------------------------------------
 
-[echo]
-[echo] foobar
+Handling of continuation lines takes place *after* whitespace has been stripped. Thus Flaka prints
 
 -------------------------------------
-
-Altough the author's intention was to print a single line, standard Ant will actually print _two_ lines. In order to print a single line, one needs to write something like
-
+[c:echo] foobar
 -------------------------------------
 
-<echo>foobar
-</echo> 
+as shown in the introduction example. A slight variation of the example above is given next:
+------------------------------------
+<c:echo>
+
+..foo\
+.bar
+...indended by one character, right?
+</c:echo>
+-------------------------------------
+
+Notice that in front of `bar` is only one whitespace character while there are three in the line after. What will be Flaka's output?
+ 
+-------------------------------------
+[c:echo] foobar
+[c:echo] .indended by one character, right?
+-------------------------------------
+
+As you can see, no more than the initial counted amount of whitespace is removed from each line.
+
+However, assume that you really want to have a couple of empty lines dumped before any real content. How can this be done. There are two options. Firstly you can always fall back to use Ant's standard `echo` task. Secondly, you can use a comment line like shown next
+
+------------------------------------
+<c:echo>
+..; two empty lines following
+
+
+..foobar
+</c:echo>
+-------------------------------------
+
+which would dump:
 
 -------------------------------------
+[c:echo] 
+[c:echo] 
+[c:echo] foobar
+-------------------------------------
+
 
 Here we have a situation like in real life's politics. There are thousand opinions how to do it proper and finally we end up in a mess. For example, take your favorite editor and format the above and you will end up in something like
 

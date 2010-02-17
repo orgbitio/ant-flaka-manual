@@ -1075,50 +1075,6 @@ creates property
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java Source]
 
 <hr/>
-=== install-reference-handler ===
-
-A task to install a property handler in addition to the standard one provided by Ant. The new handler will also handle [EL] references like `#{..}` in addition to handling `${..}`. 
-
-
--------------------------------------
-
- <c:let>
-    ;; let variable foo to string 'bar'
-    foo = 'bar'
- <c:let>
- <echo>
-    [1] #{foo}
- </echo>
- <c:install-reference-handler />
- <echo>
-    [2] #{foo}
- </echo>
-
--------------------------------------
-
-
-This snippet would give
-
--------------------------------------
-
- [echo] [1] #{foo}
- [echo] [2] bar
-
--------------------------------------
-
-
-==== Attributes ====
-|| Attributes || Type    || Default  || EL  || Description ||
-|| type       || string  || 'elonly' || #{} || Install handler with certain additional features  enabled (see below) ||
-      
-==== Behaviour ====
-
-If `type` is `elonly` (exactly as written), then the new handler will only handle `#{..}` in addition. If `type` is `remove`, then unresolved property references are discarded.
-
-==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/PropertyHelper.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/PropertyHelper.java Source]
-
 <hr/>
 == Dependencies ==
 === scandeps ===

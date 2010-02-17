@@ -1,19 +1,97 @@
 == let ==
 
-Then meaning of `null` and _void_ 
 
-|| Assignment || Right Side || Result ||
-|| `=`        || `null`     || If the right side evaluates to `null`, then the variable will be removed if existing. ||
-|| `=`        || _void_     || The evaluation of an empty expression is `null`. See above how `null` is handled` ||
-|| `:=`       || `null`     || Cause a _read only_ property can't be removed, nothing will happen with this assignment. The property will also not be created. ||
-|| `:=`       || _void_     || Same as `:= null` ||
-|| `::=`      || `null`     || Removes the property denoted by the left side ||
-|| `::=`      || _void_     || Same as `::= null` ||
 
-To illustrate, here are example behaviours:
+XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
 
--------------------------------------
+--------------------------------------
+  <c:let>
+    f = 'folder'
+    ; turn f into a file object
+    f = f.tofile
+    b = f.isdir ? true : false
+    ; assign a *property* 
+    p := 'hello world'
+    ; override a property if you dare
+    p ::= "HELLO \
+    WORLD"
+  </c:let>
+--------------------------------------
 
+In this example, `f` is first assigned to be string `"folder"`. The comment line - the one starting with character `;` - tells what the next line is going to do: turn `f` into a file object which can then be used further. Here we assign a variable `b` which becomes `true` if `f` is a directory.
+
+While character `=` is used to assign a variable, use character sequence `:=` to assign a property instead. If such a property already exists, it will not be changed in accordance with Ant's standard behaviour. 
+If you dare and insist to override a property, use `::=` to do so. 
+
+Notice that the right side of `=`, `:=` and `::=` are in any cases a EL expression while the left side are expected to contain valid identifiers for variables and properties.
+
+
+=== Attributes ===
+
+|=======================
+| Attribute | Type | Default    | [EL] | Meaning 
+| comment   | string | `;`      |  no  | The comment character sequence. 
+| debug     | bool   | `false`  |  no  | Turn on extra debug information.
+|=======================
+
+All attributes follow the rule that leading and trailing whitespace is ignored. Any attribute combination is allowed and will not result necessarily in a build error. If in doubt, turn on extra debug information.
+
+=== Elements ===
+
+This task accepts implicit text. Text may contain any amount of [EL] and property references references. Continuation and comment lines are supported. 
+
+=== Behaviour ===
+
+The comment character sequence is `";"` by default. It can be changed to an arbitrary sequence using attribute `comment`. Once set, it can't be changed during the execution of this task. A comment characters are used to identify lines to be ignored from execution. Such a line is given if the first non whitespace characters of that line are identical with the sequence of comment characters. In other words, a line is being ingnored if matches the regular expression `^\s*<comment>`. The comment characters itself are not interpreted as regular expression characters. Therefore a given comment sequence like `"(#|;)"` does not mean that either `";"` or `"#"` start a comment. Instead it means that a comment line starts with the characters `"(#|;)"` which would be rather awkward (while perfectly _legal_). 
+
+To support readability continuation lines are supported. Such a line is indicated by having `\` as last character. Be careful not to put any whitespace characters after `\`, otherwise the line will not be recognized as such. Continuation lines are also working on comments as the example above shows. If a line is a continuation line, the last character `\` is removed, the line is accumulated and the next line is read. If finally a non-continuation line is red (and only then), an evaluation of the accumulated line takes place: If the accumlated line is a comment it will be ignored and otherwise either treated as property or variable assignment.
+
+Leading and trailing whitespace characters ignored in every (accumulated) line. For example, the property assignment  `x := 'foo bar'` will assign the string `foo bar` to property `x`. Notice that whitespace before and after `x` and before and _after_ `'foo bar'` is ignored. This is slightly different from reading Java properties where whitespace after `'foo bar'` would _not_ have been ignored!
+ 
+When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as [EL] expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
+
+Notice that it is perfectly legal to use property or variable references as the following example shows:
+--------------------------------------
+<c:let>
+ f = '${ant.file}'
+ F = '#{f}'
+</c:let>
+--------------------------------------
+
+Be aware that property references are evaluated _before_ [EL] expressions. Consider:
+--------------------------------------
+<c:let>
+  ;; let s hold string ant.file
+  s = 'ant.file'
+  ;; bad, f will not assigned
+  f = ${#{s}}
+</c:let>
+--------------------------------------
+The second assignment will not work as expected because, in a first step, all occurrences of `${..}` are resolved by Ant itself. In a second step, the expression `${#{s}}` will be evaluated. Since this expression is invalid, `f` will not be assigned.
+
+Each line is evaluated in order. Therefore the following works as expected:
+--------------------------------------
+<c:let>
+  s := '3 * 5'
+  ;; defines r as 15
+  r = ${s}
+</c:let>
+--------------------------------------
+
+The following kind of meta programming will not work for `let`:
+--------------------------------------
+<c:let>
+  property_or_var := condition ? '=' : ':='
+
+  name ${property_or_var} expr
+</c:let>
+--------------------------------------
+In a first step all continuation lines are accumulated. Then each line is split in left and right part and in addition the assignment type. After that, properties are resolved on both sides by Ant's property resolver. In an additonal step are _EL references_ evaluated on both sides. Eventually, the right side is evaluated as EL expression and its result is assigned to the stringized and whitespace-chopped left side.
+
+=== Then meaning of `null` and _void_ ===
+
+Task `let` can also be used to _remove_ variables and even properties. To illustrate this, here are example behaviours:
+--------------------------------------
 <c:let>
  x = 3 * 5 
  ;; remove x
@@ -30,12 +108,23 @@ To illustrate, here are example behaviours:
  ;; .. same as
  p ::= 
 </c:let>
+--------------------------------------
 
--------------------------------------
+The following table gives an overview of the meaning of `null` and _void_ footnote::[_void_ means that the absense of any characters] on the right side of an assignement:
+|=======================
+| Assignment | Right Side | Result 
+| `=`        | `null`     | If the right side evaluates to `null`, then the variable will be removed if existing.
+| `=`        | _void_     | The evaluation of an empty expression is `null`. See above how `null` is handled` 
+| `:=`       | `null`     | Cause a _read only_ property can't be removed, nothing will happen with this assignment. The property will also not be created. 
+| `:=`       | _void_     | Same as `:= null` 
+| `::=`      | `null`     | Removes the property denoted by the left side 
+| `::=`      | _void_     | Same as `::= null` 
+|=======================
+
 
 
 === Further Links ===
- * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/MSet.html[Javadoc] 
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/MSet.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/MSet.java[Source]
 
 
