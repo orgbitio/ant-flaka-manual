@@ -1,0 +1,94 @@
+[id="installation"]
+== Installation ==
+
+Download latest version of Flaka and _drop_ `ant-flaka.x.y.z.jar` into your local Ant installation. All that needs to be done is to put this jar into Java's classpath when running Ant. There are various techniques how to do so. Please read-on what exactly needs to be done.
+
+=== Ready, .. ===
+
+The following *requirements* must be satisfied before you start:
+
+* Flaka requires http://java.sun.com/javase/downloads/index.jsp[Java 1.5] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look at http://ant.apache.org/manual/index.html[Ant's Manual] for other environment variables to be used.
+* http://ant.apache.org[Ant] version 1.7.0 or newer. 
+
+
+=== Charge, .. ===
+The most primitive technique is to save `ant-flaka-x.y.z.jar` into Ant's library folder `lib`. If you have no clue where Ant is installed, try 
+
+-------------------------------------
+
+ $ ant -diagnostics | grep ant.home
+ ant.home: /opt/ant/1.7.1
+
+-------------------------------------
+
+Saving something in Ant's library folder may not work if you lack required permissions. There is also the disadvantage that when switching to another installation of Ant, you need to reinstall Flaka again. Therefore consider to use Ant's standard option `-lib`: 
+
+-------------------------------------
+ $ ant -lib ant-flaka-x.y.z.jar
+-------------------------------------
+
+
+A pretty nice feature of option `-lib` is that if the argument is a folder, that folder is scanned for `jar` files. Therefore you may want to do something like this:
+
+-------------------------------------
+
+ $ mkdir $HOME/lib/ant
+ $ cp ant-flaka-x.y.z.jar $HOME/lib/ant
+ $ ant -lib $HOME/lib/ant
+
+-------------------------------------
+
+This approach has the nice advantage that you simply can drop other jar files into folder `$HOME/lib/ant` to make them reachable  without touching the original Ant installation. As already mentioned, this will get handy when you have either multiple Ant installations. Btw, notice that option `-lib` can be applied more than once if the jars reside in various folders. Finally notice that folders are not recursively searched.
+
+When working from the command line it is rather annoying to provide option `-lib` for each and every call. Fortunatley, Ant recognizes environment variable `ANT_ARGS` which can be used to let `-lib` disappear:
+
+-------------------------------------
+ $ ANT_ARGS="-lib $HOME/lib/ant"
+ $ export ANT_ARGS
+-------------------------------------
+
+The drawback with this technique is that you need to make sure that this variable is set in every environment you start up Ant. This sounds perhaps easier than actually done. Luckily again, Ant reads file `$HOME/.antrc` and `$HOME/.ant/ant.conf` on each and every startup. It is therefore recommended to set variable `ANT_ARGS` in one of this files footnote:[when doing so, you don't need to _export_ that variable]to make just every plain call to `ant` is aware of Flaka. For example:
+
+-------------------------------------
+ $ cat $HOME/.antrc
+ ANT_ARGS="-lib $HOME/lib/ant"
+ $ ls $HOME/lib/ant
+ ant-flaka-x.y.z.jar
+-------------------------------------
+
+
+=== Fire! ===
+To check whether your setup of `Flaka` works, create a local Java project and try to build it. For example, 
+
+-------------------------------------
+ $ mkdir -p hello/src/demo && cd hello 
+ $ cat > src/demo/Hello.java << EOF
+   public class Hello {}
+ ^D
+ $ cat > build.xml << EOF
+ <project xmlns:c="antlib:it.haefelinger.flaka">
+   <c:build />
+ </project>
+ ^D
+ $ # let ant build this project
+ $ ant
+ :::::::::::::::::::::::::::::::::::::::::::::::::::
+ ::               HELLO, FLAKA 1.0                ::
+ ::  use `ant -p' to get a list of useful targets ::
+ :::::::::::::::::::::::::::::::::::::::::::::::::::
+ [..]
+ BUILD SUCCESSFUL
+ Total time: 2 seconds
+
+-------------------------------------
+
+The call to `ant` builds the package. The result will be file `hello-SNAPSHOT.jar` found in folder `build/dist`:
+
+-------------------------------------
+
+ $ jar tvf dist/hello-SNAPSHOT.jar
+     0 Thu Jan 17 17:04:08 CET 2009 META-INF/
+   667 Thu Jan 17 17:04:06 CET 2009 META-INF/MANIFEST.MF
+   120 Thu Jan 17 17:04:08 CET 2009 Hello.class
+
+-------------------------------------

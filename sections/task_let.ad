@@ -1,0 +1,41 @@
+== let ==
+
+Then meaning of `null` and _void_ 
+
+|| Assignment || Right Side || Result ||
+|| `=`        || `null`     || If the right side evaluates to `null`, then the variable will be removed if existing. ||
+|| `=`        || _void_     || The evaluation of an empty expression is `null`. See above how `null` is handled` ||
+|| `:=`       || `null`     || Cause a _read only_ property can't be removed, nothing will happen with this assignment. The property will also not be created. ||
+|| `:=`       || _void_     || Same as `:= null` ||
+|| `::=`      || `null`     || Removes the property denoted by the left side ||
+|| `::=`      || _void_     || Same as `::= null` ||
+
+To illustrate, here are example behaviours:
+
+-------------------------------------
+
+<c:let>
+ x = 3 * 5 
+ ;; remove x
+ x =  
+ ;; remove x 
+ x = null
+ 
+ ;; let property p to '3*5' (a string)
+ p := 3 * 5
+ ;; ignored 
+ p := null
+ ;; remove property 'p'
+ p ::= null
+ ;; .. same as
+ p ::= 
+</c:let>
+
+-------------------------------------
+
+
+=== Further Links ===
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/MSet.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/MSet.java[Source]
+
+

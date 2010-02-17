@@ -1,0 +1,64 @@
+== list ==
+
+A elementary task to create a variable containing a list of objects.
+
+-------------------------------------
+
+<c:list var="mylist">
+  ;; each line is a EL expression
+  3 * 5
+  ;; each line defines a list element
+  list('a',1,''.tofile)
+</c:list>
+
+-------------------------------------
+
+
+=== Attributes ===
+
+|| Attribute || Type   || Default || [EL] || Meaning ||
+|| var       || string ||         ||  r   || The name of the variabled to be assigned.  ||
+|| comment   || string || `,`     ||      || The comment character                      ||
+|| debug     || bool   || false   ||      || Turn on extra debug information.           ||
+|| el        || bool   || true    ||   no || Enable evaluation as EL expression         ||
+
+=== Elements ===
+
+This task may contain a implicit text element.
+
+=== Behaviour ===
+
+This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable's name is given by attribute `var`. This attribute may contain references to EL expressions.
+
+If given text element is parsed on a line by line basis, honouring comments and continuation lines. Each line will be evaluated as EL expression after having resolved `${..}` and `#{..}` references. A illegal EL expression will be discarded while the evaluation of lines continues. Turn on extra debug information in case of problems. 
+
+The evaluation of a valid EL expression results in an object. Each such object will be added to a list in the order imposed by the lines.
+
+A single line can't have more than one EL expressions. Thus the following example is invalid:
+
+-------------------------------------
+
+<c:list var="mylist">
+ 3 * 5  'hello, world'
+</c:list>
+
+-------------------------------------
+
+
+Use attribute `el` to disable the interpretation of a line as [EL] expression:
+
+-------------------------------------
+
+<c:list var="mystrings" el="false">
+ 3 * 5
+ hello, #{ 'world' }
+</c:list>
+
+-------------------------------------
+
+This creates a list variable `mystrings` containing two elements. The first element will be string `3 * 5` and the second element will be string `hello, world`. Notice that `el="false"` does not prohibit you from using [EL#EL_References EL references].
+
+=== Further Links ===
+
+* http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/List.html[Javadoc] 
+* http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/List.java[Source]

@@ -1,0 +1,158 @@
+== Howto Flaka ==
+
+A chapter with questions and answers about how to do things with Flaka.
+
+=== How to check whether a property is defined? ===
+
+
+-------------------------------------
+
+ <c:when test=" has.property[name] ">
+  ...
+ </c:when>
+
+-------------------------------------
+
+
+=== How to check whether a variable is defined? ===
+
+
+-------------------------------------
+
+ <c:when test=" has.var[name] ">
+  ...
+ </c:when>
+
+-------------------------------------
+
+
+=== How to check whether a reference is defined? ===
+
+
+-------------------------------------
+
+ <c:when test=" has.reference[name] ">
+  ...
+ </c:when>
+
+-------------------------------------
+
+
+=== How to check whether a target is defined? ===
+
+
+-------------------------------------
+
+ <c:when test=" has.target[name] ">
+  ..
+ </c:when>
+
+-------------------------------------
+
+
+
+=== How to check whether a Macro or Task is defined? ===
+
+To check whether a macro or task exists use test -M as shown below:
+
+
+-------------------------------------
+
+ <c:when test=" has.task[name] ">
+   <echo>either a macro or a task</echo>
+ </c:when>
+
+-------------------------------------
+
+
+To check for a specific taskdef or macrodef, use `has.taskdef` or `has.macrodef`. 
+
+
+=== How to check whether a property is empty? ===
+
+A property is considered _empty_ if either not defined or consists only of whitespace characters.
+
+
+-------------------------------------
+
+ <c:when test=" empty property[name] ">
+   ..
+ </c:notempty>
+
+-------------------------------------
+
+
+
+=== How can I dynamically execute a target? ===
+Use task run-target to run any target. For example
+
+
+-------------------------------------
+
+  <c:run-target name="hello" fail="false" />
+
+-------------------------------------
+
+
+This would execute the target hello if this target exists. Otherwise this task will simply be ignored in case attribute fail is set to false (which is the default). If fail is true, then calling a non-existing target throws an exception. Note that targets and macros are in a different namespace.
+
+=== How do I dynamically execute a macro or task? ===
+Use task run-macro for this task.
+
+
+-------------------------------------
+
+ -- just a normal macro .. 
+ <macrodef name="greeting">
+  <attribute name="message" />
+  <sequential>
+   <echo>@{message}</echo>
+  </sequential>
+ </macrodef>
+
+ -- call it statically
+ <greeting message="hello, static" />
+
+ -- or dynamically
+ <c:run-macro name="greeting">
+   <arg name="message" value="hello, world"/>
+ </c:run-macro>
+
+-------------------------------------
+
+
+Note that there is currently no way to call a macro with elements. Only attributes are supported.
+
+
+
+== Flaka Glossary ==
+
+A compilation of words and their meaning in Flaka.
+
+=== Continuation Lines ===
+
+A continuation line is a sequence of characters ending in `\NL` and not in `\\NL` (where NL is the line ending characters `CR LF` or `LF`. Tasks supporting continuation lines will accumulate the content of such a line with the (accumulated) content of the following line. The continuation character and the line ending characters are not accumulated.
+
+-------------------------------------
+
+a \
+b\\
+c\
+
+-------------------------------------
+ 
+Defines two accumulated lines: (1) `a b\` and (2) `c`.
+
+=== Property Reference ===
+A reference to a http://ant.apache.org/manual/using.html#properties[property] is written as `${..}`. Property references are handled by the Ant property handler. If not changed, then `${x}` will be replaced by the value of property `x` if such a property exists. Otherwise, the reference will be left as is.
+
+=== Expression Reference ===
+
+A reference to an [EL] expression is written as `#{..}`. [EL] is not part of Ant and can thus only be handled by certain tasks. References may appear in attribute values or in text elements. Not all attributes can handled EL references and neither all text elements. If a attribute or text element can handle EL references, it is specifically mentioned.
+
+=== Base Folder ===
+
+Relative files are usually meant to be relative to the current working directory. Not so in Ant, where a file is relative to the folder containing the build script of the current project. This folder is called the base directory or base folder. Ant defines property `basedir` to contain the (absolute) path name of this folder. When using [EL] expressions you can use the empty string to create the base folder as file object, like in ` ''.tofile `.
+
+See also http://ant.apache.org/manual/using.html#built-in-props[built-in-props] for a list of standard Ant properties.
+

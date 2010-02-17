@@ -1,0 +1,3061 @@
+#summary A summary of all Tasks implemented by Flaka
+
+<wiki:toc max_depth="2"/>
+
+= Elementary Tasks =
+<hr/>
+== echo ==
+This task is an extension of Ant's standard `echo` task. The following is a typical example to print the famous `Hello, World` message.
+{{{
+<c:echo shift=" 3*." >
+  ; ignore \
+  me (still a comment here) 
+  Hello\
+      >,
+>>World.
+</c:echo>
+}}}
+
+This would output
+
+{{{
+[c:echo] Hello...,
+[c:echo] ......World.
+}}}
+
+Notice the support of comment and continuation lines. Furthermore, not more than two lines are printed - the _empty_ line after the opening `<c:echo>` tag is ignored. Leading whitespace is ignored. Finally, each character `>` is replaced by `...` which is `3` _times_ `.` (3*.).
+
+=== Attributes ===
+
+This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
+
+|| Attribute || Type    || Default || Description ||
+|| `debug`   || boolean || false   || Enables additional debug output for this particular task. As usual, such additional output will be written to stderr regardless of whether debug has been globally enabled on Ant or not. The standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. ||
+|| `comment` || string  || `;`      || Allows for comments. The attribute's (trimmed) value is used to construct a regular expression like `^\s*{<escaped(comment)>}`. Every line matching this regular expression will not show up in the output. Notice the usage of `escaped(comment)`. This means that `comment` is interpreted as is and not a regular expression. Thus something like `[;#]` does _not_ mean either `;` or `#`. Instead it means that a line starting with `[;#]` (and possible leading whitespace) is ignored from output. By default, line starting with character `;` (like in Lisp) are ignored.||
+|| `shift`   || string  || ``       || Allows to prefix each line with `shift` characters. See also Behaviour below. ||
+|| `ic`      || string  || `>`       || Allows to set the indentation character (see explanation below). ||
+
+=== Elements ===
+
+This task accepts implicit text. Text may contain Ant property references `${..}` or [EL Flaka EL] references `#{..}`.
+
+
+=== Behaviour ===
+
+*Continuation Lines* are physical lines ending with the character sequence `\$` where `$` shall denote here the end-of-line character sequence (Unix: `LF`, Windows: `CR LF`). Such a line is continued, i.e. the line will be accumulated with the next line (which could also be a continuation line). 
+
+A (accumulated) line starting with the characters given in attribute `comment` (perhaps lead by whitespace characters) is a *comment line*. Such lines are removed from output. Notice that continuation lines are supported on comment lines as well.
+
+A rather anoying feature of Ant's standard task is to print the echo's text including _all_ whitespace and line ending characters. This makes pretty formatting rather cruel and worse, subject to the formatting of your favorite XML editor. To allow a *decent formatting*, a couple of features have been implemented which are presented now. Let's start with simple message:
+
+{{{
+<echo>
+foobar
+</echo>
+}}}
+
+Notice the usage of the standard Ant `echo` task. This would give:
+{{{
+[echo]
+[echo] foobar
+}}}
+Altough the author's intention was to print a single line, standard Ant will actually print _two_ lines. In order to print a single line, one needs to write something like
+{{{
+<echo>foobar
+</echo> 
+}}}
+Here we have a situation like in real life's politics. There are thousand opinions how to do it proper and finally we end up in a mess. For example, take your favorite editor and format the above and you will end up in something like
+{{{
+<echo>
+..foobar
+</echo>
+}}}
+To better illustrate the point, I have used `.` to indicate a whitespace character (typically either the blank or tab character). Running the _formatted_ build script again, we end up in
+{{{
+[echo]
+[echo] ..foobar
+}}}
+As already mentioned, this is like politics because now we get something we definitly didn't want to have in the first place: _Two_ lines are printed and additionally those whitespace characters are popping up. Oh no ..
+
+Let's try and see Flaka's `echo` behaviour:
+{{{
+<c:echo>
+..foobar
+</c:echo>
+}}}
+This ouputs 
+{{{
+[c:echo] foobar
+}}}
+and this is exactly what we want to have. Only a single line is printend and now matter how much whitespace there is in front of `foobar`, it's all discarded.
+
+Another example where, again, character `.` indicates a whitespace character:
+{{{
+<c:echo>
+..hello,
+....world
+</c:echo>
+}}}
+The author's intention is to have `world` intended by two characters. Again, the overall problem is that formatting this snippet with some (XML) editor will very likely remove this extra indentation level. Let's see how Flaka behaves:
+{{{
+[c:echo] hello
+[c:echo] world
+}}}
+All _extra_ whitespace has been removed! Ok, that's not what we wanted. However, there is something called a `indentation character`, `ic` for short:
+{{{
+<c:echo ic=">">
+..hello
+..>>world
+</c:echo>
+}}}
+The overall idea is simply to treat the indendentation characgter as whitespace character if appearing before the first non-whitespace character in each line. Then all leading whitespace would be discarded and all `indentation` characters would be printed as whitespace. This gives:
+{{{
+[c:echo] hello
+[c:echo] ..world
+}}}
+Excellent, now our output is idempotent regarding XML formatting.
+
+As a last wish, how about shifting the whole output by `N` whitespace characters? This is achieved by setting attribute `shift` to the desired level. For example:
+{{{
+<c:echo shift="2">
+..hello
+..>>world
+</c:echo>
+}}}
+Notice that attribute `ic` is not used here cause `>` is the default ic character. This gives
+{{{
+[c:echo] ..hello
+[c:echo] ....World
+}}}
+
+If you want to use a different prefix character, use `amount*character` as argument for attribute `shift` as shown below:
+{{{
+<c:echo shift="3*%">
+        >
+</c:echo>
+}}}
+This gives:
+{{{
+[c:echo] %%%
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Echo.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Echo.java Source]
+
+<hr />
+== list ==
+
+A elementary task to create a variable containing a list of objects.
+{{{
+<c:list var="mylist">
+  ;; each line is a EL expression
+  3 * 5
+  ;; each line defines a list element
+  list('a',1,''.tofile)
+</c:list>
+}}}
+
+=== Attributes ===
+
+|| Attribute || Type   || Default || [EL] || Meaning ||
+|| var       || string ||         ||  r   || The name of the variabled to be assigned.  ||
+|| comment   || string || `,`     ||      || The comment character                      ||
+|| debug     || bool   || false   ||      || Turn on extra debug information.           ||
+|| el        || bool   || true    ||   no || Enable evaluation as EL expression         ||
+=== Elements ===
+
+This task may contain a implicit text element.
+
+=== Behaviour ===
+
+This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable's name is given by attribute `var`. This attribute may contain references to EL expressions.
+
+If given text element is parsed on a line by line basis, honouring comments and continuation lines. Each line will be evaluated as EL expression after having resolved `${..}` and `#{..}` references. A illegal EL expression will be discarded while the evaluation of lines continues. Turn on extra debug information in case of problems. 
+
+The evaluation of a valid EL expression results in an object. Each such object will be added to a list in the order imposed by the lines.
+
+A single line can't have more than one EL expressions. Thus the following example is invalid:
+{{{
+<c:list var="mylist">
+ 3 * 5  'hello, world'
+</c:list>
+}}}
+
+Use attribute `el` to disable the interpretation of a line as [EL] expression:
+{{{
+<c:list var="mystrings" el="false">
+ 3 * 5
+ hello, #{ 'world' }
+</c:list>
+}}}
+This creates a list variable `mystrings` containing two elements. The first element will be string `3 * 5` and the second element will be string `hello, world`. Notice that `el="false"` does not prohibit you from using [EL#EL_References EL references].
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/List.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/List.java Source]
+
+<hr/>
+== let ==
+
+This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort.
+
+=== Attributes ===
+
+|| Attribute || Type || Default    || [EL] || Meaning ||
+|| comment   || string || `;`      ||  no  || The comment character sequence.            ||
+|| debug     || bool   || `false`  ||  no  || Turn on extra debug information.           ||
+
+All attributes follow the rule that leading and trailing whitespace is ignored. Any attribute combination is allowed and will not result necessarily in a build error. If in doubt, turn on extra debug information.
+
+=== Elements ===
+
+This task accepts implicit text. Text may contain any amount of [EL] and property references references. Continuation and comment lines are supported. 
+
+=== Examples ===
+
+XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. Task `let` helps to reduce the clutter. For example:
+{{{
+  <c:let>
+    f = 'folder'
+    ; turn f into a file object
+    f = f.tofile
+    b = f.isdir ? true : false
+    ; assign a property (notice that the right side is always an EL expression)
+    p := 'hello world'
+    ; override a property if you dare
+    p ::= "HELLO \
+    WORLD"
+  </c:let>
+}}}
+
+In this example, `f` is first assigned to be string `"folder"`. The comment line - the one starting with character `;` - tells what the next line is going to do: turn `f` into a file object which can then be used further (for example, to check whether `f` is a directory or not.
+
+While character `=` is used to assign a variable, use character sequence `:=` to assign a property instead. If you dare, use `::=` to override an existing property. 
+
+Notice that the right side of `=`, `:=` and `::=` are in any cases a EL expression. Thus when creating a property, care must be taken to quote any string properly.
+
+=== Behaviour ===
+
+The comment character sequence is `";"` by default. It can be changed to an arbitrary sequence using attribute `comment`. Once set, it can't be changed during the execution of this task. A comment characters are used to identify lines to be ignored from execution. Such a line is given if the first non whitespace characters of that line are identical with the sequence of comment characters. In other words, a line is being ingnored if matches the regular expression `^\s*<comment>`. The comment characters itself are not interpreted as regular expression characters. Therefore a given comment sequence like `"(#|;)"` does not mean that either `";"` or `"#"` start a comment. Instead it means that a comment line starts with the characters `"(#|;)"` which would be rather awkward (while perfectly _legal_). 
+
+To support readability continuation lines are supported. Such a line is indicated by having `\` as last character. Be careful not to put any whitespace characters after `\`, otherwise the line will not be recognized as such. Continuation lines are also working on comments as the example above shows. If a line is a continuation line, the last character `\` is removed, the line is accumulated and the next line is read. If finally a non contination line is read (and only then), a evaluation of the so accumulated line takes place: If the accumlated line is a comment it will be ignored and otherwise either treated as property or variable assignment.
+
+Apart from continuation lines are leading and trailing whitespace characters ignored. For example, the property assignment ` x = 'foo bar' ` will assign the string `foo bar` to property `x`. Notice that whitespace before and after `x` and before and _after_ `'foo bar'` is ignored. This is slightly different from reading Java properties where whitespace after `'foo bar'` would _not_ have been ignored!
+ 
+When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as [EL] expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
+
+Notice that it is perfectly legal to use property or variable references as the following example shows:
+{{{
+<c:let>
+ f = '${ant.file}'
+ F = '#{f}'
+</c:let>
+}}}
+
+Be aware that property references are evaluated _before_ [EL] expressions. Consider:
+{{{
+<c:let>
+  ;; let s hold string ant.file
+  s = 'ant.file'
+  ;; bad, f will not assigned
+  f = ${#{s}}
+</c:let>
+}}}
+The second assignment will not work as expected because, in a first step, all occurrences of `${..}` are resolved by Ant itself. In a second step, the expression `${#{s}}` will be evaluated. Since this expression is invalid, `f` will not be assigned.
+
+Each line is evaluated in order. Therefore the following works as expected:
+{{{
+<c:let>
+  s := '3 * 5'
+  ;; defines r as 15
+  r = ${s}
+</c:let>
+}}}
+
+The following kind of meta programming will not work for `let`:
+{{{
+<c:let>
+  property_or_var := condition ? '=' : ':='
+
+  name ${property_or_var} expr
+</c:let>
+}}}
+Reason: In a first step all continuation lines are accumulated. Then each line is taken as is an broken up in left and right part, plus assignment type. Then properties are resolved on both sides. In an additonal step, EL references are evaluated as well on both sides. Then, the right side is evaluated as EL expression and it's result is assigned to the stringized left side (whitespace chopped off).
+
+==== Then meaning of `null` and _void_ ====
+
+|| Assignment || Right Side || Result ||
+|| `=`        || `null`     || If the right side evaluates to `null`, then the variable will be removed if existing. ||
+|| `=`        || _void_     || The evaluation of an empty expression is `null`. See above how `null` is handled` ||
+|| `:=`       || `null`     || Cause a _read only_ property can't be removed, nothing will happen with this assignment. The property will also not be created. ||
+|| `:=`       || _void_     || Same as `:= null` ||
+|| `::=`      || `null`     || Removes the property denoted by the left side ||
+|| `::=`      || _void_     || Same as `::= null` ||
+
+To illustrate, here are example behaviours:
+{{{
+<c:let>
+ x = 3 * 5 
+ ;; remove x
+ x =  
+ ;; remove x 
+ x = null
+ 
+ ;; let property p to '3*5' (a string)
+ p := 3 * 5
+ ;; ignored 
+ p := null
+ ;; remove property 'p'
+ p ::= null
+ ;; .. same as
+ p ::= 
+</c:let>
+}}}
+
+<wiki:comment>
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                               PROPERTIES
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+</wiki:comment>
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/MSet.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/MSet.java Source]
+
+<hr/>
+== properties == 
+
+
+A task to set multiple properties in one go. It is typically used to _inline_ properties otherwise written in an additional properties file. Thus using this task reduces the clutter on your top level directory:
+{{{
+<c:properties>
+  ; this is \
+  a comment
+
+  ; assume that variable 'foo' has been defined here and that
+  ; foo.name resolves into 'foo', then the next line will set
+  ; property foo to be the string `foo'.
+  foo     = #{foo.name}
+  ; next lines creates property `foobar' to be the string `foobar'.
+  foobar  = ${name}bar
+</c:properties>
+}}}
+
+
+=== Attributes ===
+
+|| Attribute || Type    || Default || EL || Description ||
+|| debug     || boolean || `false` || no || Turn extra debug information on || 
+|| comment   || String  || `;`     || no || The character that starts a comment line || 
+
+=== Elements ===
+
+This task accepts a implicit text element.
+
+=== Behaviour ===
+
+This task is similar to [Tasks#let let]. The difference is that this task only allows to define properties while  [Tasks#let let] also supports the creation of variables. Furthermore, the right side of `=` will be literally taken as string value. This is different from [Tasks#let let] where the right side will be additionally evaluted as [EL] expression. The following example defines each property foobar, once done with task  [Tasks#let let] and once with this _properties_ task:
+{{{
+<c:let>
+  foobar := 'foobar'
+</c:let>
+<c:properties>
+  foobar = foobar
+</c:properties>
+}}}
+Notice the usage of the quote character `'` in the former example and the absence of it in the latter.
+
+Task _properties_ supports, like task [Tasks#let let] does, continuation lines and comments. Furthermore, variable references `#{..}` and property references `${..}` are resolved on both sides of `=`.
+
+If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is `null`, a property with string value `null` will be assigned if the property does not already exist (this is very much different than when using task [#let let] to create properties.
+
+Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant (and responsible for unexpected and hard to track script behaviour).
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Properties.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Properties.java Source]
+
+<hr/>
+== unset ==
+
+The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project. 
+
+{{{
+ <c:unset>
+   p1
+   ;; use embedded EL references for dynamic names
+   p#{ index }
+ </c:unset>
+}}}
+
+This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
+
+=== Attributes ===
+|| Attribute || Type    || Default || EL || Description ||
+|| debug     || boolean || `false` || no || Turn extra debug information on || 
+|| comment   || String  || `;`     || no || The character that starts a comment line || 
+
+=== Elements ===
+
+This element accepts implicit text.
+
+=== Behaviour ===
+
+Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. `ant.file`) are also removed.
+
+Comment lines and empty lines are ignored. Continuation lines, i.e. lines ending in `\` but not in `\\`, are accumulated before being processed.
+
+References to properties `${..}` and expressions `#{..}` are resolved.
+
+The content of a line defines the property name, for example:
+{{{
+<c:unset>
+ ;; property 'foo bar', not 'foo' and 'bar'
+ foo bar
+
+ ;; a line is *not* a EL expression (this will be property '3 * 5')
+ 3 * 5
+
+ ;; use #{..} references for dynamic content (this will be 'p15')
+ p#{3*5}
+</c:unset>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java Source]
+
+<hr/>
+== rescue ==
+
+Task `rescue` is essentially a container for an arbitrary number of tasks. In addition, it allows to rescue variables and properties.
+
+{{{
+<c:rescue>
+ <vars>
+   foo
+ </vars>
+ <properties>
+   bar
+ </properties>
+ task_1
+   ..
+ task_N
+<c:rescue>
+}}}
+
+No matter what will happen with property `var` and variable `foo` within `sequential`, this will be unoticable outside of `rescue` cause the values (or better: state) will be restored after having executed all embedded tasks. This will of course also work in case an exception is thrown by one of the tasks.
+
+=== Attributes ===
+
+This task does not define attributes.
+
+=== Elements ===
+
+|| Name    || Cardinality || Description ||
+|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| _task_  || arbitrary   || A (arbitrary) task or macro to be excecuted ||
+
+=== Behaviour ==
+
+Executes all embedded tasks. Variables and properties listed in `vars` and `properties` are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java Source]
+
+<hr/>
+= Looping =
+== while ==
+A task implemening a `while` loop:
+{{{
+<c:let>
+  i = 3
+</c:let>
+<c:while test=" countdown >= 0 ">
+  <c:echo>#{countdown > 0 ? countdown : 'bang!' }</c:echo>
+<c:while>
+}}}
+
+=== Attributes ===
+
+|| Attribute || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || The condition for looping as [EL] expression ||
+
+=== Elements ===
+
+ The body of this task may contain an arbitrary number of tasks or macros.
+
+=== Behaviour ===
+
+All tasks listed as elements are executed as long as the [EL] expression evaluates to `true`. 
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java Source]
+ * [Tasks#break break] to stop the iteration
+ * [Tasks#continue continue] to hide tasks from being executed during a iteration step.
+ * See also [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
+
+<hr/>
+== for == 
+
+A task that implements a loop statement. Iterating over a list of _objects_:
+
+{{{
+ <c:for var="x" in=" list('a', 2, 'src'.tofile, typeof(list())) ">
+   <c:echo>
+      #{x}
+   </c:echo>
+ </c:for>
+}}}
+
+=== Attributes ===
+
+|| Attribute || Type   || Default || EL    || Description ||
+|| `var`     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in [EL] enabled tasks. ||
+|| `in`      || string ||         || expr  || The items to be iterated over as [EL] expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||
+
+=== Elements ===
+
+ The body of this task may contain an arbitrary number of tasks or macros.
+
+=== Behaviour ===
+
+This is the shortest possible for statement. It's legal albeit completely useless.
+{{{
+ <c:for />
+}}}
+
+<wiki:comment>
+TODO: document behaviour
+</wiki:comment>
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java Source]
+ * Task [Tasks#for for] 
+ * Task [Tasks#break break]
+ * Task [Tasks#continue continue]
+ * Quickref [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
+
+<hr/>
+== break == 
+
+A task mirroring a break statement. When used within a [Tasks#for for]-loop, the loop will be terminated. If this task is used outside of a [Tasks#for for]-loop, a build exception will be thrown.
+
+{{{
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+     <c:when test=" i == 3 ">
+       <c:break />
+     </c:when>
+  </c:for>
+}}}
+Being executed, the following will be dumped on stdout:
+{{{
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Terminate loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Terminate if property exists ||
+|| `unless`  || string || -     || #{}  || Terminate if property does not exist ||
+
+=== Behaviour ===
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
+
+The example given above can thus be shortened to 
+{{{
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+    <c:break test=" i == 3 " />
+  </c:for>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java Source]
+
+<hr/>
+== continue == 
+
+A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
+
+{{{
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:when test=" i > 3 ">
+     <c:continue />
+   </c:when>
+   <c:echo>i = #{i}</echo>
+  </c:for>
+}}}
+
+This would print:
+
+{{{
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Continue loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Continue if property exists ||
+|| `unless`  || string || -     || #{}  || Continue if property does not exist ||
+
+=== Behaviour ===
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
+
+The example given above can thus be shortened to 
+{{{
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:continue test=" i > 3 " />
+   <c:echo>i = #{i}</echo>
+</c:for>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
+ * Task [Tasks#for for] 
+ * Task [Tasks#break break]
+
+<hr/>
+
+= Conditional Tasks =
+
+== when == 
+
+Task when represents a else-less if statement. The following example dumps the content of a file to stdout via Ant's echo task if the file exists.
+
+{{{
+ <c:when test=" 'path/to/file'.tofile.isfile" >
+   <c:let var="fname" property="true" value=" f " />
+    <loadfile property="__z__" srcFile="${fname}"/>
+    <echo message="${__z__}" />
+ </c:when>
+}}}
+
+Note that the example is bit artificial cause Ant's loadfile task is sufficient. 
+
+
+=== Attributes ===
+|| Attribute || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || A [EL] expression that must evaluate to `true` in order to execute the body of this if statement. ||
+
+=== Elements ===
+
+ * Any tasks or macro instances.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java Source]
+
+<hr/>
+== unless ==
+
+This task is the logical opposite of task [Tasks#when when]. It's body is only executed if the condition evaluates to false. See [Tasks#when when] for details. This example shows how to create a folder named libdir if such a folder does not already exist.
+
+{{{
+ <c:unless test=" 'libdir'.tofile.isdir ">
+  <mkdir dir="libdir" />
+ </c:unless>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java Source]
+
+<hr/>
+== choose == 
+
+A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then-else_ statement.
+
+=== Attributes ===
+|| Attribute   || Type     || Default || EL || Description ||
+|| _when_.test || string   || `false` ||  = || A EL condition. When `true` corresponding clause will be executed. ||
+|| _unless_.text || string || `true`  ||  = || A EL condition. When `false` corresponding clause will be executed. ||
+|| debug       || boolean  || `false` ||  = || Turn on extra debug information. ||
+
+=== Elements ===
+|| Element   || Cardinality || Description ||
+|| when      || infinite    || To be executed if condition evaluates to `true` ||
+|| unless    || infinite    || To be executed if condition evaluates to `false` ||
+|| otherwise || [0,1]       || To be executed if no `when` or `unless` clause got executed ||
+|| default   || [0,1]       || Synonym for `otherwise` ||
+
+=== Behaviour===
+
+Each `when` and `unless` clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
+
+The shortest possible `choose` statement is
+{{{
+ <c:choose />
+}}}
+
+It's useless and does nothing, it's completely harmless.
+
+The following example would execute all macros or tasks listed in the `otherwise` clause cause no `when` or `unless` clause got executed.
+{{{
+ <c:choose>
+  <otherwise>
+    <!-- macros/tasks -->
+  </otherwise>
+ </c:choose>
+}}}
+
+This would execute all macros and tasks listed in the otherwise clause since no when clause got executed.
+{{{
+ <c:choose>
+   <when test=" true == false" >
+     <echo>new boolean logic detected ..</echo>
+   </when>
+   <unless test=" 'mydir'.tofile.isdir ">
+     <echo> directory mydir exists already </echo>
+   </when>
+   <otherwise>
+     <echo> Hello,</echo>
+     <echo>World</echo>
+   </otherwise>
+ </c:choose>
+}}}
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java Source]
+
+<hr/>
+== switch ==
+
+Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a [http://en.wikipedia.org/wiki/Regular_expression regular expression] or [http://en.wikipedia.org/wiki/Glob_(programming) glob expression] against a given string value and carry out a sequence of actions in case of a hit.
+
+{{{
+ <c:switch value=" 'a${string}#{value}' ">
+  <matches glob="*.jar">          -- #1
+   -- string ending in .jar
+  </matches>
+  <matches re="1|2|3">            -- #2
+    -- one or two or three
+  </matches>
+  <matches re="-\d+">             -- #3
+    -- negative integral number
+  </matches>
+  <otherwise>
+   -- no match so far ..
+  </otherwise>
+ <c:case>
+}}}
+
+Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
+
+=== Attributes ===
+|| Attribute || Type   || Default || [EL]  || Description ||
+|| `value`   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
+|| `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
+|| `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
+|| `comments`   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` || 
+|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in [http://en.wikipedia.org/wiki/Perl Perl]. || 
+|| `unixlines`  || bool || false  ||    no || In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). || 
+|| `multiline`  || bool || false || no || In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
+|| `debug`      || bool  || false ||   no || Turn on extra debug information ||
+|| _matches_.`re` || string ||    || #{..} || Element `matches`: Specify a matching pattern as regular expression. ||
+|| _matches_.`pat` || string ||   || #{..} || Element `matches`: Specify a matching pattern as glob expression ||
+
+Note that each `switch` attribute (but `value`) can be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
+
+=== Elements ===
+
+|| Element   || Cardinality || Description ||
+|| `matches` || 0..infinity || An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing `switch` (but `value`). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. ||
+|| `default` || 0..1        || The default statement will be executed if no `matches` element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. ||
+|| `otherwise` || 0..1     || This element is a synonym for element `default` ||
+
+=== Behaviour ===
+
+Attribute `value` is the basis for all further matching. It is a string value which may contain [Glossary#Property_Reference references to properties] or [Glossary#Expression_Reference EL expressions]. Leading and trailing whitespace will be discarded after having resolved all references. 
+
+All other attributes (see above) are default values for subsequent `matches` elements. For example, setting attribute `debug` to `true` will turn on debug on all `matches` elements.
+
+Any number of `matches` elements are allowed and at most one `otherwise` (resp. `default`) element. Whether the `otherwise` element is at the end, in the middle or at the begin does not matter. The order of the `matches` elements are relevant however. Each `matches` element will be tried in the order given until no more untried elements are left. Then, if no element matched, a given `otherwise` element is carried out. Otherwise the matching elment will.
+
+Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
+
+The underlying regular expression engine is the one given by Java. It's [http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at [http://oreilly.com/catalog/9780596528126/index.html Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+
+Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write `\\*` if they want match the literal `*` character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence `\*` remains `\*`.
+
+So called _globs_ are a kind of simplified regular expressions. They lack the full power while simplifying the expression. For example, to specify whether a name input string end in `jar`, we can simply write 
+
+{{{
+ <c:switch value=" #{myfile}.name ">
+  <matches glob="*.jar">
+    -- do something with jar file ..
+  </matches>
+ </c:switch>
+}}}
+
+The very same can also be expressed as `re="\.jar$"` using regular expressions. The biggest disadvange of globs are that capturing groups are not supported. Thus the match above just indicates that the file name ends in `.jar` while there is nothing to figure the file's basename. Compare this with 
+
+{{{
+ <c:switch value=" #{myfile}.name ">
+  <matches re="^(.*)\.jar$" var="m">
+    <c:echo>
+      basename = #{m[1]}
+    </c:echo>       
+  </matches>
+ </c:switch>
+}}}
+
+Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be [http://code.google.com/p/flaka/wiki/EL#Matcher_Properties evaluated using properties] for matching details.
+
+Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
+{{{
+ <c:switch value=" 'v-uat_3_20_500' " var="m">
+   <matches re="v-(?:([^\d][^_]*)_)?(\d.*)" >
+     <c:echo>
+       pattern      = #{m.p}         -- v-(?:([^\d][^_]*)_)?(\d.*)
+       groups       = #{m.n}         -- 2
+       matched text = #{m}           -- v-uat_3_20_500  (same as m[0])
+       env          = #{m[1]}        -- uat
+       version      = #{m[2]}        -- 3_20_500
+       ;; refering to non existing group
+       ??           = #{m[3]}        -- (empty string)
+       ;; start and end index of first group
+       start        = #{m[1].s}      -- 2
+       end          = #{m[1].e}      -- 5
+     </c:echo>
+   </matches>
+ </c:switch>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java Source]
+
+= Exception Handing =
+
+<hr/>
+== fail ==
+
+This task has been derived from [http://ant.apache.org/manual/CoreTasks/fail.html Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
+{{{
+<c:fail message="illegal state #{whichstate} seen" />
+}}}
+Furthermore, attribute `test` has been added. The value of `test` will be evaluated as EL expression in a boolean context. Being `true`, fail will throw a build exception. When used in this way, `<c:fail test='expr' />` behaves exactly the same as
+{{{
+<c:when test="expr">
+ <fail />
+</c:when>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java Source]
+
+<hr/>
+== trycatch == 
+
+A task mirroring try-catch-finally exception handling found in various languages.
+
+All tasks inside try are executed in order. If an exception is thrown by one of tehm, then several things may happen:
+
+ * If there is a matching catch clause, then all tasks in that clause are executed. If there isn't a catch clause, the exception will be passed to the enclosing environment (except if an exception is also thrown in the finally clause - see below).
+ * An optional finally clause is always executed, regardless of whether an exception gets thrown or or whether a try or catch clause exists.
+ * If a property is set, then that property will hold the message of the exception thrown in a try clause. If a reference is given, then that reference will hold the exception object thrown in the try clause. If an exception is also thrown in a catch or finally clause, then neither will the property or reference update nor set.
+ * If a exception is thrown in a matching catch clause and in a finally clause, then the latter will be passed to the enclosing environment and the former will be discarded.
+
+A catch clause can be given a type and a match argument. Both arguments expect a regular or pattern expression. A catch clauses matches if the type and match matches. The type argument is matched against the classname of the thrown exception. The match argument is matched against the exception message (if any). Both default values ensure that a build exception thrown by Ant is caught while an implementation dependent exception passes.
+
+When matching against the error message, be aware that the actual error message might be slightly different from the actual message given: usually the error message contains also information about where the exception got thrown. It is therefore wise to accepted any leading and trailing space. For example:
+
+{{{
+ <c:trycatch>
+  <try><fail message="4711" /></try>
+  <catch match="4711">
+    -- does (very likely) not match
+  </catch>
+  <catch match="4711*">
+    -- neither this one ..
+  </catch>
+  <catch match="*4711">
+    -- bon chance
+  </catch>
+  <catch match="*4711*">
+    -- this is it!
+  </catch>
+ </c:trycatch>
+}}}
+  
+
+=== Attributes ===
+
+|| Attribute || Type || Default || [EL] || Description ||
+|| `property` || string || || no || The name of the property that should hold the exception message ||
+|| `reference` || string || `trycatch.object` || no || >The name of the reference to hold the exception object ||
+|| `catch.type` || glob || `*.BuildException` || no || A pattern against the type (Java classname) of the exception object ||
+|| `catch.match` || glob || `*`  || no || A pattern to be applied against the exception message ||
+
+=== Elements ===
+
+ * try<br /> A task container to hold tasks and macros to be given a try. 
+ * catch<br /> A task container to be executed if an exception gets thrown
+ * finally<br/> A task container to be executed in any case
+
+Note that all elements are optional. However, if there's no try element, then there's no chance to execute catch at all, so this constellation does not make too much sense. The optional finally clause will be executed regardless of whether a try clause exists or not.
+
+It is allowed to have more multiple try, catch or finally clauses and further does the oder in which they appear not matter. Be aware though that eventually all try and finally clauses are merged into one try resp. finally clause.
+
+
+=== Behaviour ===
+
+The following snippet demonstrates the usage of trycatch:
+
+{{{
+ <c:trycatch property="reason">
+   <try>
+     <echo>1st try ..</echo>
+   </try>
+   <try>
+     <echo>2nd try ..</echo>
+     <fail message="fail within 2nd try" />
+   </try>
+   <try>
+     <fail message="fail within 3rd try" />
+   </try>
+   <catch type="*.BuildException" match="*">
+     <echo>..caught : ${reason}</echo>
+   </catch>
+   <finally>
+     <echo>..finally</echo>   
+   </finally>
+ </c:trycatch>
+}}}
+
+Giving:
+
+{{{
+    [echo] 1st try ..
+    [echo] 2nd try ..
+    [echo] ..caught : fail within 2nd try
+    [echo] ..finally
+}}}
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java Source]
+
+<hr/>
+== throw ==
+
+A task to re-throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
+
+Note that throw would re-throw the last thrown exception - regardless of the current context. The following would therefore work:
+
+{{{
+ <c:trycatch>
+  <try> 
+    <fail message="4711" />
+  </try>
+  <catch>
+    -- handle the exception ..
+  <catch>
+ </c:trycatch>
+ ..
+ .. -- very much later
+ .. 
+ <c:throw /> -- re-throws "4711" exception!!!
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
+|| `var` || || || no || Same as reference ||
+
+=== Behaviour ===
+
+A typical usage example:
+
+{{{
+ <c:trycatch>
+  <try> ..<fail message="4711"/> </try>
+  <catch>
+    <echo>caught exception ..</echo>
+    <c:throw />
+  </c:catch>
+ </c:trycatch>
+}}}
+
+When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
+ * Task [Tasks#trycatch trycatch]
+
+
+<hr/>
+= Special Purpose Tasks =
+== export == 
+
+Use this task to dump a file within the Flaka package to stdout or a file.  This task's usefulness is rather limited for public use, however this task is used to implement target [Targets#export export].  
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `dst`     || string || (stdout) || no || The destination to dump the file to. If dst is `-` the file will be dumped to stdout. ||
+|| `src`     || string || antlib.xml || no || The file within the package to export. By default, file antlib.xml is exported. ||
+|| `tee`     || bool   || false     || no || If enabled, the file will be exported to src as well as to stdout (similar as standard UNIX command tee does). ||
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Export.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java Source]
+
+<hr/>
+== find == 
+<wiki:comment>todo:references</wiki:comment>
+
+Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] into a list of `file`s. Used in conjunction with [Tasks#for task for] enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
+
+{{{
+<c:find var="filelist" type="f" />
+<c:for var="file" in="filelist">
+ <c:echo>
+  #{file} has been last accessed at #{file.mtime}
+ </c:echo>
+</c:for>
+}}}
+
+=== Attributes ===
+
+|| Attribute || Type   || EL || Meaning || Default ||
+|| dir       || string ||  = || The directories to scan. || Basedir of build script (''.tofile) ||
+|| type      || string ||    || `f` to select files and `d` to select folders || all files and folders ||
+|| var       || string ||  r || The name of the variable to hold a list of scanned files or folders || null ||
+
+=== Elements ===
+
+This task implements a [http://ant.apache.org/manual/CoreTypes/fileset.html standard Ant fileset]. All elements of `fileset` are therefore legal elements of `find` as well.
+
+=== Behaviour ===
+
+This task scans all files and folders given by attribute `dir` into a variable given by `var`. If `var` is empty, then no scanning takes place. Attribute `var` may contain [EL#EL_References EL references] which are resolved. If a scanning takes place, then `var` will be created and contains, in any case, a list value.
+
+Attribute `dir` may contain [EL#EL_References EL references] which are resolved. The so resolved string value must be a syntatically legal EL expression. This expression will then be evaluated. If the evaluated object is a list, then each list item will be scanned for files and folder, otherwise only the evaluated object. If such a object to be scanned is not already a file object, then stringized object is used to create the folder to be scanned. The following examples illustrate this behaviour:
+|| Argument           || Same as ||
+|| 'src'              || list('src'.tofile) ||
+|| list('src','lib')  || list('src'.tofile,'lib'.tofile) ||
+
+Attribute `type` is used to filter out unwanted files or folder from being scanned. If `type` is `f`, then only files are taken into account and when `d`, only folders matter. By default files and folders are accumulated.
+
+=== Examples ===
+
+Report all files in the working directory. Note that also files in sub folders are reported.
+
+{{{
+ <c:find var="filelist" type="f" />
+}}}
+
+Check whether a sub folder ending in '.jar' exists which is not a file but a directory.
+
+{{{
+ <c:find var="filelist" type="d">
+   <include name="**/*.jar" />
+ </c:find>
+}}}
+ 
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Find.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java Source]
+
+<hr/>
+= Meta Programming =
+== run-macro == 
+
+A task to invoke a macro or task (or a list of them) dynamically. 
+
+{{{
+ <macrodef name="foobar" >
+  <sequential>...</sequential>
+ <macrodef>
+ ..
+ ..
+ <foobar />                     -- conventional way of using macro foobar
+ <c:run-macro name="foobar" />  -- dynamic way
+}}}
+
+The current version does not support calling macros or tasks with arguments. 
+
+=== Attributes ===
+
+|| Attribute || Type || Default || EL || Description ||
+|| `name`    || string ||       || no || The name of the macro to run. Use whitespace chars to specify a list of names.||
+|| `fail`    || bool   || false || no || Whether a exception shall be thrown if macro does not exist||
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-macro.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java Source]
+
+<hr/>
+== run-target == 
+
+A task to invoke a target dynamically.
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `name ` || string || || no || The name of the target to invoke. ||
+|| `fail ` || bool || `false` || no || Fail if target does not exist ||
+
+=== Example ===
+
+{{{
+ <target name="foobar">
+   ..
+ </target>
+ ..
+ <c:run-target name="foobar" />
+}}}
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java Source]
+
+
+<hr/>
+== create-target ==
+
+Use this task to create a dynamic target within the current project. Usually targets are declaratively written within a build file. The following target
+
+{{{
+ <target name="foo" depends="bar" description="do foo">
+   <foo-task />
+ </target>
+}}}
+
+can also be written as
+
+{{{
+ <c:create-target name="foo" depends="bar" description="do foo" task="foo-task" />
+}}}
+
+Note: The current version allows only the specification of one task or macro within the body of the target to be created (like foo-task above).
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `name` || string || || no || The name of the target to create. If override is false, an already existing target with that name is not created.||
+|| `task` || string || || no || The task or macro to execute||
+|| `description` || string || || no || The informal description of this target||
+|| `depends` || string || || no || Targets to execute before this target||
+|| `override` || bool || `false` || no || Whether to override an existing target.||
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java Source]
+<hr/>
+
+
+== set-default-target == 
+
+A task to define the project's default target. 
+{{{
+ <project xmlns:c="antlib:ant.epoline" default="this">
+    <c:set-default-target name="foobar" override="true"/>
+    ..
+    <target name="foobar">
+       ..
+    </target>
+ </project>
+}}}
+This example changes the default target to be called from this to foobar.
+
+
+=== Attributes ===
+|| Attribute || Type || Default || EL  || Description ||
+|| `name`    || string ||       ||  no || The name of the target ||
+|| `fail`    || bool   || false ||  no || Whether to throw an exception if target does not exist||
+|| `override`|| bool   || false ||  no || Whether to override an already existing default target ||
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Set-default-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java Source]
+
+<hr />
+= XML =
+== xmlmerge == 
+
+A simple task to merge XML files. 
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `dst` || string || - || no || The file to write to. Any intermediate folders are created. writes to stdout if empty string or argument - is given.||
+|| `src` || string || || no || A file or folder argument. If a folder is given, then any file therein matching a given pattern is merged, otherwise the file given. A relative argument is interpreted as being relative to the current working directory.||
+|| `pattern` || regex || `.*\\.xml`|| no || The pattern to apply when matching files to be merged. The pattern can be a regular expression ||
+|| `root` || || string || no || By default the root tag of the first element will be the root tag for the merged content. Use attribute root to specify a different root tag.||
+
+=== Behaviour ===
+
+Assume that folder xmldir contains two files x.xml and y.xml where x.xml looks like
+
+{{{
+ <x>
+  <x>This is X/x</x>
+ </x>
+}}}
+
+and where y.xml looks similar. Then the following invocation gets:
+
+{{{
+ <c:xmlmerge dst = "-" src = "xmldir" pattern = "*.xml" root = "myroot" />
+ <?xml version="1.0" encoding="UTF-8"?>
+ <myroot>
+ <X>
+   <x>This is X/x</x>
+ </X>
+ <Y>
+   <y>This is Y/y</y>
+ </Y>
+ </myroot>
+}}}
+
+The same setup as before gives, when no root element is applied, the following:
+
+{{{
+ <c:xmlmerge dst = "-" src = "xmldir" pattern = "*.xml" />
+ <?xml version="1.0" encoding="UTF-8"?>
+ <X>
+   <x>This is X/x</x>
+   <Y>
+     <y>This is Y/y</y>
+   </Y>
+ </X>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/XmlMerger.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java Source]
+
+<hr/>
+= Properties =
+== property-by-regex == 
+
+A task to compose a property based on existing properties.
+
+The new property is composed by searching for property names matching a given regular expression. Then the new property is created by  concatenating the value of each matching property using a separator of choice.
+
+=== Attributes ===
+ * property<br />The name of the property to create
+ * regex<br />The regular expression. 
+ * sep<br />The separator to use when concatenating
+=== Example ===
+
+Assume that the following properties are defined:
+
+{{{
+ depot.1.url = http://depot/component
+ depot.2.url = http://depot/3rdparty
+ depot.3.url = http://depot/externals
+}}}
+
+Then
+
+{{{
+ <c:property-by-regex property="depot.csv" regex="depot\.\d+\.url" />
+}}}
+
+creates property
+
+{{{
+ depot.csv = http://depot/component,http://depot/3rdparty,http://depot/externals
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Property-by-regex.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java Source]
+
+<hr/>
+== install-reference-handler ==
+
+A task to install a property handler in addition to the standard one provided by Ant. The new handler will also handle [EL] references like `#{..}` in addition to handling `${..}`. 
+
+{{{
+ <c:let>
+    ;; let variable foo to string 'bar'
+    foo = 'bar'
+ <c:let>
+ <echo>
+    [1] #{foo}
+ </echo>
+ <c:install-reference-handler />
+ <echo>
+    [2] #{foo}
+ </echo>
+}}}
+
+This snippet would give
+{{{
+ [echo] [1] #{foo}
+ [echo] [2] bar
+}}}
+
+=== Attributes ===
+|| Attributes || Type    || Default  || EL  || Description ||
+|| type       || string  || 'elonly' || #{} || Install handler with certain additional features  enabled (see below) ||
+      
+=== Behaviour ===
+
+If `type` is `elonly` (exactly as written), then the new handler will only handle `#{..}` in addition. If `type` is `remove`, then unresolved property references are discarded.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/PropertyHelper.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/PropertyHelper.java Source]
+
+<hr/>
+= Dependencies =
+== scandeps ==
+
+A task to scanning for dependencies in files.
+
+{{{
+<c:scandeps var="mydeps">
+  <include name="build.xml" />
+</c:scandeps>
+}}}
+
+Example above searches for dependencies in file `build.xml` in the [Glossary#Base_Folder project's base folder]. The list of dependencies is assigned with variable `mydeps`. 
+
+=== Attributes ===
+|| Attribute || Type   || Default   || EL  || Description ||
+|| var       || string ||           || #{} || The name of the variable to hold dependencies ||
+|| dir       || string || ''.tofile || yes || The root folder to use when scanning files ||
+|| debug     || bool   || false     ||  no || Turn on extra debug information ||
+
+=== Elements ===
+
+This task is a implicit [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] and may thus contain any elements which can be applied to a fileset. 
+
+=== Behaviour ===
+
+If attribute `var` is not used, then no scanning for dependencies takes place and no warning will be issued (except when `debug` has been enabled). If a variable is used, then a list of dependencies will be assigned in any case. If no dependencies are found, the list will be empty.
+
+Attribute `dir` is evaluated as [EL] expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
+
+This task may take any elements which are applicable for a [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
+
+A dependency is just recognized by it's element name regardless any namespace. Therefore something like
+
+{{{
+ <dependency />
+ <x:dependency>
+}}}
+
+will be accepted as dependency when scanning.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/ScanDeps.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java Source]
+
+<hr />
+<wiki:comment>
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                                         UNDER DEVELOPMENT
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+</wiki:comment>
+
+= Under Development - not yet ready =
+== component-handler == 
+
+A simple task to install or uninstall a special component handler supposed to get rid of some annoying Ant warning messages.
+
+=== Attributes ===
+ * install<br />Install component handler [true]
+ * uninstall<br />Uninstall component handler [false]
+ * fail<br />Whether to fail if the installation or un-installation can't be carried out.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Component-handler.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Component-handler.java Source]
+
+
+
+
+<hr/>
+== cvsstat == 
+
+This task is similar to using `cvs stat -v file`.
+
+If no file argument is given, the current build script is investigated. All CVS related details are stored in properties
+prefixed with a stem. CVS details reported are:
+ * cvsfile The base name of the investigated file (the 1st column in file CVS/Entries)
+ * cvsrev  The revision number (the 2nd column in file CVS/Entries)
+ * cvsdate The date of last checkin in format Fri Mar 4 17:43:27 2006  (the 3rd column in file CVS/Entries)
+ * cvsstag The sticky tag (the 5th column in file CVS/Entries) 
+ * cvsdir  The folder within the CVS repository (Content of file CVS/Repository)
+ * cvsroot The CVSROOT used (Content of file CVS/Root)
+ * cvstag  Content of file CVS/Tag if existing and if a normal tag (first character must be N)
+
+If an error occurs, for example because the file is not under CVS control or because unexpected content has been detected, then
+property stem.error is set in any case (also if fail has been set to true) and the error message is given by that
+property.
+
+It is an error to query for a file not under CVS control. Especially in such a case where a folder named CVS exists but the file in
+question is not listed in CVS/Entries.
+
+All mentioned stem properties are cleared (i.e. undefined) if this task is being invoked (the exception from this rule are user defined properties which are never undefined). This can be changed by setting property preserve to true. Note that property  stem.error is exempted from this rule and will always be cleared.
+
+=== Attributes ===
+ * file, path, arg<br />The name of the file to be investigated. That file must be checked out under CVS control [${ant.file}]
+ * stem<br />The prefix to be used for saving properties [cvsstat]
+ * fail<br />If true, throw a build exception if not possible to carry out cvs stat
+ * preserve<br/>If true, then a property is not set if already defined (regardless whether the  property is empty or not)[false]
+
+=== Examples ===
+
+Assume that file build.xml is to be investigated. The file shall be under CVS control. This shall be the content of the CVS file (related to build.xml - other stuff skipped):
+
+
+
+|| *File || *Content ||
+|| CVS/Entries || /build.xml/1.49.2.3/Fri Nov  2 14:31:03 2007//Tv-2_1_8 ||
+|| CVS/Root    || :pserver:me@cvshost:/cvsroot ||
+|| CVS/Repository || foo/bar ||
+|| CVS/Tag     || _N/A_ ||
+
+Then
+
+{{{
+ <c:cvsstat path="build.xml" stem="c" />
+}}}
+
+would set the following properties:
+
+{{{
+ c.cvsfile  = build.xml
+ c.cvsrev   = 1.49.2.3
+ c.cvsdate  = Fri Nov  2 14:31:03 2007
+ c.cvsstag  = v-2_1_8
+ c.cvstag   = v-2_1_8
+ c.cvsdir   = foo/bar
+ c.cvsroot  = :pserver:me@cvshost:/cvsroot
+}}}
+
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Cvsstat.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Cvsstat.java Source]
+
+<hr/>
+<hr/>
+== initssl ==
+
+A task to initialize SSL. The current implementation ensures a SSL implementation is available. Furthermorem this task allows to install a trust store to verify certificates provided by a SSL server.
+
+=== Attributes ===
+
+ * truststore <br/>The trust store to be used. Usage of this attribute is optional. If not used a default trust store, geared for the EPO environment, will be used. Using this attribute will effectively set the system property javax.net.ssl.trustStore. If that property already exists, it is (almost silently) not overriden. Instead a debug message will be generated showing the trust store in use. This allows to override the trust store used via the command line.
+
+=== Example I ===
+
+{{{
+ <c:initssl truststore = "${mystore}" />
+}}}
+
+=== Last but not least .. ===
+Whether specifying a trust store via initssl or via property javax.net.ssl.trustStore makes sense depends on the underlying SSL implementation and configuration. It works out-of-the-box with all Java 1.4 and onwards. Changing the trust store via Ant's command line, like shown in this example, will not work:
+
+{{{
+ $ ant -Djavax.net.ssl.trustStore=${mystore}  -- does not work
+}}}
+
+Such a property will not make it into your JVM's system properties. They will only be put into your project properties from where they are not visible for the underlying SSL implementation (standard implementation assumed). In order to feed the JVM with a property use environment variable ANT_OPTS:
+
+{{{
+ $ export ANT_OPTS=-Djavax.net.ssl.trustStore=${mystore}
+ $ ant ..
+}}}
+
+=== Further Readings ===
+[1] http://www.onjava.com/pub/a/onjava/2001/05/03/java_security.html This article contains also some background information on keystores etc.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Initssl.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Initssl.java Source]
+
+<hr/>
+== taskdotclasspath ==
+
+This task can be used to perform low level operations on a .classpath file. Supported operations are appending or removing classpath entries or to query the existence of certain entries. Operating on a non existing file does not throw a build exception nor will anything happen, i.e. appending to a non existing file will not create the file. It is expected that other tasks, for example the standard Ant task echoxml are being used to create an initial .classpath file.
+
+taskdotclasspath has been implemented as core task. This is a reference to it's [http://flaka.code.google.com/javadoc/net.haefelingerit.flaka/DotClassPath.html  accompanying Java documentation].
+
+=== Attributes ===
+ * op<br/>The operation to be executed where 'a' means append, 'r' means remove and 'q' means query. The character 'u' means update and is a historical synonym for append. When specifying an operation, the input string is trimmed and the first character in the remaining string determines the operation. Further characters given are not taken into account. The default operation is 'a' for append.
+ * echo<br/>Whether to dump to final content of .classpath on stdout or not. No dumping by default.
+ * file<br/>The file to operate on. The default is .classpath.
+ * var<br/>The variable name to be used when looking up dependencies. By default, it is assumed that the current project contains at deps.object an array of all dependencies. When reading classpath entries, each entry is checked against given dependencies (if any) and if so, internally decorated. Dependencies become later important when checking whether a file and a folder are equal in terms of dependencies.
+ * logic<br/>Use this attribute to specify the query logic. By default each entry must match. When changing to logical or, it is sufficient that one entry matches. The string value will be normalized, then tested for the following values in a case insensitive manner: "and", "&" and "&&" equals to logical and, while "or","|" or "||" gives the logical or. If the given values does not match, the default value gets applied. 
+
+All string arguments are normalized, i.e. leading and trailing whitespace is ignored. If a normalized string is empty, it will not be passed, i.e will not change the default value.
+
+=== Elements ===
+
+ * classpathentry A standard .classpath entry as it may occurs in Eclipse
+ * fileset A standard Ant fileset (see ..). Usually used to specify a list of dependencies.
+
+=== Example: Add Source And Output Path ===
+
+This example assumes that a empty .classpath file exits, i.e. something like
+
+ === .classpath ===
+{{{
+ <classpath />
+}}}
+
+The following operation tries to add Java source paths and one output path to the empty file. 
+
+{{{
+ <taskdotclasspath op="a" echo="true">
+   <classpathentry kind="src"    path="src" />               -- 1 (src shall exist)
+   <classpathentry kind="output" path="build/obj" />         -- 2 (build/obj shall exist)
+   -- redundant entries -- 
+   <classpathentry kind="src"    path="src" />               -- 3
+   <classpathentry kind="src"    path="${base.dir}/src" />   -- 4
+   <classpathentry kind="src"    path="../xyz" />            -- 5 (../xyz shall not exist)
+   <classpathentry kind="src"    path="/Foobar" />           -- 6 (/Foobar shall exist)
+ </taskdotclasspath>
+}}}
+
+After this operation, the content of .classpath looks like
+
+ === .classpath ===
+{{{
+ <classpath>
+  <classpathentry kind="output" path="build/obj"/>
+  <classpathentry kind="src" path="/Foobar"/>
+  <classpathentry kind="src" path="src"/>
+ </classpath>
+}}}
+
+Notice that entries 3 and 4 are not added again. Both entries are identical with 1 (property base.dir is a property set by Ant pointing to the folder containing the build script being executed). Entry 5 is not added cause it is assumed that parent folder xyz does not exist. Entry 6 has been added cause it is assumed that Eclipses workspace folder contains directory Foobar (by default, the base folders parent folder (i.e. ${base.dir}/..) is assumed to an Eclipse workspace). A path entry to a folder is called a crosslink (to project X).
+
+Notice further that the file's content is sorted. When executing, the final content of .classpath after this operation is dumped to standard out due to attribute echo. Set echo to false or omit the echo task to be silent.
+
+=== Example: Append dependencies ===
+
+The previous example added source and output paths. This example appends jar files required to compile the Java project. All required libs shall for the sake of this example in folder build/lib. The content of this folder shall be:
+
+ * build/lib/log4j-1.2.9.jar<br />The infamous Log4j logging component
+ * build/lib/foobar-1.0.jar<br />Another required artifact, supposed to be produced by project Foobar.
+
+Keep in mind that a folder named Foobar exists in the workspace of Eclipse and that the current .classpath entry contains a src entry pointing to that folder. The content of folder build/lib can be conveniently added like shown:
+
+{{{
+ <taskdotclasspath op="a">
+   <fileset dir="build/lib">
+     <include name="*.jar" />
+   </fileset>
+ </taskdotclasspath>
+}}}
+
+Each fileset will eventually be evaluated to a set of classpath entries of kind lib. Thus after this operation, .classpath contains
+
+{{{
+ <classpath>
+  <classpathentry kind="lib"    path="build/lib/log4j-1.2.9.jar"/> -- new
+  <classpathentry kind="output" path="build/obj"/>
+  <classpathentry kind="src"    path="/Foobar"/>
+  <classpathentry kind="src"    path="src"/>
+ </classpath>
+}}}
+
+Notice that foobar-1.0.jar does not appear. The reason for this is that .classpath contains path /Foobar. Therefore foobar-1.0.jar would shadow that entry when added before and vice versa.
+
+Be aware that the following does not work:
+
+{{{
+ <taskdotclasspath op="a">
+   <classpathentry kind="lib" path="build/lib/*.jar" />   -- * does not work *
+ </taskdotclasspath>
+}}}
+
+There is no technical reason for this - this feature is just not implemented.
+
+=== Example: Append dependencies (II) ===
+
+A better way to include dependencies as the shown in the previous example is 
+
+{{{
+ <taskdotclasspath op="a">
+   <fileset dir="build/lib">
+     <dependency-selector />
+   </fileset>
+ </taskdotclasspath>
+}}}
+
+Selector dependency-selector assures that only those files are taken out of folder build/lib which are really used as dependencies in the project and not just any jar file found therein. dependency-selector has further abilities to limit the search to dependencies in a particular scope etc.
+
+=== Example: Remove Entries ===
+
+Based on the content of the previous example, let's try to remove all crosslinked projects. Let's assume for the sake of this discussion, that a crosslinked project has a path that starts with character '/'. The current content contains just one such entry, namely /Foobar, which would be eliminated by
+
+{{{
+ <taskdotclasspath op="r">
+  <classpathentry path="/*" />
+ </taskdotclasspath>
+}}}
+
+Suppose there is the convention that project names start with an upper case letter (like Foobar). The previous task removes any absolute path and it would be better to limit the pattern to remove only folders starting with upper case letters. This can be expressed using a regular expression 
+
+{{{
+ <taskdotclasspath op="r">
+  <classpathentry path="//[A-Z].*/" />   -- removes /Foobar but not /foobar
+ </taskdotclasspath>
+}}}
+
+A regular expression is indicated by having first and last character equal (after having removed leading and trailing whitespace). In the example above, character '/' has been used. Any other character would do as well. Therefore is  `1/[A-Z].*1` identical with the expression used before.
+
+The full power of regular expressions is available as given by the underlying Java implementation. See http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html for details.
+
+=== Example: Query Entries ===
+
+It is also possible to query a .classpath file for certain entries. For example,
+the following query tests whether a .classpath contains crosslinked projects (assuming that every crosslinked starts with character '/'):
+
+{{{
+ <taskdotclasspath op="q" var="are-projects-crosslinked">
+  <classpathentry path="/*" />   -- query for crosslinked projects
+ </taskdotclasspath>
+}}}
+
+The variable given, being are-projects-crosslinked, is only touched if the query evaluates to true, i.e. if .classpath contains matching entries. If so, the variable is set as property to the string value true. This only happens if the property does not exist - otherwise the property is not touched (standard Ant behaviour).
+
+When using more than one entry, then each entry must match. This condition can be changed using attribute logic. When being set to a logical or, it is enough that one entry matches.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Taskdotclasspath.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Taskdotclasspath.java Source]
+
+
+#summary A summary of all Types implemented by Flaka
+
+<wiki:toc max_depth="1" />
+
+= test =
+
+A general test condition suporting the *Flaka* test expression language. This type can be used like any other condition type in a [Tasks#condition condition].
+
+== Attribute ==
+ * test<br/> The test condition
+
+== Example ==
+
+A condition setting property dir.exists if a relative folder named src exists.
+
+{{{
+ <condition property="dir.exists">
+    <c:test test="-d src" />
+ </condition>
+}}}
+
+== Reference ==
+ * Implementation: {{ViewCVS|1=net/haefelingerit/Test.java}}
+ * Javadoc: {{Javadoc|1=net/haefelingerit/Test.html}}
+
+= dependency-selector =
+
+Implements a {{AntRefType|1=selectors.html|2=Ant selector type}} to be used to restrict a fileset. The selection is done in relation to a set of dependencies. A file is selected if and only if the file's basename matches the basename of a dependency. The content, date, modification time and other attributes are not taken into account - only the name of the file matters.
+
+In order to use this selector, a reference holding a set of dependency objects must exist. Such a set is best created within the project by using task [Tasks#getdeps getdeps] which uses the string deps.object for a later referencing. To use a different reference, use attribute refid or ref (notice that the current implementation expects to locate an object of type net.haefelingerit.flaka.dep.Dependency[]). If the reference being used does not hold a set of dependencies or if the set is empty, then no file is selected (cause no file name can match the name of a non existing dependency).
+
+To invert the sense of matching use boolean attribute invert. When enabled, this attribute will select any file in the fileset for which no matching dependency basename could be found.
+
+There are cases where a finer grained selection is required. A typical example is a selection based on the dependency's scope. The following example, will select each file having the same artefact name as a dependency but only if such a dependency would be in scope compile:
+
+{{{
+ <fileset ..>
+   <c:dependency-selector scope="compile" />
+ </fileset>
+}}}
+
+In addition to scope other dependency attributes like version, groupId et cetera can be used for fine-graining the selection. The following match attributes are available (see section Attribute for an explanation):
+ * scope
+ * alias, name 
+ * basename
+ * groupid, group, groupname
+ * type
+ * path
+ * version 
+
+If multiple match attributes are given, then they are anded. To implement a or selection, use the {{AntRefType|1=selectors.html#orselect|2=standard Ant or container}} like shown in the following example:
+
+{{{
+ <fileset ..>
+   <or>
+     <c:dependency-selector scope="compile" />
+     <c:dependency-selector scope="provided" />
+   </or>
+ </fileset> 
+}}}
+
+This would select any dependency either in scope compile or scope provided. The example above can be 
+shortened to 
+
+{{{
+ <fileset ..>
+     <c:dependency-selector scope="/compile|provided/" />
+ </fileset> 
+}}}
+ 
+Note the usage of `/`. This turns `compile|provided` into a true regular expression allowing
+this kind of alternative selection. If a expression is under no circumstances to be interpreted as regular expression 
+set either attribute glob to true or start and end the match pattern with character `%`. 
+
+== Attribute ==
+ * ref, refid [deps.object]<br/> Use this attribute to use a different reference holding all known dependencies. See task [Tasks#getdeps getdeps] for dependency retrieval.
+ * invert [false]<br/> (boolean) Inverts the sense of matching, selects any file not matching a dependency's basename.
+ * scope <br/>Matches the scope of a dependency as shown above
+ * alias, name <br/>Matches the alias name of a dependency
+ * basename <br/>Matches the dependency's basename (i.e. {artefactid}-{version}.{type})
+ * groupid, group, groupname <br/>The group name (called groupid in Maven terminology)
+ * type <br/>The type
+ * path <br/>The complete path relative to a depot 
+ * version <br/>The dependency's version
+ * glob <br/> (boolean) When set to true interpret every matching string as pattern expression. Otherwise use leading and trailing character to specify the type of pattern (`/` => regular expression, `%` => pattern)
+
+== Example ==
+
+Assume that dependency 
+
+{{{
+  <c:dependency scope="runtime provided">
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.8</version>
+  </c:dependency>
+}}}
+
+is given. Reference deps.object has been populated with this dependency, this does not necessarily mean that this dependency got downloaded. Furthermore assume that in folder libdir files log4j-1.2.8.jar and junit-3.8.1.jar exists. Then
+
+{{{
+ <copy todir="..">
+  <fileset dir="libdir">
+    <c:dependency-selector />
+  <fileset />
+ </copy>
+}}}
+
+would copy the file libdir/log4j-1.2.8.jar to it's new destination. Again, notice that a dependency does not have to be downloaded 
+in order to get this working. The file libdir/log4j-1.2.8.jar is selected just because it happens that the basename is the same as the of the dependency given above. 
+
+This example 
+
+{{{
+ <copy todir="..">
+  <fileset dir="libdir">
+    <c:dependency-selector scope=" *nti*" invert="true"/>
+  <fileset />
+ </copy>
+}}}
+
+would copy junit-3.8.1.jar cause the scope of log4j would match pattern *nti* and because attribute invert has been enabled.
+
+== Reference ==
+ * Implementation: {{ViewCVS|1=net/haefelingerit/dep/Select.java}}
+ * Javadoc: {{Javadoc|1=net/haefelingerit/dep/Select.html}}
+
+= filterset =
+
+A filterset is a mapping between a token and it's replacement. Ant provides a simple filterset to add tokens and replacements, however there's a lack of just turning all project properties into tokens. This gap is filled by the version provided by *Flaka*. The version provided by *Flaka* behaves like the standard one and can therefore be used instead. To turn all properties into tokens, element properties must be used.
+
+== Element ==
+ * properties<br/> Create a token for each property in the current project. 
+
+== Example ==
+
+Create a reference named properties.filterset holding a filterset object. This object contains a list of tokens where each token was a property at the time when filterset was used. Properties added or removed later do not change the once created filterset.
+
+{{{
+  <c:filterset id="properties.filterset">
+    <properties/>
+  </c:filterset>
+}}}
+
+== Reference ==
+ * Implementation: {{ViewCVS|1=net/haefelingerit/FilterSet.java}}
+ * Javadoc: {{Javadoc|1=net/haefelingerit/FilterSet.html}}
+
+= istext-selector =
+
+A simple selector that selecting a file if it is a textual file rather than a binary one. To test whether text or binary,
+the file is read and each character is tested. If a binary character is found, the selector does not select.
+
+The test whether a character is text or binary depends in detail on the underlying implementation. However, the basic idea is
+that the character to be tested must be printable. The underlying Java implementation tests the following Character classes:
+ 
+ * Character.COMBINING_SPACING_MARK
+ * Character.CONNECTOR_PUNCTUATION
+ * Character.CURRENCY_SYMBOL
+ * Character.DASH_PUNCTUATION
+ * Character.DECIMAL_DIGIT_NUMBER
+ * Character.ENCLOSING_MARK
+ * Character.END_PUNCTUATION
+ * Character.LOWERCASE_LETTER
+ * Character.MATH_SYMBOL
+ * Character.MODIFIER_SYMBOL
+ * Character.NON_SPACING_MARK
+ * Character.OTHER_LETTER
+ * Character.OTHER_PUNCTUATION
+ * Character.OTHER_SYMBOL
+ * Character.SPACE_SEPARATOR
+ * Character.START_PUNCTUATION
+ * Character.TITLECASE_LETTER
+ * Character.UPPERCASE_LETTER
+ * Character.isWhitespace
+
+== Attribute ==
+ * limit<br/> The amount of characters to read for testing [-1]. If negative, all characters are read.
+ * invert<br />Selects if the file is binary
+
+== Example ==
+
+The following example deletes all binary files from folder src.
+
+{{{
+ <delete>
+  <fileset dir="src">
+    <c:istext-selector invert="true" />
+  </fileset>
+ </delete>
+}}}
+
+== Reference ==
+ * Implementation: {{ViewCVS|1=net/haefelingerit/IsText.java}}
+ * Javadoc: {{Javadoc|1=net/haefelingerit/IsText.html}}
+
+= identity-globmapper =
+
+Ant provides so called mapper types used to translate (i.e. map) a filename in another one. A typical mapper is for example a mapper translating a *.java file in it's appropriate *.class file (by translating each '/' into a '.' and by changing the extension). See {{AntRefType|1=mapper.html|2=Ant's manual page}} for a list of mappers.
+
+A useful mapper is [http://ant.apache.org/manual/CoreTypes/mapper.html#glob  the glob mapper] providing the basic functionality to change filenames on simple patterns. The following example would create a safe copy of all Java source files.
+
+{{{
+ <copy todir="backup">
+  <fileset dir="src" >
+    <glob from="*.java" to="*.java.save" />
+  </fileset>
+ </copy>
+}}}
+
+The question is what happens with all the other files that might exist in folder src? In the default implementation of Ant, mapper glob acts also as selector. This means that files other than those matching *.java are not copied. This might be useful in a case like above, but selecting files is the job of file selectors and not of mappers.
+
+*Flaka* provides a pure glob mapper without any selection. This means that files matching a pattern are renamed while any other name will pass through:
+
+{{{
+ <copy todir="backup">
+  <fileset dir="src" >
+    <c:glob from="*.java" to="*.java.save" />
+  </fileset>
+ </copy>
+}}}
+
+This would copy all files in folder src and only rename *.java files. Yes, this example is not very striking! 
+
+== Attribute ==
+See type [http://ant.apache.org/manual/CoreTypes/mapper.html#glob glob] for a list of supported attributes
+
+== Element ==
+See type [http://ant.apache.org/manual/CoreTypes/mapper.html#glob glob] for a list of supported attributes
+
+== Reference ==
+ * Implementation: {{ViewCVS|1=net/haefelingerit/GlobMap.java}}
+ * Javadoc: {{Javadoc|1=net/haefelingerit/GlobMap.html}}#summary A summary of all Macros implemented by Flaka
+<wiki:toc max_depth="1" />
+
+= all =
+
+Override this macro in order to customize target all. The default implementation of _all_ does nothing.
+
+= analyse-cvs-tag =
+A CVS tag like `v-1_0` carries meta information that can be useful when building a package. For example, it might be natural to create version `1.0` when building a project that has been checked out with tag `v-1_0`. To support this, *Flaka* defines extension point analyse-cvs-tag. This macro gets automatically called on booting<sup>1</sup> the *Flaka* framework. The purpose of this macro is to analyse a given cvs tag and to set various properties (see below). It is then up to the callee, i.e. the build script using *Flaka*, to make use of this properties. The default implementation of analyse-cvs-tag defines the following  properties (note that each property will be prefixed by a stem). The examples given in the table are based on tag v-uat_3_20_rc_1--b-3_20:
+
+ || Property || Description || Example ||
+ || _stem._typ || The tag type || v ||
+ || _stem._env || Environment ||  uat ||
+ || _stem._ver ||  Version || 3_20 ||
+ || _stem._rev || Revision || &nbsp; ||
+ || _stem._mst || Milestone || rc_1 ||
+ || _stem._bch || Branch Tag || b-3_20 ||
+
+
+Each property listed will be wiped-out by calling analyse-cvs-tag, regardless whether it has been set before or not. It is therefore sufficient to check for the existence of a property in order to check whether an version or environment has been identified within the tag. Note further that analyse-cvs-tag will only break up a given tag in identifiable pieces. Further processing of this pieces are subject to the callee. This allows to reconstruct the original tag out of it's pieces similar to the pseudo code shown below:
+
+{{{
+ original = ${_stem_.typ}-${_stem_.vers}_${_stem_.rev}_${_stem_.mst}--${_stem_.bch}
+}}}
+
+== Tokenizing Algorithm ==
+
+The standard algorithm for tokenizing a CVS tag is outlined below. It this algorithm does not suit certain needs, it can be customized by overriding the extension point analyse-cvs-tag. The algorithm is as following:
+
+ # If the tag contains the string "--", then everything following "--" is considered to be a branch tag and will be assigned to stem.bch. Everything before will further processed.
+ # If remaining input contains a milestone, then milestone part will be assigned to stem.mst and processing stops for this part. Everything before the milestone will be further processed.
+ # If the remaining input does not contain an environmental part, then the input is broken up into stem.typ and stem.ver and processing stops.
+ # Otherwise, the input will broken up into stem.typ, stem.env and a remaining version part.
+ # If the remaining version part contains less then 4 number sections, all number sections are assigned to stem.ver. Finally, if there are 4 or more than 4 number sections, then the first three number sections are assigned to stem.ver and all remaining number sections to stem.rev.
+
+An example is used to illustrate this algorithm further. Assume the following complex tag given: v-uat_3_20_0_197_rc_1--b-3_20. 
+
+ # This tag contains a branch tag. Therefore stem.bch would get the value b-3_20. Input for further processing would be v-uat_3_20_0_197_rc_1.
+ # Value v-uat_3_20_0_197_rc_1 contains a milestone. Therefore stem.mst becomes rc_1.
+ # The remaining input v-uat_3_20_0_197 is further analysed. Since an environment is present, the remaining version 3_20_0_197 is handled in a special way and processing continues. If uat would not be present, stem.ver would become 3_20_0_197 and processing would stop.
+ # stem.env becomes uat and stem.typ becomes v.
+ # The number of sections in 3_20_0_197 is 4. Therefore stem.ver becomes 3_20_0 and stem.rev becomes 197. Processing stops here.
+
+Table below demonstrates the algorithm for a couple of sample values:
+
+
+ || Tag || typ || env || ver || rev || mst || bch ||
+ || v-3 ||  v   ||     || 3   ||     ||     || ||
+ || v-3_20 ||  v   ||     || 3_20   ||     ||     || ||
+ || v-3_20_0_1 ||  v   ||     || 3_20_0_1   ||     ||     || ||
+ || v-3_20_0_1_2 ||   v  ||     || 3_20_0_1_2   ||     ||     || ||
+ || v-env_3 ||  v   ||  env   || 3   ||     ||     || ||
+ || v-env_3_20 ||  v   ||  env   || 3_20   ||     ||     || || 
+ || v-env_3_20_0_1 ||   v  || env    || 3_20_0   || 1    ||     || || 
+ || v-env_3_20_0_1_2 || v   ||  env   || 3_20_0   || 1_2    ||     || ||
+ || v-3_rc_5 ||  v   ||     || 3   ||     ||  rc_5  || ||
+ || v-3_20_rc_5 ||  v   ||     || 3_20   ||     || rc_5    || ||
+ || v-3_20_0_1_rc_5 ||   v  ||     || 3_20_0_1   ||    || rc_5   || ||
+ || v-3_20_0_1_2_rc_5 || v   ||     || 3_20_0_1_2   ||     ||  rc_5  || ||
+ || v-env_3_20_0_1_rc_5 ||   v  ||  env   || 3_20_0   || 1   || rc_5    || ||
+ || v-env_3_20_0_1_2_rc_5 || v   || env    || 3_20_0   || 1_2    ||  rc_5   || ||
+ || v-3_rc_5--b-3_20 ||  v   ||     || 3   ||     ||  rc_5  ||b-3_20 || 
+ || v-3_20_rc_5--b-3_20 ||  v   ||     || 3_20   ||     || rc_5    ||b-3_20 ||
+ || v-3_20_0_1_rc_5--b-3_20 ||   v  ||     || 3_20_0_1   ||    || rc_5   ||b-3_20 ||
+ || v-3_20_0_1_2_rc_5--b-3_20 || v   ||     || 3_20_0_1_2   ||     ||  rc_5  ||b-3_20 ||
+ || v-env_3_20_0_1_rc_5--b-3_20 ||   v  ||  env   || 3_20_0   || 1   || rc_5    ||b-3_20 ||
+ || v-env_3_20_0_1_2_rc_5--b-3_20 || v   || env    || 3_20_0   || 1_2    ||  rc_5   ||b-3_20 ||
+
+
+== Attributes ==
+
+ * tag <br />The tag value to be analyzed. Note that enclosing whitespace is ignored. The default value is the value of property _${project.cvstag}_. The behaviour is undefined if not value is given and property `project.cvstag` is undefined.
+ * stem <br />A string value to be used as stem when setting properties - see example below. The default value is _cvstag_.
+
+== Example I ==
+
+{{{
+<c:analyse-cvs-tag tag="v-uat_3_20_0_197_rc_1--b-3_20" stem="z" />
+<echo>
+ ${z.typ}    // v
+ ${z.env}    // uat
+ ${z.ver}    // 3_20_0
+ ${z.rev}    // 197
+ ${z.mst}    // rc_1
+ ${z.bch}    // b-3_20
+</echo>
+}}}
+
+== Good to know .. ==
+Macro analyse-cvs-tag uses internally property stem __z. 
+
+== Footnotes ==
+1. Usually done by using `<c:import />`
+
+= apropos =
+
+Customize this macro in order to customize target [Targets#apropos apropos].
+
+= assert =
+
+A macro implementing an _assert_ statement. The macro throws a build exception if a test fails. 
+            
+== Attributes ==
+ * test <br/>A mandatory attribute interpreted as test to be carried out. When evaluating to _false_, a build exception is thrown.        
+    
+== Example==
+
+Assure that a directory is present:
+
+{{{
+ <c:assert test="-d some/folder" />
+}}}
+
+This throws an exception like <code>assertion error: test `-d some/folder' failed</code> if folder _some/folder_ does not exist.
+
+= auto-init =
+
+This macro is responsible for defining all properties relevant for *Flaka*. It further defines pattern and filesets, downloads dependencies etc. This macro is called by macro [Macros#import import].
+
+= baseline-checkout =
+
+This macro is responsible to retrieving the [[Baseline]]. Traditionally the Baseline got checked out from CVS which explains the macro name. The Baseline can also be retrieved by other means like HTTP etc.
+
+= cat =
+
+A simple macro to dump the content of a file (similar to command _cat_ found on UNIX/LINUX).
+            
+== Attributes ==
+ * src (*Mandatory*)<br/> The file to be dumped
+ * level <br/> Whether to dump when Ant is in _info_, _verbose_ or _debug_ mode [info].
+ * fail<br/> Whether to throw exception if file can't be dumped or not [true]
+
+== Example==
+
+{{{
+ <echo message="Hello world!" file="greeting.txt">
+ <c:cat src="greeting.txt" />
+ _Hello world!_
+}}}
+
+= clean =
+
+Use this macro to customize target [Targets#clean clean]. The default implementation of _clean_ removes the content of the following directories
+ * ${obj.dir}
+ * ${test.obj.dir}
+ * ${testclient.obj.dir}
+
+= clean-dir =
+
+A simple macro removing the content of a directory without removing the directory itself. Note that the directory gets in any case created.
+    
+        
+== Attributes ==
+ * name <br/> The name of the directory to be cleaned.
+
+= compile =
+
+Override this macro in order to customize target [Targets#compile compile]. The default implementation invokes the following macros in the order given:
+ # [Macros#compile-init compile-init]    
+ # [Macros#compile-exec compile-exec]    
+ # [Macros#compile-rmi compile-rmi]    
+ # [Macros#compile-post compile-post]    
+
+
+With the exception of [Macros#compile-exec compile-exec] (and [Macros#compile-rmi compile-rmi] for time being), all macros do nothing and are reserved as placeholders. Macro [Macros#compile-exec compile-exec] determines how to compile sources. Currently, it just assumes a Java project and thus invokes macro [Macros#compile-test-exec-java compile-test-exec-java].
+
+= compile-exec =
+
+A customizable macro used to drive source code compilation. Used within [Macros#compile compile].
+
+= compile-exec-java =
+
+This is the internal and customizable macro responsible for the compilation of Java source code. 
+
+        
+== Attributes ==
+ * srcdir <br/>The source directories [<code>${src.dir}</code>]
+
+= compile-init =
+
+A customizable macro used to drive source code compilation. Used within [Macros#compile compile]. The macro shall be used to initialize an upcoming compilation step. The macro is empty by default.
+
+= compile-post =
+
+A customizable macro used to drive source code compilation. Used within [Macros#compile compile]. The macro shall be used to do any post-processing (other than cleaning up) necessary after compilation.
+The macro is empty by default.
+
+= compile-rmi =
+
+A customizable macro used to drive RMI code compilation. Used within [Macros#compile compile]. This macro is customizable.
+
+A sketch of the current implementation:
+ # If property _rmi.class.name_ is not empty, then every name classname therein is translated into a file matching pattern used to locate class files within object directory ${obj.dir}. For example, if the classname is "p.C" then ${obj.dir} is being looked up using pattern _**/p/C.class_. All located classes are passed on to be compiled by [Tasks#rmic rmic]. If no matching class in found, then an exception is thrown.
+ * If property _rmi.class.name_ does not exist or is empty, then patternset _rmi.class.patternset_ is used to lookup class files in ${obj.dir} and eventually to be passed to [Tasks#rmic rmic]. An exception is thrown if the patternset exists but does not match any files.
+
+= compile-test =
+
+This macro is similar to macro [Macros#compile compile]. It is used to compile unit tests to be executed when invoking target [Targets#test test]. The implementation invokes in order
+
+ # [Macros#compile-test-init compile-test-init]
+ # [Macros#compile-test-exec compile-test-exec]
+ # [Macros#compile-test-post compile-test-post]
+
+where [Macros#compile-test-init compile-test-init] shall be used to init the compilation step, [Macros#compile-test-exec compile-test-exec] to exec the compilation, and [Macros#compile-test-post compile-test-post] to do any post processing resp. house cleaning.
+
+= compile-test-exec =
+
+A customizable macro driving the compilation of source code required to run any unit test. The default implementation invokes macro [Macros#compile-test-exec-java compile-test-exec-java] which can also be customized.
+
+= compile-test-exec-java =
+
+This macro is reponsible for the compilation of any Java based source code required to run unit tests.
+        
+== Attributes ==
+ * srcdir <br/>The directory containing unit test source code [<code>${test.src.dir}</code>].
+
+= compile-test-init =
+
+A customizable macro responsible for the initialization of the _unit test compilation step_. See also [Macros#compile-test compile-test]. The default implementation does nothing.
+
+= compile-test-post =
+
+A customizable macro responsible for post-processing of the unit case compilation step. See also [Macros#compile-test compile-test]. The default implementation does nothing.
+
+= copy-and-replace =
+
+A useful macro copying all files from a source into a destination folder. This macro is similar to [Tasks#copy copy task]. In addition however, files with extension _.in_ are interpreted as templates and handled in a special way:
+ * Templates files are instantiated in the destination folder by removing _.in_ from the file's name
+ * The template's content is copied as is except that any word starting and ending in character _@_ is interpreted as token
+ * If a token (after having stripped the leading and trailing character _@_) matches the name of a property defined in the current project, then every occurrence of that token in the template's instance is replace with the value of that property. See examples below on how this works. 
+
+Files ending in _.in_ having a binary content (at least one non-printable character as determined by selector [Types#istext istext] are not treated as templates. In fact they are not even copied over to the destination directory.
+
+If a file already exists in the destination directory, then  it will be overridden. The destination folder _dst_ will be created if not already existing. 
+        
+== Attributes ==
+ * src <br/>The source folder
+ * dst <br/>The destination folder
+
+== Element ==
+ * selector-element <br/>A optional (and implicit) [Types#selectors file selector element]
+      
+    
+== Example ==
+
+Assume that there is a folder named _src_ which contains the following files:
+ * config.properties.in
+ * binary.in (assumed to be a _binary_ file
+ * config.properties
+
+The content of file _config.properties.in_ shall be 
+
+{{{
+ x = hello @x@
+ version = @project.version@
+ z = @z@
+}}}
+
+and the build script shall look like
+
+{{{
+ <project ..>
+  <c:inline-properties>
+   x = world!
+   project.version = 1.0
+  </c:inline-properties>
+  <c:copy-and-replace src="src" dst="dst" />
+  ..
+ </project>
+}}}
+
+Then the content of folder _dst_ will only contain a file named _config.properties_ having the following content:
+
+{{{
+ <c:cat src="src/config.properties />
+ _x = hello world!_
+ _version = 1.0_
+ _z = @z@_
+}}}
+
+There is only _one_ file in folder _dst_ cause _config.properties.in_ and _config.properties_ are both mapped to the same final name. Cause _config.in_ is a binary file, that file is not copied. 
+
+When copying, non-template files are copied first and templates are instantiated afterwards.
+
+The token _@z@_ has not been replaced cause there property _z_ does not exist in the project. Notice that properties are evaluated at the invocation time of macro _copy-and-replace_.
+
+= create-project =
+
+A macro to create a initial project structure for various project types. The following project types are supported:
+ * jar=package
+ * war-package    
+ * ear-package
+
+If a unsupported project type is specified, a standard Maven project structure  will be created.
+         
+== Attributes ==
+ * type <br/>The project type [<code>jar-package</code>]
+
+
+
+= default =
+
+This macro implement target [Targets#default default]. Customize this macro to suit your needs. The default implementation does noting.
+
+
+
+= define-targets =
+
+A internal macro defining all Flaka targets dynamically (rather than the declarative way found in traditional Ant scripts). This macros depends heavily on task [Tasks#create-target create-target].
+
+= dependencies =
+
+A macro intended as container for dependency declarations. The macro does nothing.
+ 
+== Element ==
+ * body <br/>A implicit and optional body. Shall be used to declare a set of dependencies (see macro [Macros#dependency dependency] but actually may contain just any declaration. 
+      
+    
+== Example==
+
+This macro allows that something like this
+
+{{{
+ <c:dependencies>
+   <dependency .. />
+   ..
+ </c:dependencies>
+}}}
+
+can be written in an Ant build script.
+
+= dependencies-load =
+
+This macro is responsible for scanning and fetching dependencies. Dependencies (see macro [Macros#dependency dependency]) are scanned in the current build file and, if not found, then other files like _dependencies.xml_, _project.xml_ or _pom.xml_ are consulted. 
+
+Each dependency will then be resolved against a [[Baseline]] if a Baseline is given. Eventually each dependency will be retrieved from a depot into a local folder.
+
+For details on the scanning, resolving and retrieval of dependencies have a look at [Tasks#getdeps getdeps].
+    
+The following properties are influential:
+ * depot.csv<br/> A comma separated list of depot urls
+ * lib.dir</br> The local download folder
+ * project.dep.xml<br/>A list of files to be scanned for dependencies
+ * dependencies.load<br/>If set, it is assumed that dependencies have been scanned, resolved and retrieved. This property will be set by this macro if not already set
+ * use.baseline<br/>If set to _false_, dependencies are _not_ resolved against a Baseline [true]
+ * baseline<br/>The baseline to be used (without extension, in upper case) [DEVL]
+ * baseline.dir<br />Used when fetching the Baseline from CVS: the path in the CVS repository holding baselines [var/baselines].
+ * baseline.cvsrev<br/>The baseline revision [HEAD]
+
+        
+== Attributes ==
+ * from <br/>Location from where to retrieve dependencies [${depot.csv}]
+
+= dependencies-load-with-baseline =
+
+A internal macro used to scan, resolve and retrieve dependencies. See also [Macros#dependencies-load dependencies-load].
+
+= dependencies-load-without-baseline =
+A internal macro used to scan and retrieve dependencies without resolving against a Baseline. See also [Macros#dependencies-load dependencies-load].
+
+= dependency =
+
+A macro to emulate a [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven style dependency]. In addition to the Maven style, there are also attribute equivalents for each element (see below).
+    
+        
+== Attributes ==
+ * name <br/>Same as _alias_ if _org_ is not present, otherwise same as _artifactid_
+ * alias<br />The _logical_ dependency name (resolved against a Baseline)
+ * version <br/>The version string
+ * scope <br/>The scope of this dependency 
+ * jar <br/>The artifact's basename 
+ * artifactid <br/>The artifacts basename without version and type
+ * groupid <br/>The logical group name
+ * type <br/>The dependency's type
+ * url <br/>A download url 
+ * org<br />Same as groupid. Note that attribute _name_ changes if this attribute is present
+ * rev<br />Same as _version_
+ * branch<br />The branch of the dependency. 
+ * force<br />A boolean to give an indication to conflict manager that this dependency should be forced to this revision 
+ * conf<br />An inline mapping configuration spec
+ * transitive<br />True to resolve this dependency transitively, false otherwise
+ * changing<br /> True if the dependency artifacts may change without revision change, false otherwise    
+
+Note that [http://ant.apache.org/ivy/history/latest-milestone/ivyfile/dependency.html _Ivy_ attributes branch, force, conf, transitive] and changing are currently not supported.
+
+== Element ==
+The following elements have been pioneered by [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven]]. All of this elements have synonym attributes. If the same element and attribute is given, the element will eventually override. See also task [Tasks#getdeps getdeps] for dependency handling:
+
+ * groupId 
+ * artifactId 
+ * version 
+ * jar 
+ * type
+ * scope 
+ * url
+ * properties
+
+    
+== Example==
+
+The following example declares dependency _log4j_:
+
+{{{
+ <c:dependency>
+  <groupId>log4j</groupId>
+  <artifactId>log4j</artifactId>
+  <version>1.2.9</version>
+ </c:dependency>
+}}}
+
+The very same dependency can also be written in a more compact way:
+
+{{{
+ <c:dependency groupid="log4j" artifactid="log4j" version="log4j" />
+}}}
+
+If a _log4j_ is defined in a Baseline, then the declaration can be shortened further to
+
+{{{
+ <c:dependency alias="log4j" />
+}}}
+
+= depends =
+
+This customizable macro implements target [Targets#depends depends]. The implementation ensures that dependencies are loaded, then all dependencies are written to file ${depends.out} in format ${depends.fmt}. See task [Tasks#writedeps writedeps] on how dependencies are formatted.
+
+= deploy =
+
+This customizable macro implements target [Targets#deploy deploy]. The default implementation does nothing.
+
+= distclean =
+
+This customizable macro implements target [Targets#distclean distclean]. The implementation is supposed to remove all files created during a build process. The default implementation assumes that all generated files are created within folder _${build.dir}_, thus folder _${build.dir}_ gets entirely removed.
+
+
+
+= dotclasspath =
+
+This customizable macro implements target [Targets#.classpath .classpath], supposed to create or update file _.classpath_ and additionally file _project.xml_. Both files are used to describe a project using the Eclipse IDE.
+
+If such a file does not exist, a skeleton file is generated and afterwards updated based on properties like _src.dir_, _obj.dir_, _lib.dir_ etc.
+    
+        
+== Attributes ==
+ * libdir <br/>The folder containing artifacts [<code>${lib.dir}</code>]
+ * echo <br/>When set to true, the final .classpath file is dumped on standard out [<code>true</code>]
+ * file <br/>The file to be created or updated [<code>.classpath</code>]
+        
+
+== Element ==
+ * body <br/>A XML snippet to be used as skeleton if a .classpath needs to be created from scratch.
+
+= ear-package =
+
+This customizable package is responsible for packaging projects of type _ear-package_. The default implementation invokes the following macros in the order given:
+ # [Macros#ear-package-init ear-package-init]
+ # [Macros#ear-package-exec ear-package-exec]
+ # [Macros#ear-package-post ear-package-post]
+Each macro is customizable for further fine tuning.
+
+= ear-package-exec =
+
+This customizable macro handles the details of packing an _ear_ file:
+ # The content of folder _${ear.dir} is copied into a assembly folder replacing tokens in textual files (see [Macros#copy-and-replace copy-and-replace]).
+ # A intermediate package file named _${ear.name}_ gets created in _${dist.dir}_ which ..
+ # additionally will be updated to contain all *.jar, *.war, *.rar or *.ear files found in _${dist.dir}_
+
+= ear-package-init =
+
+This macro creates folder _${build.dir}/tmp/ear_ used by macro [Macros#ear-package-exec ear-package-exec] to assemble the final ear package.
+
+= ear-package-post =
+
+This customizable package is supposed to run any post-processing commands to be carried out after a ear file got packaged. The default implementation does nothing.
+
+
+
+= error =
+
+Same as
+
+{{{
+ <echo trim="true" level="error">
+  -- error message --
+ </echo>
+}}}
+
+= exec-target =
+
+This macro invokes a target _X_ in each subdirectory and additionally invokes macro _local-X_. This macro is implemented in terms of macro [Macros#run-in-subdirs run-in-subdirs] and [Macros#run-target run-target].
+    
+        
+== Attributes ==
+ * name <br/>The mandatory name of the target to invoke
+
+= export =
+
+This customizable macro implements target [Targets#export export]. When invoked, it dumps file _net/haefelingerit/flaka/antlib.xml_ to stdout and additionally in folder _${build.dir}/antlib_ for further reference. This file is the scripting layer of the *Flaka* containing all the macros defined in this chapter. This file does not contain *Flaka*'s tasks and types cause they are implemented in pure Java. 
+    
+        
+== Attributes ==
+ * dir <br/>The directory to save the exported file in [<code>${build.dir}/antlib</code>]
+
+= fail-if-not-set =
+
+A simple macro throwing an exception if a property is not defined.
+        
+== Attributes ==
+ * property <br/>The property to be checked.
+
+= foreach-subdir =
+
+A macro invoking a set of tasks or macros for each argument given in property ${subdirs}.     
+        
+== Attributes ==
+ * var <br/>The variable reference used in the body [<code>dir</code>]
+        
+== Element ==
+ * body <br/>The body to execute for each argument
+
+= guess-project-type =
+
+A customizable macro to guess the current project type. If the project has been guessed, then property _project.type_ is set appropriately. The default implementation sets property _project.type_ to
+ * war-package if there's a file WEB-INF/web.xml in either _._, _web_ or _src/main/webapp_
+ * ear-package if either ear/META-INF or META-INF/application.xml exists
+ * jar-package if all other test failed so far
+
+
+
+= if-dir-exists =
+
+This macro is a shorthand notation for 
+
+{{{
+ <c:when test="-d @{name}">
+   _<then />_
+ </c:when>
+}}}
+    
+        
+== Attributes ==
+ * name <br/>The folder path to be checked        
+
+== Element ==
+ * then <br/>The action to be carried out if the folder exists
+
+= if-file-exists =
+
+This macro is a shorthand notation for
+
+{{{
+ <c:when test="-f @{name}">
+  _<then />_
+ </c:when>
+}}}
+        
+== Attributes ==
+ * name <br/>The file to be checked
+        
+
+== Element ==
+ * then <br/>The action to be carried out if the file exists
+
+= if-not-set =
+
+This macro is a shorthand notation for 
+
+{{{
+ <c:unless test="-P @{property}">
+   _<then />_
+ </c:unless>
+}}}
+    
+        
+== Attributes ==
+ * property <br/>The property to be checked
+        
+
+== Element ==
+ * then <br/>The action to be carried out if the property does not exist
+
+= import =
+
+This macro is responsible for booting the *Flaka* framework. This consists of three steps:
+ # Create extension points (over ridable macros) in current project
+ # Dynamically create targets in the current project
+ # Define and create relevant properties and pattern sets
+
+= info =
+
+A convenient way of writing
+
+{{{
+ <echo trim="true" level="info">
+   _-- message_ 
+ </echo>
+}}}
+
+= init-cvsignore =
+
+This macro appends files and folders to be ignored by CVS:
+ * target (used by Maven)
+ * .settings 
+ * .springBeans
+ * repository.xml
+ * build (*Flaka*)
+ * bin(Maven)
+
+= init-directories =
+
+A internal macro ensuring that all required build folders (below ${build.dir}) are created.
+
+= init-user-properties =
+
+A macro which determines the way user properties are loaded. They are loaded in the following order:
+ # For each environment variable _X_ a property _env.X_ gets created 
+ # File _./build.properties_ is loaded
+ # File _./project.properties_ is loaded
+ # File _${env.HOME}/.build.properties_ is loaded
+ # File _${user.home}/.build.properties_ is loaded
+
+= inline-properties =
+
+A very handy way to set a bunch of properties:
+
+{{{
+ <c:inline-properties>
+   x = a 
+   y = ${x}
+   # define z as well
+   z = hi 'Z'
+ <c:/inline-properties>
+}}}
+
+The 'traditional_ way is rather clumsy:
+
+{{{
+ <property name="x" value="a" />
+ <property name="y" value="${x}" />
+ <property name="z" value="hi 'Z'" />
+}}}
+     
+No matter which style is used, the result is the same.
+
+Be aware that character backward slash (\) is converted into a forward slash. This is a well known defect. As workaround, use either tasks _set_ or _property_ or use character sequence _\\\\_ instead.
+
+= install =
+
+This customizable macro implements target [Targets#install install]. If property _install.dir_ is defined, then all distributables found in _${dist.dir}_ are copied over.
+        
+== Attributes ==
+ * srcdir <br/>The folder containing distributables [<code>${dist.dir}</code>]
+
+= jar-package =
+Please describe what this task is doing.
+    
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= jar-package-exec =
+Please describe what this task is doing.
+    
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= jar-package-init =
+Please describe what this task is doing.
+    
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= jar-package-post =
+Please describe what this task is doing.
+    
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= javac-exec =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * destdir <br/>description please. Default: <code>${obj.dir}</code>
+ * classpathref <br/>description please. Default: <code>javac.classpath</code>
+        
+
+== Element ==
+ * javac-element <br/>description please. (*Implict*)
+      
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= javadocs =
+
+A customizable macro implementing target [Targets#javadocs javadocs].
+
+
+= log =
+
+A short-hand notation for writing
+
+{{{
+ <echo message="@{message}" level="@{level}" />
+}}}
+
+where _message_, _trim_ and _level_ are attributes.
+
+== Attributes ==
+message<br/>The message to be displayed []
+level<br/>The level to be used []
+trim<br/>Whether to trim the message or not [false]
+
+= make-dist-jar =
+
+A macro to create a jar file [_${jar.name}_] in the distributable directory [_${dist.dir_]. This folder is created if it does not exist. This macro uses macro [Macros#make-jar make-jar] for building the jar which ensures that certain Manifest properties are set.
+        
+== Attributes ==
+ * jar <br/>The name of the jar file to be created [<code>${jar.name} </code>]
+ * dir <br/>The folder in which the file is to be created [ <code>${dist.dir}</code>]
+        
+
+== Element ==
+ * jar-element <br/>Any entity accepted by Ant's standard task _jar_
+
+= make-empty-folder =
+
+A convenient writing of 
+
+{{{
+  <delete dir="@{dir}" />
+  <mkdir dir="@{dir}" />
+}}}
+  
+== Attributes ==
+ * dir <br/>The folder to be _cleaned_.
+
+= make--ear =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * ear <br/>description please. (*Mandatory*)
+ * appxml <br/>description please. (*Mandatory*)
+ * update <br/>description please. Default: <code>false</code>
+ * nil <br/>description please. Default: <code></code>
+        
+
+== Element ==
+ * ear-element <br/>description please. (*Implict*)
+      
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= make-jar =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * jar <br/>description please. Default: <code>${dist.dir}/${jar.name}</code>
+ * update <br/>description please. Default: <code>false</code>
+ * nil <br/>description please. Default: <code></code>
+        
+
+== Element ==
+ * jar-element <br/>description please. (*Implict*)
+      
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= make-war =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * war <br/>description please. (*Mandatory*)
+ * update <br/>description please. Default: <code>false</code>
+ * nil <br/>description please. Default: <code></code>
+ * webxml <br/>description please. Default: <code></code>
+        
+
+== Element ==
+ * war-element <br/>description please. (*Implict*)
+      
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= manifest-update =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * src <br/>description please. Default: <code>${dist.dir}/${jar.name}</code>
+ * tmpdir <br/>description please. Default: <code>${build.dir}/tmp</code>
+ * mode <br/>description please. Default: <code>update</code>
+        
+
+== Element ==
+ * manifest-element <br/>description please. (*Implict*)
+      
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= package =
+
+A customizable macro implementing target [Targets#package package].
+
+= package-exec =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * type <br/>description please. Default: <code>${project.type}</code>
+        
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= package-init =
+Please describe what this task is doing.
+    
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= package-post =
+Please describe what this task is doing.
+    
+        
+== Attributes ==
+ * vardir <br/>description please. Default: <code>${var.dir}</code>
+ * amfdir <br/>description please. Default: <code>${amf.dir}</code>
+ * eardir <br/>description please. Default: <code>${ear.dir}</code>
+ * dstdir <br/>description please. Default: <code>${dist.dir}</code>
+ * varamf <br/>description please. Default: <code>${build.dir}/tmp/amf</code>
+        
+    
+== Example I: Basic Usage==
+Show a basic usage example.
+
+= path-prepend =
+
+This macro puts a folder or any path like structure  in front of an existing [http://ant.apache.org/manual/using.html#path path}} object.
+        
+== Attributes ==
+ * refid <br/>A reference to an existing path object
+
+== Element ==
+ * element-path <br/>Any element accepted by a [http://ant.apache.org/manual/using.html#path path] object.
+
+= reload-baseline =
+
+A macro implementing a Baseline reload.
+
+= remove-dist-jar =
+
+A convenience way of removing a file from the folder containing distributable.
+        
+== Attributes ==
+ * jar <br/>The file to be removed [<code>${jar.name}</code>]
+ * dir <br/>The folder from which the file is to be removed [<code>${dist.dir}</code>]
+
+= remove-from-dist-dir =
+
+A macro to remove files from the folder containing distributable. The macro is a short hand notation instead of writing
+
+{{{
+ <delete>
+   <fileset dir="@{dir}">
+     _<fileset-element/>_
+   </fileset>
+ </delete>
+}}}
+
+== Attributes ==
+ * dir <br/>The folder to be cleaned-up [<code>${dist.dir}</code>]
+
+== Element ==
+ * fileset-element <br/>Any suitable [http://ant.apache/org/manual/fileset.html fileset] element.
+
+= resources-copy =
+
+A macro to copy all files but files ending in _*.java_ from a given source folder into a final destination folder. This macro uses [Macros#copy-and-replace copy-and-replace] for the copying task. This means that files ending in _*.in_ are handled in a special way as described in [Macros#copy-and-replace copy-and-replace]. 
+      
+== Attributes ==
+ * dst <br/>The destination folder<code>${obj.dir}</code>
+ * src <br/>The source folder<code>${src.dir}</code>
+
+= run-in-subdirs =
+
+A macro to run a program in a list of folders.    
+        
+== Attributes ==
+ * args <br/>The arguments to be passed to each program invocation []
+ * dirs <br/>The list of folders [<code>${subdirs}</code>]
+ * prog <br/>The program to be executed [<code>${ant.exe}</code>]
+ * fail <br/>Whether to stop if there's an error [<code>true</code>]
+
+= run-local-macro =
+
+A macro to run execute a macro with a given name. The macro must exist to be executed. If the macro does not exist in the local project, the name is being checked whether such a macro exists in the *Flaka* namespace.
+
+= set-if-dir-exists =
+
+Set a property if a folder exists. A short hand notation for
+
+{{{
+ <c:[Tasks#when when] test="-d '@{dir}'>
+  <c:[Tasks#set set]="@{property}" value="" />
+ </c:[Tasks#when when]>
+}}}
+        
+== Attributes ==
+ * property <br/>The property to set
+ * dir <br/>The folder to be checked
+
+= set-if-have-file =
+
+A macro setting a property to a folder name if that folder contains at least one matching file. Each folder is tried in the order given.
+By default is the property set for each folder having at least one matching file. If _keepgoing_ is not _true_, then processing stops if one folder got found.
+
+This macro can be customized further by using elements_info_ and _filter_ (see below).
+
+== Attributes ==
+ * var <br/>The name of the property to be set
+ * in <br/>A list of folders to be tried in order (use whitespace as separator)
+ * keepgoing<br/>Whether to continue if a folder got found or not [true]
+ * counter<br />The name of the counter property. This property will be unset for each folder [set-if-have-file.counter]
+
+== Elements ==
+
+ * filter<br/> May contain {{AntRefType|1=fileset.html|2=any fileset element}}. This element is optional.
+ * info<br/>May contain any task or macro. This optional element is being invoked after having counted the number of files in a folder. 
+
+
+== Example ==
+{{{
+ <c:set-if-have-file var="d" in="d1 d2 d3>
+  <info>
+    dir = @{dir} #files = ${@{count}} 
+  </info>
+  <filter>
+   <include name="**/*.java" />
+  </filter>
+ </c:set-if-have-file>
+}}}
+
+If we assume that there are Java files in _d1_ and _d3_, then the value of property _d_ would be _d3_ afterwards. If being called with _keepgoing="false"_, then _d_ would be _d1_.
+
+= set-if-not-set =
+
+The logical opposite of macro [Macros#set-if-set set-if-set].
+
+= subdir =
+
+This macro defines or changes property _subdirs_. When repeatedly called, the property contains a _list_ of the argument given each time. For example:
+
+{{{
+ <c:subdir dir="a" />
+ <c:subdir dir="b c" />
+ <c:subdir dir="d" />
+}}}
+
+Then 
+ 
+{{{
+ <echo>${subdirs}</echo>
+ a' 'b c' 'd
+}}}
+
+Notice that property _subdirs_ is being used as list to be iterated over for making targets in sub folders.    
+        
+== Attributes ==
+ * dir <br/>The folder to be added
+
+= test =
+
+A customizable macro implementing target [Targets#test test]. This macro invokes the following macros in the order given:
+ # [Macros#test-init test-init]
+ # [Macros#test-exec test-exec]
+ # [Macros#test-post test-post]
+
+= testclient =
+
+A customizable macro implementing target [Targets#testclient testclient] supposed to run HTTP based unit tests. Contrary to similar macros does this macro not call the usual sub macros like _init_, _exec_, _post_ and _free_. Instead, a complete implementation is provided by this macro including the compilation of Java based source code.
+
+== Attributes ==
+ * objdir <br/>The folder containing the compiled unit tests [<code>${testclient.obj.dir}</code>]
+ * classpath <br/>The classpath reference to be used when executing unit tests [<code>testclient.classpath</code>]
+ * srcdir <br/>The folder containing the (non compiled) Unit tests  [<code>${testclient.src.dir}</code>]
+ * resdir <br />The folder containing any resources that needs to be taken into account [<code>${testclient.res.dir}</code>]
+ * fileset <br />A reference to a {{AntRefType|1=fileset.html|2=fileset}} to select a subset of unit tests to be executed [<code>testclient.filset</code>]
+
+= test-exec =
+
+This customizable macro determines which unit tests are to be executed. The default implementation unconditionally invokes macro [Macros#test-junit test-junit]. Other types of unit-test may be plugged in here.
+
+= test-init =
+
+This customizable macro is invoked by [Macros#test test] to initialize any upcoming _unit test_.
+
+The default implementation ensures that resources from folder _${test.res.dir}_ are copied over into folder _${test.obj.dir}_. The underlying assumption is that folder _${test.obj.dir}_ is taken into account when running unit tests.
+
+= test-junit =
+
+This customizable macro is being called by [Macros#test-exec test-exec] to execute Java based unit tests.
+
+The macro defines four (predefined) extension points: _init_, _exec_, _post_ and _free_. By default, the following code is (somewhat simplified) executed:
+
+{{{
+  <{{AntRefOptTask|1=junit.html|2=junit}}>
+    <classpath>
+      <path refid="@{classpath}"/>
+    </classpath>
+    <formatter type="brief" usefile="false"/>
+    <formatter type="xml"/>
+    <batchtest todir="${test.xml.dir}">
+       <{{AntRefType|1=fileset.html|2=fileset}} refid="@{fileset}"/>
+    </batchtest>
+    <jvmarg value="-ea"/>   
+  </{{AntRefOptTask|1=junit.html|2=junit}}>
+}}}
+
+The variables _classpath_, _fileset_ (as shown in the snippet) as well as _testdir_ are available within all extension points. See attributes below for their default values.
+
+The macro uses property _test.failed_ to determine whether some unit tests failed. If set after execution, appropriate exception is thrown. This happens after _post_ and _free_ have been executed.
+
+== Attributes ==
+ * testdir <br />The folder containing compiled test cases [${test.obj.dir}]
+ * fileset <br />A reference to a fileset being the unit cases to run [junit.fileset]
+ * classpath <br/> The classpath to be used [test.classpath]
+
+= test-post =
+
+This customizable macro is being called after [Macros#test-exec test-exec] and is supposed to do any post processing required to complete a unit test run. The default implementation is empty.
+
+= update-dist-jar =
+
+A common task is to update an almost final distributable, for example by bundling some required jar files. 
+
+This macro simplifies this task by providing a default file name and location (see attributes below). By default the file ${dist.dir}/${jar.name} will be updated. Despite it's name updates this macro any _zip_ file and not only _jar_ files. However, this macro can not update any other file types.
+
+Note that the macro works in _append_ mode. That is, when being called twice with the same file, the file ends up two times in the final zip file. 
+        
+== Attributes ==
+ * jar <br/>The name of the file to be updated. The file must be relative to attribute _dir_. The file will be created if it does not exist [<code>${jar.name}</code>]
+ * dir <br/>The folder holding the file to be updated. This folder is created if it does not exist [<code>${dist.dir}</code>]
+
+== Element ==
+ * zip-element <br/>Any element that might go into a {{AntRefTask|1=Zip.html|2=Ant Zip task}}.
+    
+== Example I==
+
+Assume that a all jar files in _build/lib_ need to be added to the almost finished distributable:
+
+{{{
+ <c:update-dist-jar>
+   <{{AntRefType|1=fileset.html|2=fileset}} dir="build">
+     <include name="lib/log4j-*.jar" />
+   </fileset>
+ </c:update-dist-jar>
+}}}
+
+Let's assume that folder _build/lib_ would contains _log4j-1.2.9.jar_, then the final distributable file contains 
+_lib/log4j-1.2.9.jar_. 
+
+== Example II ==
+
+Changing the fileset's _dir_ and the include's _name_ attribute  in the previous example allows for having either 
+
+ * build/lib/log4j-1.2.9.jar ; 
+ * lib/log4j-1.2.9.jar ; or
+ * log4j-1.2.9.jar 
+
+in the final zip file. But what to do if _log4j-1.2.9.jar_ should end up at a different place? Assume for example that log4j should  go in into folder _WEB-INF/lib_? Ant offers a handy type named {{AntRefType|1=zipfileset.html|2=zipfileset}} allowing to save a file with an arbitrary path in the final zip file. For example:
+
+{{{
+ <c:update-dist-jar>
+   <zipfileset dir="build" prefix="WEB-INF/lib">
+     <include name="log4j-*.jar" />
+   </zipfileset>
+ </c:update-dist-jar>
+}}}
+
+This would create _WEB-INF/lib/log4j-1.2.9.jar_ in the final package.
+
+= upload =
+
+A convenience macro to write
+
+  <c:[Macros#upload-artefacts upload-artefacts] test="false" />
+
+= upload-artefacts =
+
+A macro providing a unique interface for uploading artefacts on a depot. This macro relies on task [Tasks#uploadtask uploadtask].
+        
+== Attributes ==
+ * category <br/>The upload category [<code>${uploadtask.category}</code>]
+ * test <br/>Whether to test or not [<code>true</code>]
+ * rcfile <br/>The file to read username and password [<code>${uploadtask.rcfile}</code>]
+ * folder <br/>The local file system folder to scan for artefacts [<code>${uploadtask.folder}</code>]
+ * pattern <br/>A pattern to match filenames in folder [<code>${uploadtask.pattern}</code>]
+ * endpoint <br/>The URL to be used for uploading [<code>${uploadtask.endpoint}</code>]
+ * debug <br/>Whether to turn on debug output [<code>${uploadtask.debug}</code>]
+
+= upload-test =
+
+A convenience macro to write
+
+{{{
+  <c:[Macros#upload-artefacts upload-artefacts] test="true" />
+}}}
+
+= validate-core-properties =
+
+A internal macro to check whether [Properties  all core properties] are defined. Throws a build exception if a property is not defined.
+
+= verbose =
+
+A convenience macro to write 
+
+{{{
+ <echo trim="true" level="verbose">
+  _-- my warning message --_
+ </echo>
+}}}
+
+= warning =
+
+A convenience macro to write 
+
+{{{
+ <echo trim="true" level="warning">
+  _-- my warning message --_
+ </echo>
+}}}
+
+= war-package =
+
+A customizable macro implementing target [Targets#package package] in case the project's type is _war-package_. This macro calls in order:
+ # [Macros#war-package-init war-package-init]
+ # [Macros#war-package-exec war-package-exec]
+ # [Macros#war-package-post war-package-post]
+
+= war-package-exec =
+
+This customizable macro is used by [Macros#war-package war-package] to create a initial _war_ file. The file is complete except that jars to bundle are added later on by macro [Macros#war-package-post war-package-post].
+
+The name of the file created (and later on updated) is given by property _war.name_ and to be located in folder _${dist.dir}_ like any other distributable file.
+
+When creating the war file, the following files are taken into account:
+ * All class files found in folder _${obj.dir}_
+ * All files in folder _${web.dir}_ 
+
+Notice that folder _${web.dir}_ must contain file _WEB-INF/web.xml_, otherwise a build exception will be thrown.
+
+
+= war-package-init =
+
+This customizable macro is used by [Macros#war-package war-package] to prepare a packing of a _war_ file. This macro does nothing by default.
+
+= war-package-post =
+
+This macro is being used by [Macros#war-package war-package] to bundle all required jars in the final war package (i.e. in _WEB-INF/lib_). All dependencies in scope _compile_ are automatically bundled except the following dependencies:
+ * The dependency with the logical name _SERVLET_API.jar_
+ * All dependencies matching having a logical name matching pattern _J2EE*.jar_
+ * All dependencies in scope _provided_

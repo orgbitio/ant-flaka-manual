@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+
+<article lang="en">
+<articleinfo>
+    <title>The flaka manual</title>
+    <date>February 2010</date>
+    <author>
+        <firstname>author</firstname>
+        <surname>wh@haefelinger.it</surname>
+    </author>
+    <authorinitials>AW</authorinitials>
+<revhistory><revision><revnumber>1.0</revnumber><date>February 2010</date><authorinitials>AW</authorinitials></revision></revhistory>
+</articleinfo>
+<section id="_introduction">
+<title>Introduction</title>
+<simpara>In the world of <ulink url="http://en.wikipedia.org/wiki/Java_(programming_language)">Java</ulink>, build scripts are traditionally written in <ulink url="http://en.wikipedia.org/wiki/Apache_Ant">Ant</ulink> and recently also in <ulink url="http://en.wikipedia.org/wiki/Apache_Maven">Maven</ulink>.</simpara>
+<simpara>When it comes to write a build script using Ant, it feels like using a Shell script in a rather awkward language (XML). Each Ant task solves a particular problem. This is similar to a Shell where you have this small masterpieces like <literal>mkdir</literal>, <literal>cp</literal>, <literal>tar</literal> plus some control structures to eventually being able to put the one big thing together.</simpara>
+<simpara>Writing a build script using a Shell is serious business. And so it is when using Ant. Ant does not provide you any abstraction how the project needs to be build. There is no underlying logic. In fact you, the author, need to know what to do. Step by step. What&#8217;s more, you have to use the unfriendly <ulink url="http://en.wikipedia.org/wiki/XML">XML</ulink> syntax and restrictions, a control structure is missing and you have to use immutable properties to communicate between tasks. Therefore, Ant scripts are large, notoriously difficult to understand, usually not portable (usuallyt they just work on the authors host) and each author uses a different set of targets and properties.</simpara>
+<simpara>Maven on the other side provides a high abstraction of building a project. Instead of describing how the project needs to be build, just describe project details and reports you like to have and Maven figures out what needs to be done. This is probably the reason why Maven got so much attention recently.</simpara>
+<simpara>Despite better knowledge I wrote that Maven figures out how a project needs to be build automatically. That’s actually not quite true. In fact, Maven only works fine when following conventions setup by the Maven team. When not “en route”, Maven gets difficult as well. But even when following conventions, the number of options in Maven are now endless and question the idear of a declarative approach. Have a look at Maven&#8217;s <ulink url="http://maven.apache.org/ref/current/maven-model/maven.html">POM</ulink> being a never ending series of XML tags]. At the end, I found myself using Ant again.</simpara>
+<simpara>Still I&#8217;m not happy with Ant.</simpara>
+<simpara>What I&#8217;m missing is the full power of a programming language. Yes, I want to have conditionals, loops and exception handling. I want to have variables which I can set or remove for pleasure. Such variables can reference any kind of object not only strings. And I need a nice expression language to retrieve and calculate in a simple yet elegant way. And there is no need to have each and everything expressed in XML. And then I want to have some kind of higher abstraction which does the right thing most of the time. This is what Flaka is about:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+Programming Tasks (conditional, loops, exception handling, ..)
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Embedded Expression Language (EL)
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Framework to do the <emphasis>right</emphasis> thing, yet allows to use standard Ant when necessary
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Dependency handling (legacy, to be replaced by Ivy)
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>This four pillars are Flakas approach to simplify the process of writing a build script with Ant. Notice that you are by no means forced to use all four pillars. You can for example just use the  programming tasks with or without elements of EL while you don&#8217;t need to get in touch with Flakas dependency handling instruments and neither with the framework.</simpara>
+<simpara>The folling example of a complete build script shall demonstrate the idear how a build script using Flaka looks like:</simpara>
+<screen>&lt;project xmlns:c="antlib:it.haefelinger.flaka"&gt;
+ &lt;c:build /&gt;
+ &lt;c:dependency alias="log4j" /&gt;
+&lt;/project&gt;</screen>
+<simpara>The author just lists the dependencies required to build the project. Flaka would do the rest by checking the underlying project structure:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+figure out what type of project should be build (jar, war, ear ..)
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+figure out where project&#8217;s source code, test cases etc are
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+handle dependencies
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+create targets like <literal>clean</literal>, <literal>compile</literal>, <literal>package</literal>, <literal>test</literal> automatically
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+generate Javadoc and other reports
+</simpara>
+</listitem>
+</itemizedlist>
+<section id="_current_status">
+<title>Current Status</title>
+<simpara>Not all targets have been reached in the current version of Flaka (Release candidate 1). Programming tasks and EL are working fine and can be used. The other two pillars work partially but generally not recommended (yet) to be used.</simpara>
+</section>
+<section id="_where_to_go_from_here">
+<title>Where to go from here?</title>
+<itemizedlist>
+<listitem>
+<simpara>
+<ulink url="http://code.google.com/p/flaka/downloads/list">Download</ulink> Flaka and read the <link linkend="installation">installation page</link>.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Have a look at the <link linkend="scripting">basic scripting elements</link> to get an overview of tasks, types and macros provided by Flaka. Have a closer look in the reference part of this manual for all the gory details of those tasks, types and macros.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Make sure to look into the chapter about the <link linkend="el">expression language</link>, it contains a lot of information on this enormous useful extension.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefelinger.it">feedback</ulink>.
+</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+<section id="_programming_constructs">
+<title>Programming Constructs</title>
+<simpara>This chapter provides an overview of programming constructs Flaka provides. This programming constructs are one of the Flaka&#8217;s pillars.</simpara>
+<section id="_strings">
+<title>Strings</title>
+<simpara>Like Ant, Flaka supports currently strings and, when applicable, pointer to resources (by referencing a symbol). Ant provides no functionality manipulate a string value and neither does Flaka. However, Flaka&#8217;s expression language contains string functions to create new strings.</simpara>
+</section>
+<section id="_symbols">
+<title>Symbols</title>
+<simpara>Symbols are names carrying associated data. The name of a symbol is a sequence of characters. The allowed characters are basically unlimited. It is recommended to stick with well known characters [a-zA-Z0-9._-]. Symbols can be used as variables, target, task, type or macro names.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+<literal>&lt;property name=sym value=expr /&gt;</literal> Use sym as variable: assign the value of <emphasis>expr</emphasis> to <emphasis>sym</emphasis>. <emphasis role="strong">A symbol associated with a string value is called a property</emphasis>. Notice that Ant and Flaka provide further ways of creating properties.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>&lt;macrodef name=sym&gt;</literal>  Use <emphasis>sym</emphasis> as macro name
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>&lt;target namesym&gt;</literal> Use <emphasis>sym</emphasis> as target name
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>&lt;taskdef name=sym&gt;</literal> Use <emphasis>sym</emphasis> as task name
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>&lt;typedef name=sym&gt;</literal> Use <emphasis>sym</emphasis> as type name
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>id=sym</literal> Use sym as reference: assign the evaluation of task (or macro) to <emphasis>id</emphasis>
+</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section id="_properties">
+<title>Properties</title>
+<simpara>To reference a property, enclose it&#8217;s symbol name with curly braces and prefix with the dollar character like:</simpara>
+<screen>&lt;property name="x" value="99" /&gt;
+&lt;echo&gt;
+  value of property x is ${x}    -- .. is 99
+&lt;/echo&gt;</screen>
+<simpara></simpara>
+<screen>&lt;property name="x" value="99" /&gt;
+&lt;property name="x" value="The quick brown fox .."/&gt;
+&lt;echo&gt;
+  value of property x is ${x}    -- .. is 99
+&lt;/echo&gt;</screen>
+<simpara>It can be done using Flaka&#8217;s task [Tasks#let] or [Task#unset] as the following snippet demonstrates.</simpara>
+<screen>&lt;property name="x" value="99" /&gt;
+&lt;c:let&gt;
+   x ::= "The quick brown fox .."
+&lt;/c:let&gt;
+&lt;echo&gt;
+  value of property x is ${x}    -- .. is The quick brown ..
+&lt;/echo&gt;</screen>
+<simpara>Properties have their own symbol table (as targets, tasks, macros and types have). This means for example that it is possible to have a property and a task <emphasis>sharing</emphasis> the same symbol name:</simpara>
+<screen>  &lt;property name="foobar" ../&gt;
+  &lt;macrodef name="foobar" ../&gt;  -- property foobar not harmed!</screen>
+</section>
+<section id="_sequencing">
+<title>Sequencing</title>
+<simpara>To evaluate a sequence of expressions (tasks or macros) where only one expression is allowed, use <ulink url="http://ant.apache.org/manual/CoreTasks/sequential.html">Ant&#8217;s sequential task</ulink>:</simpara>
+<screen> &lt;sequential&gt;
+   -- any sequence of tasks or macros
+ &lt;/sequential&gt;</screen>
+<simpara>Note that <emphasis>sequential</emphasis> returns nothing. Use properties to communicate with the caller if necessary.</simpara>
+</section>
+<section id="_conditionals">
+<title>Conditionals</title>
+<simpara>With standard Ant, task <ulink url="http://ant.apache.org/manual/CoreTasks/condition.html">condition</ulink> is used to set a property if a condition is given. Then a macro, task or target can be conditionally executed  by checking the existence or absence of that property (using standard attributes <emphasis>if</emphasis> or <emphasis>unless</emphasis>. Flaka defines a couple of control structures to handle conditionals in a simpler way.</simpara>
+</section>
+<section id="_when_and_unless">
+<title>when and unless</title>
+<simpara>Task [Tasks#when when] evaluates an [EL EL expr]. If the evaluation gives <literal>true</literal>, the sequence of tasks are executed. Nothing else happens in case of <literal>false</literal>.</simpara>
+<screen>&lt;c:when test=" expr "&gt;
+   -- executed if expr evaluates to true
+&lt;/c:when&gt;</screen>
+<simpara>The logical negation of <literal>when</literal> is task [Tasks#unless unless] which executes the sequence of tasks only in case the evaluation of <emphasis>expr</emphasis> returns <literal>false</literal>.</simpara>
+<screen> &lt;c:unless test=" expr "&gt;
+   -- executed if expr evaluates to false
+ &lt;/c:unless&gt;</screen>
+<simpara>The body of <literal>when</literal> and <literal>unset</literal> may contain any sequence of tasks or macros (or a combination of both).</simpara>
+</section>
+<section id="_choose">
+<title>choose</title>
+<simpara>Task [Tasks#choose choose] tests each <literal>when</literal> condition in turn until an <emphasis>expr</emphasis> evalutes to <literal>true</literal>. It executes then the body of that when condition. Subsequent <literal>whens</literal> are then not further tested (nor executed). If all expressions evaluate to <literal>false</literal>, an optional <emphasis>catch-all</emphasis> clause gets executed.</simpara>
+<screen> &lt;c:choose&gt;
+  &lt;when test="expr_1"&gt;
+    -- body_1
+  &lt;/when&gt;
+  ..
+  &lt;otherwise&gt; -- optional_
+    -- catch all body
+  &lt;/otherwise&gt;
+ &lt;c:/choose&gt;</screen>
+</section>
+<section id="_switch">
+<title>switch</title>
+<simpara>A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of <emphasis>when</emphasis> statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the [Tasks#switch switch] task:</simpara>
+<screen> &lt;c:switch value=" 'some string' "&gt;
+  &lt;matches re="regular expression or pattern" &gt;
+    -- body_1
+  &lt;/case&gt;
+  ..
+  &lt;otherwise&gt; -- optional
+    -- catch all body
+  &lt;/otherwise&gt;
+ &lt;/c:switch&gt;</screen>
+<simpara>Each case is tried in turn <emphasis>to match</emphasis> the string value (given as [EL] expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.</simpara>
+</section>
+<section id="_repetition">
+<title>Repetition</title>
+<simpara>Flaka has a looping statement. Use task [Tasks#for for] to iterate over a <emphasis>list</emphasis> of items. Use [Tasks#break break] and [Tasks#continue continue] to terminate the loop or to continue the loop with the next item.</simpara>
+<screen> &lt;c:for var=" name " in=" ''.tofile.list "&gt;
+    -- sequence of task or macros
+    -- used &lt;c:continue /&gt; to continue ; and
+    -- &lt;c:break /&gt; to stop looping
+    -- use #{name} to refer to current item (as shown below)
+    &lt;c:echo&gt;#{name}&lt;/c:echo&gt;
+ &lt;/c:for&gt;</screen>
+<simpara>Attribute <literal>in</literal> will be evaluated as [EL] expression. In the example above, that [EL] expression is <literal>''.tofile.list</literal> which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at [EL#String_Properties properties of a string] and [EL#File_Properties properties of a file].</simpara>
+</section>
+<section id="_exception_handling">
+<title>Exception Handling</title>
+<simpara>Flaka has been charged with exception handling tasks.</simpara>
+</section>
+<section id="_trycatch">
+<title>trycatch</title>
+<simpara>Flaka contains a task to handle exceptions thrown by tasks, [Tasks#trycatch trycatch]. This task implements the usual <emphasis>try/catch/finally</emphasis> trinity found in various programming languages (like in Java for example):</simpara>
+<screen> &lt;c:trycatch&gt;
+   &lt;try&gt;
+     -- sequence of task or macros
+   &lt;/try&gt;
+   &lt;catch&gt;
+     -- sequence of task or macros
+   &lt;/catch&gt;
+   &lt;finally&gt;
+     -- sequence of task or macros
+   &lt;/finally&gt;
+ &lt;/c:trycatch&gt;</screen>
+<simpara>Element <emphasis>try</emphasis>, <emphasis>catch</emphasis> and <emphasis>finally</emphasis> are all optional or can appear multiple times. If <emphasis>catch</emphasis> is used without any argument, then that catch clause will match any <emphasis role="strong">build exception</emphasis>. To differentiate between different exception types, <emphasis>catch</emphasis> can additionally be used with a <emphasis>type</emphasis> and <emphasis>match</emphasis> argument. The former can be used to select a particular exception type (like a 'java.lang.NullPointerException), the latter can be used to select an exception based on the message carried. Both arguments are interpreted as pattern expression. For example:</simpara>
+<screen> &lt;c:trycatch&gt;
+   &lt;try&gt;
+      ..
+      &lt;fail message="#PANIC!" unless="ant.file"/&gt;
+      ..
+   &lt;/try&gt;
+   &lt;catch match="*#PANIC!*"&gt;
+      &lt;echo&gt;Ant initialization problem!!&lt;/echo&gt;
+      &lt;fail/&gt;
+   &lt;catch type="java.lang.*"&gt;
+     -- handle Java runtime problems
+   &lt;/catch&gt;
+   &lt;catch&gt;
+     -- handle all other build exceptions
+   &lt;/catch&gt;
+  &lt;/c:trycatch&gt;</screen>
+<simpara>Property <emphasis>ant.file</emphasis> is a standard Ant property that should always be set. If not, there&#8217;s something seriously wrong and it does not make much sense to continue. Use attribute <emphasis>type</emphasis> to catch (runtime) exceptions thrown by the underlying implementation.</simpara>
+</section>
+<section id="_throw">
+<title>throw</title>
+<simpara>Task [Tasks#throw throw] throws a (build) exception.</simpara>
+<screen> &lt;c:throw [var="sym"] /&gt;</screen>
+<simpara>This task can also be used to rethrow an existing exception.</simpara>
+</section>
+<section id="_macros">
+<title>Macros</title>
+<simpara>The (almost) equivalent of a function is a macro in Ant and Flaka. For example:</simpara>
+<screen> &lt;macrodef name="hello"&gt;
+  &lt;attribute name="msg" /&gt;
+  &lt;element name="body" implicit="true" /&gt;
+  &lt;sequential&gt;
+   &lt;body /&gt;
+  &lt;/sequential&gt;
+ &lt;/macrodef&gt;</screen>
+<simpara>Once defined, simply use it:</simpara>
+<screen>&lt;hello msg="Hello, world!"&gt;
+ &lt;echo&gt;@{msg}&lt;/echo&gt;
+&lt;/hello&gt;</screen>
+<simpara>This macro evaluates into</simpara>
+<screen> &lt;echo&gt;Hello, world!&lt;/echo&gt;</screen>
+<simpara>which eventually prints the desired greeting.</simpara>
+<simpara>Macros are a standard feature of Ant.</simpara>
+</section>
+</section>
+<section id="el">
+<title>EL, The Expression Language</title>
+<simpara>The <ulink url="http://en.wikipedia.org/wiki/Unified_Expression_Language">Java Unified Expression Language</ulink> <ulink url="http://www.jcp.org/en/jsr/detail?id=245">(JSR-245)</ulink> is a special purpose programming (albeit not turing complete) language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.</simpara>
+<simpara>One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as <emphasis>string</emphasis> object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (sort for Unified Expression Language) this becomes an easy task:</simpara>
+<screen>&lt;c:echo&gt;
+  ;; basedir is a standard Ant property
+  basedir is ${basedir}
+
+  ;; report last modification time (as Date object)
+  was last modified at #{ '${basedir}'.tofile.mtime }
+
+  ;; dump the full name of this build file
+  ;; where 'ant.file' is a standard property
+  this is #{property['ant.file'] } reporting!
+&lt;/c:echo&gt;</screen>
+<simpara>Being executed, this snippet produces something like</simpara>
+<screen>[c:echo] basedir is /projects/flaka/test
+[c:echo]
+[c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
+[c:echo]
+[c:echo] this is /projects/flaka/test/tryme.xml reporting!</screen>
+<simpara>as output. Notice the usage of task [Tasks#echo echo]. When being tried with <ulink url="http://ant.apache.org/manual/CoreTasks/echo.html">Ant&#8217;s standard echo task</ulink>, a totally different output needs to be expected. Most important, [#EL_References EL references] <literal>#{..}</literal> are not resolved but rather print as given.</simpara>
+<section id="_another_el_example">
+<title>Another EL Example</title>
+<simpara>The code snippet following shows <emphasis>EL</emphasis> in action. The idea is to list all unreadable files in a certain directory (here the root folder). The snippet shows how EL is used in [#EL_Ready_Tasks Flaka various EL enabled tasks].</simpara>
+<screen>&lt;c:let&gt;
+  root = '/'.tofile
+  list = list()
+&lt;/c:let&gt;
+
+&lt;c:for var="file" in=" root.list "&gt;
+  &lt;c:when test=" file.isdir and not file.isread "&gt;
+    &lt;c:let&gt;
+      list = append(file,list)
+    &lt;/c:let&gt;
+  &lt;/c:when&gt;
+&lt;/c:for&gt;
+
+&lt;c:echo&gt;
+  ;; how many unreadable directories ??
+  There are #{size(list)} unreadable directories in #{root}.
+  And here they are #{list}.
+&lt;/c:echo&gt;</screen>
+<simpara>Executed on MacOS 10.5.6 (aka "Leopard"), this gives:</simpara>
+<screen>[c:echo] There are 2 unreadable directories in /.
+[c:echo] And here they are [/.Trashes, /.Spotlight-V100].</screen>
+</section>
+<section id="_disabling_el">
+<title>Disabling EL</title>
+<simpara>By default, <emphasis>EL</emphasis> is enabled. <emphasis>EL</emphasis> can be disabled by setting property <literal>ant.el</literal> to <literal>false</literal> (exactly as written). For example:</simpara>
+<screen>&lt;!-- globally disable EL ---&gt;
+&lt;property name="ant.el" value="false" /&gt;</screen>
+<simpara>If the property is not set, or set to a different value, then <emphasis>EL</emphasis> is enabled.</simpara>
+</section>
+<section id="_el_ready_tasks">
+<title>EL Ready Tasks</title>
+<simpara><emphasis>EL</emphasis> expressions can only be used in tasks which are <emphasis>EL</emphasis> ready. This are:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+[Tasks#let let]
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+[Tasks#properties properties]
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+[Tasks#when when], [Tasks#unless unless]
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+[Tasks#for for]
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+[Tasks#echo echo]
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Further tasks to follow. See also how to enable EL on a [#Globally_Enabling_EL global level].</simpara>
+</section>
+<section id="_globally_enabling_el">
+<title>Globally Enabling EL</title>
+<simpara>To enable handling of EL references on a global level - i.e. on all tasks, types or  macros and independent of the vendor - use task [Tasks#install-reference-handler install-reference-handler].</simpara>
+</section>
+<section id="_el_references">
+<title>EL References</title>
+<simpara>Those <emphasis>not</emphasis> familiar with the specification of <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">EL</ulink>, <ulink url="http://en.wikipedia.org/wiki/JavaServer_Pages">JSP</ulink> or <ulink url="http://en.wikipedia.org/wiki/JavaServer_Faces">JSF</ulink> may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed <footnote><simpara>EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content</simpara></footnote>.</simpara>
+<simpara>For those familiar, the <emphasis>term EL expression</emphasis> is used in a slightly different way in this documentation than in the specification. According to the specification, <literal>#{..}</literal> is an EL expression.</simpara>
+<simpara>Not so in this documentation. Here only the inner part, denoted by <literal>..</literal> is a <emphasis>EL expression</emphasis> while <literal>#{ ..}</literal> is considered a <emphasis>reference to an EL expression</emphasis>. A reference to an expression is used in contexts which are partially evaluated. Take task [Tasks#echo echo] as example. Clearly, when writing</simpara>
+<screen>&lt;c:echo&gt;
+ I said 'Hello world'!
+&lt;/c:echo&gt;</screen>
+<simpara>we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what <literal>#{..}</literal> is good for:</simpara>
+<screen>&lt;c:echo&gt;
+ I said '#{ what }'!
+&lt;/c:echo&gt;</screen>
+<simpara>In other contexts, like in <literal>&lt;c:when test=" condition " /&gt;</literal>, a EL expression is expected anyway and it does not make the slightest sense to require the expression to be referenced. As an example, assume that we want to check whether a property named <emphasis>foobar</emphasis> exists. Instead of writing</simpara>
+<screen>&lt;c:when test=" #{has.property['foobar']} " /&gt;   -- don't!</screen>
+<simpara>as seen in popular JSP tag libraries, just write</simpara>
+<screen>&lt;c:when test=" has.property['foobar'] " /&gt;   -- yes!!!</screen>
+<simpara>And forget about that unnecessary clutter.</simpara>
+<simpara>Notice however, that in all contexts where a expression is expected, a expression reference can be used. This allows for advanced meta programming like shown in the following example:</simpara>
+<screen>&lt;c:when test=" has.property['#{propertyname}'] " /&gt;   -- sic!</screen>
+</section>
+<section id="_handling_of_literal_literal">
+<title>Handling of <literal>${..}</literal></title>
+<simpara><emphasis>EL</emphasis> defines two types of references:
+ * <emphasis role="strong">deferred</emphasis>, indicated by <literal>#{..}</literal> ; and
+ * <emphasis role="strong">dynamic</emphasis>, indicated by <literal>${..}</literal></simpara>
+<simpara>Dynamic references <literal>${..}</literal> are handled by Ant to resolve properties. There are two execptions to this however. Ant will leave a dynamic reference as is if the reference value does not denote a (existing) property. Secondly, Ant allows to escape a reference by by doubling character <literal>$</literal> as in <literal>$${a}</literal>. In any case, <literal>${..}</literal> does not denote a legal EL reference and will be left as is (notice that you can install a property handler to get rif of unresolved <literal>${..}</literal> property references.</simpara>
+</section>
+<section id="_handling_of_literal_literal_2">
+<title>Handling of <literal>#{..}</literal></title>
+<simpara>Deferred references <literal>#{..}</literal> are evaluated according to regular EL rules. Each reference is evaluated independently. Thus</simpara>
+<screen> The #{ 'Good' }, the Bad and the #{ 'Ug' 'ly' }, a well known #{ 'movie' }.</screen>
+<simpara>Would print</simpara>
+<screen> The Good, the Bad and the , a well known movie.</screen>
+<simpara>cause the second reference is illegal. Notice however that all valid references are evaluated.</simpara>
+</section>
+<section id="_nested_references">
+<title>Nested References</title>
+<simpara>Nested references are not supported. The following reference is therefore illegal</simpara>
+<screen> #{ item[ #{index} ] }</screen>
+</section>
+<section id="_the_great_escape">
+<title>The Great Escape</title>
+<simpara>This section is about how to stop a EL reference from being evaluated and treated as text instead:
+ # Use character backslash like in <literal>\#{abc}</literal> ; or use this rather awkward
+ # <literal>#{'#{'}abc}</literal> construct.
+Both variants have the same result, the string <literal>#{abc}</literal>.</simpara>
+</section>
+<section id="_gory_el_details">
+<title>Gory EL Details</title>
+<simpara>The gory details of <emphasis>EL</emphasis> are laid out in the <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">the official JSR 245 specification</ulink> and are not repeated here. In short however, <emphasis>EL</emphasis> let&#8217;s you formulate <ulink url="http://en.wikipedia.org/wiki/Expression_(programming)">programming expressions</ulink> like</simpara>
+<screen>  7 * (5.0+x) &gt;= 0        ;; 1
+  a and not (b || false)  ;; 2
+  empty x ? 'foo' : x[0]  ;; 3</screen>
+<simpara>The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable <literal>x</literal> and similar does (2) on <literal>a</literal> and <literal>b</literal>. Line (3) shows the usage of two buildin operators, [#Operators see below for details].</simpara>
+<simpara>The rest of this chapter introduces relevant details of EL in order to use it within Flaka.</simpara>
+</section>
+<section id="_data_types">
+<title>Data Types</title>
+<simpara><emphasis>EL</emphasis>'s data types are integral and floating point numbers, strings, boolean and type <literal>null</literal>. Example data values of each type, except type <literal>null</literal>, are given above (1-3). Type <literal>null</literal> has once instance value also named <literal>null</literal>. While <literal>null</literal> can&#8217;t be used to formulate an expression, it is important to understand that the result of evaluating an expression can be <literal>null</literal>. For example, the evaluation of a variable named <literal>x</literal> is the data object associated with that name. If no data is associcated however (i.e. if <literal>x</literal> is undefined), then <literal>x</literal> evaluates to <literal>null</literal>.</simpara>
+</section>
+<section id="_strings_2">
+<title>Strings</title>
+<simpara>A EL string starts and ends with the same quotation character. Possible quotation characters are single the quote <literal>'</literal> and double quote <literal>"</literal> character. If string uses <literal>'</literal> as quotation character, then there is no need to <emphasis>escape</emphasis> quoation character <literal>"</literal> within that string. Thus the following strings are valid:</simpara>
+<screen> "a'b"   --&gt; a'b
+ 'a"b'   --&gt; a"b</screen>
+<simpara>If however the string&#8217;s quotation character is to be used within the string, then the quoation character needs to be escaped from it&#8217;s usual meaning. This is done by prepending character backslash:</simpara>
+<screen> "a\"b"  --&gt; a"b
+ 'a\'b'  --&gt; a'b</screen>
+<simpara>To escape the backslash character from it&#8217;s usual meaning (escaping that is), escape the backslash character with a backslash:</simpara>
+<screen> "a\\"   --&gt; a\
+ 'a\\'   --&gt; a\</screen>
+<simpara>Other characters than the quotation and backslash character can&#8217;t be escaped. Thus</simpara>
+<screen> "a\bc"  --&gt; a\bc, NOT abc</screen>
+<simpara>However, a escaped backslash evaluates always into a single backslash character:</simpara>
+<screen> "a\\b"  --&gt; a\b,  NOT a\\b</screen>
+<simpara>This rules allow for an easy handling of strings. Just take an quoation character. Then, escape any occurences of the quoation and escape character within the string to preserve the original input string.</simpara>
+<simpara>Here are same further examples strings:</simpara>
+<screen>"abc"        -- abc
+'abc'        -- abc
+"a'c'        -- illegal
+"a'c"        -- a'c
+'a\'c'       -- a'c
+'a\bc'       -- a\bc
+'a\\bc'      -- a\\bc
+'a\"bc'      -- a\"bc
+'a\\"bc'     -- a\\"bc
+'ab\'        -- illegal
+'ab\\'       -- ab\</screen>
+</section>
+<section id="_operators">
+<title>Operators</title>
+<simpara>Four <emphasis>operators</emphasis> are defined in <emphasis>EL</emphasis>:
+ # <literal>empty</literal> checks whether a variable is empty or not and returns either <literal>true</literal> or <literal>false</literal>. It is important to understand that <literal>null</literal> is considered empty.
+ #  condition operator <literal>c ? a : b</literal> evaluates <literal>c</literal> in a boolean context and returns the evaluation of expression <literal>a</literal> if <literal>c</literal> evaluates to <literal>true</literal>; otherwise <literal>eval(b)</literal> will be the result of this operator.
+ # <literal>.</literal> and ;
+ # <literal>[]</literal> are property operators described in [#Properties Properties] below.</simpara>
+</section>
+<section id="_properties_2">
+<title>Properties</title>
+<simpara>Every data object in <emphasis>EL</emphasis> may have properties associated. Which properties are available has not been standardized in the <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">specification</ulink>. In fact, this depends heavily on the underlying implementation and usage domain. What <emphasis>EL</emphasis> specifies however, is how to query a property:</simpara>
+<screen>a.b.c</screen>
+<simpara>This expression can be translated into pseudo code as</simpara>
+<screen> (property 'c' (property 'b' (eval a)))</screen>
+<simpara>which means that first variable <literal>a</literal> is evaluted, then property <literal>b</literal> is looked up on the evaluation result (giving a new evaluation result) and finally <literal>c</literal> is looked up giving the final result.</simpara>
+<simpara>Perhaps the most important point to notice is looking up a property on <literal>null</literal> is not an error but perfectly legal. No exception gets raised and no warning message generated. In fact, the result of such a operation is just <literal>null</literal> again.</simpara>
+<simpara>From a practial point a question might be asked how to query a property which happens to contain the dot (<literal>.</literal>) character. In <literal>a.b.c</literal> example shown above, how would we lookup property <literal>b.c</literal> on <literal>a</literal>? Operator <literal>[]</literal> comes to rescue:</simpara>
+<screen> a['b']        =&gt; a.b
+ (a['b'])['c'] =&gt; a.b.c
+ a['b']['c']   =&gt; a.b.c
+ a[b]          =&gt; can't be expressed using '.'
+ a[b.c]        =&gt; neither this ..
+ a['b.c']      =&gt; query property 'b.c' on a</screen>
+<simpara>So far, properties don&#8217;t seem of any good use. The picture changes perhaps with this example:</simpara>
+<screen> 'abc'.toupper           =&gt; 'ABC'
+ 'abc'.length*4          =&gt; 12
+ 'abc'['tofile'].mkdir   =&gt; true/false</screen>
+<simpara>The last example demonstrates that there might also be <ulink url="http://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effects</ulink> querying a property. In the example above, which is specific for Flaka, a directory <literal>abc</literal> gets created and the whole expression evaluates to <literal>true</literal> if the directory could get created and <literal>false</literal> otherwise.</simpara>
+<simpara>See further down which properties are available on various data types.</simpara>
+</section>
+<section id="_implicit_objects">
+<title>Implicit Objects</title>
+<simpara>Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with <emphasis>something</emphasis>, [EL] allows the implementation to provide <emphasis>implicit</emphasis> objects and [#Functions top level functions (see below)].</simpara>
+<simpara>The following implicit objects are defined by Flaka:
+|| Implicit Object || Type || Description ||
+|| <emphasis>name</emphasis>          ||      || If <emphasis>name</emphasis> is not a predefined name as listed in the rest of this table, then <emphasis>name</emphasis> will be the same as <literal>var[name]</literal>, i.e. <emphasis>name</emphasis> will resolve to the object associated with variable <emphasis>name</emphasis>. ||
+|| project         || ||  Ant&#8217;s underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. ||
+|| property || || Use this object to query project properties. ||
+|| var || || A object containing all project references.  ||
+|| reference || || Same as <literal>var</literal> ||
+|| target|| || Use this object to query a target ||
+|| taskdef|| || Query taskdefs ||
+|| macrodefs|| || Macros ||
+|| tasks|| ||  Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. ||
+|| filter|| ||  A object containing all filters defined in this project. ||
+|| e || double || The mathematical <ulink url="http://en.wikipedia.org/wiki/E_(mathematical_constant)">constant e</ulink>, also known as <ulink url="http://en.wikipedia.org/wiki/Euler">Euler</ulink>'s number. ||
+|| pi || double || The  mathematical <ulink url="http://en.wikipedia.org/wiki/P">constant pi</ulink> ||</simpara>
+<simpara>An example for an EL expression fetching property <literal>foo</literal> is:</simpara>
+<screen>property.foo
+project.properties.foo</screen>
+<simpara>Similar, a variable named <literal>foo</literal> is fetched like</simpara>
+<screen>foo                     -- (1)
+var.foo                 -- (2)
+reference.foo           -- (3)
+project.references.foo  -- (4)</screen>
+</section>
+<section id="_functions">
+<title>Functions</title>
+<simpara><emphasis>EL</emphasis> also allows the implementation to provide top level functions. The following sections describe functions provided by Flaka. Some functions take an arbitrary number of arguments (inclusive no argument at all). This is denoted by two dots (<literal>..</literal>). An example of such a function is <literal>list(object..)</literal> which takes an arbitrary number of object to create a list.</simpara>
+<simpara>|| Function || Type || Meaning ||
+|| <literal>typeof(object)</literal> || string || The type of <literal>object</literal>, <literal>int</literal>, <literal>string</literal>, <literal>file</literal> etc ||
+|| <literal>size(object)</literal>   || int  || Returns the object&#8217;s size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying <literal>size()</literal> method or <literal>size</literal> or <literal>length</literal> attribute of the object in question. ||
+|| <literal>sizeof(object)</literal> || int  || same as <literal>size(object)</literal>, see above ||
+|| <literal>null(object)</literal>    || bool || Evaluates to <literal>true</literal> if object is the <literal>nil</literal> entity; otherwise <literal>false</literal>. This function can be used to check whether a reference (var) or property exists. Operator <literal>empty</literal> can&#8217;t be used for this task, cause <literal>empty</literal> returns <literal>true</literal> if either not existing or if literatly <emphasis>empty</emphasis> (for example the empty string). ||
+|| <literal>file(object)</literal>   || File || Creates and returns a file object out of <literal>object</literal>. If <literal>object</literal> is already a file, the object is simply returned. Otherwise, the object is streamed into a string and that string is taken as the file&#8217;s path name. ||
+|| concat(object..) || string || Creates a string by concatenating all stringized objects. If no object is provided, the empty string is returned. ||
+|| list(object..) || list || Returns a list where the list&#8217;s elements consists of the objects provided. If no objects are provided, the empty list is returned. ||
+|| append(object..) || list || This function is similar to <literal>list</literal>. It takes the objects in order and creates a list elements out of them. If a object is a list, then elements of that list are inserted instead of the list object itself. For example <literal>append('a,list('b'),'c')</literal> evaluates to list <literal>('a','b','c')</literal> ||</simpara>
+<simpara>Some mathematical functions are defined as well:</simpara>
+<simpara>|| sin(double) || double || The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">sine</ulink> function ||
+|| cos(double) || double || The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">cosine</ulink> function ||
+|| tan(double) || double || The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">tangent</ulink> function ||
+|| exp(double) || double || The mathematical exponential function, <literal>e</literal> raised to the power of the given argument ||
+|| log(double) || double || The mathematical logarithm function of base <literal>e</literal> ||
+|| pow(double) || double || Returns the value of the first argument raised to the power of the second argument. ||
+|| sqrt(double) || double || Returns the correctly rounded positive square root of a double value. ||
+|| abs(double) || double || Returns the absolute value of a double value. ||
+|| min(double,double) || double || Returns the smaller of two double values. ||
+|| max(double,double) || double || Returns the larget of two double values. ||
+|| rand()      || double || Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. ||</simpara>
+</section>
+<section id="_available_properties">
+<title>Available Properties</title>
+<simpara>In general properties are mapped as <emphasis>attribute</emphasis> on the underlying data object. In Java, every <emphasis>getX</emphasis> method taking no arguments identifies property <emphasis>x</emphasis>. As an example, assume that we have</simpara>
+<screen>public class Foo {
+ public .. getBar() { .. }
+}</screen>
+<simpara>then an data object of type <emphasis>Foo</emphasis> will have property <emphasis>bar</emphasis> and thus the following expression <literal>x.bar</literal> would eventually call <literal>Foo.getBar()</literal> assuming that <literal>x</literal> evaluates to an object of type <literal>Foo</literal>. Such properties are the <emphasis role="strong">natural</emphasis> properties of a type.</simpara>
+</section>
+<section id="_primitve_types">
+<title>Primitve Types</title>
+<simpara>Primite data types (int, double, bool, null) have no properties.</simpara>
+</section>
+<section id="_list_and_arrays">
+<title>List and Arrays</title>
+<simpara>Besides their <emphasis>natural</emphasis> properties (see discussion above) are <emphasis>index</emphasis> properties available:</simpara>
+<screen>list('a','b')[1]  =&gt; 'b'</screen>
+<simpara>Negative indexes are currently not supported. If an index is specfies an not existing element, <literal>null</literal> is returned.</simpara>
+</section>
+<section id="_string_properties">
+<title>String Properties</title>
+<simpara>Besides <emphasis>natural</emphasis> properties (see discussion above) are the following properties supported:</simpara>
+<simpara>|| Property || Type || Description ||
+|| length   || int  || number of characters in this string ||
+|| size     || int  || same as property <literal>length</literal> ||
+|| tolower  || string || return this string in lowercase characters only ||
+|| toupper  || string || return this string in uppercase characters only ||
+|| trim     || string || remove leading and trailing whitespace characters ||
+|| tofile   || file  || create a file based on this string; the so created will be relative to the current build file&#8217;s base folder if the string&#8217;s value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project&#8217;s base folder (i.e. the folder containing the build script currently executed). Notice that <literal>.</literal> and <literal>..</literal> denote absolute paths, not relative ones. ||</simpara>
+</section>
+<section id="_file_properties">
+<title>File Properties</title>
+<simpara>Files and folders is Ant&#8217;s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to <emphasis>get</emphasis> a file object in the first place. This is most easily done by using string property <literal>tofile</literal>:</simpara>
+<screen>  'myfolder'.tofile.isdir</screen>
+<simpara>In this example of an EL expression, string <literal>myfolder</literal> is converted in a File object using property <literal>tofile</literal>. In addition, the so created object is checked whether it is a folder or not.</simpara>
+<simpara>The following <emphasis>properties</emphasis> are defined on File objects:
+|| Property || Type || Description ||
+|| <literal>parent</literal> || File || parent of file or folder as file object ||
+|| <literal>toabs</literal>|| File || file or folder as absolute file object ||
+|| <literal>exists</literal> || bool || check whether file or folder exists ||
+|| <literal>isfile</literal> || bool || check whether a file ||
+|| <literal>isdir</literal>  || bool || check whether a folder (directory) ||
+|| <literal>ishidden</literal> || bool || check whether a hidden file or folder ||
+|| <literal>isread</literal> || bool || check whether a file or folder is readable ||
+|| <literal>iswrite</literal> || bool || check whether a file or folder is writable ||
+|| <literal>size</literal>   || int  || number of bytes in a (existing) file; 0 otherwise||
+|| <literal>length</literal> || int  || same as <literal>size</literal> ||
+|| <literal>mtime</literal>  || Date || last modification date  ||
+|| <literal>list</literal>   || File[] || array of files in folder ; otherwise <literal>null</literal> ||
+|| <literal>tostr</literal> || String || file name as string object ||
+|| <literal>touri</literal>    || URI  || file as URI object ||
+|| <literal>tourl</literal>    || URL  || file as URL object ||
+|| <literal>delete</literal> || bool || deletes the file or folder (true); false otherwise ||
+|| <literal>mkdir</literal>  || bool || creates the folder (and intermediate) folders (true); false otherwise ||</simpara>
+</section>
+<section id="_matcher_properties">
+<title>Matcher Properties</title>
+<simpara>A <emphasis>matcher object</emphasis> is created by task [Tasks#switch switch] if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).</simpara>
+<simpara>|| Property || Type     || Description ||
+|| <literal>start</literal>   || int     || The position within the input where the match starts. ||
+|| <literal>s</literal>       || int     || Same as <literal>start</literal> ||
+|| <literal>end</literal>     || int     || The position within the input where the match ends (the character at <literal>end</literal> is the last matching character)  ||
+|| <literal>e</literal>       || int     || Same as <literal>end</literal>   ||
+|| <literal>groups</literal>  || int     || The number of capturing groups in the (regular) expression. ||
+|| <literal>size</literal>    || int     || Same as <literal>groups</literal> ||
+|| <literal>length</literal>  || int     || Same as <literal>groups</literal> ||
+|| <literal>n</literal>       || int     || Same as <literal>groups</literal> ||
+|| <literal>pattern</literal> || string  || The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions. ||
+|| <literal>p</literal>       || string  || Same as <literal>pattern</literal> ||
+|| <emphasis>i</emphasis>       || matcher || The matcher object for <emphasis>i</emphasis>'th capturing group. See task [Tasks#switch switch] for examples. ||</simpara>
+</section>
+<section id="_evaluating_in_a_boolean_context">
+<title>Evaluating in a boolean context</title>
+<simpara>When evaluation a expr in a string context, a string representation of the final object is created. Similar, when a evaluation in a boolean context takes place, a conversion into a boolean value of the evaluated object takes place. The following table describes this boolean conversion:</simpara>
+<simpara>|| evaluated object type || <literal>true</literal> || <literal>false</literal> ||
+|| file                  || if the file exists || <literal>false</literal> otherwise ||
+|| string                || if string is empty || <literal>false</literal> otherwise ||
+|| null                  || never  || always ||
+|| boolean               || if true || otherwise ||
+|| <emphasis>other</emphasis>               || always  || never ||</simpara>
+</section>
+</section>
+<section id="_part_ii">
+<title>Part II</title>
+<simpara>here I&#8217;m listing all task, types and macros.</simpara>
+</section>
+<section id="_let">
+<title>let</title>
+<simpara>Then meaning of <literal>null</literal> and <emphasis>void</emphasis></simpara>
+<simpara>|| Assignment || Right Side || Result ||
+|| <literal>=</literal>        || <literal>null</literal>     || If the right side evaluates to <literal>null</literal>, then the variable will be removed if existing. ||
+|| <literal>=</literal>        || <emphasis>void</emphasis>     || The evaluation of an empty expression is <literal>null</literal>. See above how <literal>null</literal> is handled` ||
+|| <literal>:=</literal>       || <literal>null</literal>     || Cause a <emphasis>read only</emphasis> property can&#8217;t be removed, nothing will happen with this assignment. The property will also not be created. ||
+|| <literal>:=</literal>       || <emphasis>void</emphasis>     || Same as <literal>:= null</literal> ||
+|| <literal>::=</literal>      || <literal>null</literal>     || Removes the property denoted by the left side ||
+|| <literal>::=</literal>      || <emphasis>void</emphasis>     || Same as <literal>::= null</literal> ||</simpara>
+<simpara>To illustrate, here are example behaviours:</simpara>
+<screen>&lt;c:let&gt;
+ x = 3 * 5
+ ;; remove x
+ x =
+ ;; remove x
+ x = null
+
+ ;; let property p to '3*5' (a string)
+ p := 3 * 5
+ ;; ignored
+ p := null
+ ;; remove property 'p'
+ p ::= null
+ ;; .. same as
+ p ::=
+&lt;/c:let&gt;</screen>
+<section id="_further_links">
+<title>Further Links</title>
+<itemizedlist>
+<listitem>
+<simpara>
+<ulink url="http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/MSet.html">Javadoc</ulink>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/MSet.java">Source</ulink>
+</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+<section id="_list">
+<title>list</title>
+<simpara>A elementary task to create a variable containing a list of objects.</simpara>
+<screen>&lt;c:list var="mylist"&gt;
+  ;; each line is a EL expression
+  3 * 5
+  ;; each line defines a list element
+  list('a',1,''.tofile)
+&lt;/c:list&gt;</screen>
+<section id="_attributes">
+<title>Attributes</title>
+<simpara>|| Attribute || Type   || Default || [EL] || Meaning ||
+|| var       || string ||         ||  r   || The name of the variabled to be assigned.  ||
+|| comment   || string || <literal>,</literal>     ||      || The comment character                      ||
+|| debug     || bool   || false   ||      || Turn on extra debug information.           ||
+|| el        || bool   || true    ||   no || Enable evaluation as EL expression         ||</simpara>
+</section>
+<section id="_elements">
+<title>Elements</title>
+<simpara>This task may contain a implicit text element.</simpara>
+</section>
+<section id="_behaviour">
+<title>Behaviour</title>
+<simpara>This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable&#8217;s name is given by attribute <literal>var</literal>. This attribute may contain references to EL expressions.</simpara>
+<simpara>If given text element is parsed on a line by line basis, honouring comments and continuation lines. Each line will be evaluated as EL expression after having resolved <literal>${..}</literal> and <literal>#{..}</literal> references. A illegal EL expression will be discarded while the evaluation of lines continues. Turn on extra debug information in case of problems.</simpara>
+<simpara>The evaluation of a valid EL expression results in an object. Each such object will be added to a list in the order imposed by the lines.</simpara>
+<simpara>A single line can&#8217;t have more than one EL expressions. Thus the following example is invalid:</simpara>
+<screen>&lt;c:list var="mylist"&gt;
+ 3 * 5  'hello, world'
+&lt;/c:list&gt;</screen>
+<simpara>Use attribute <literal>el</literal> to disable the interpretation of a line as [EL] expression:</simpara>
+<screen>&lt;c:list var="mystrings" el="false"&gt;
+ 3 * 5
+ hello, #{ 'world' }
+&lt;/c:list&gt;</screen>
+<simpara>This creates a list variable <literal>mystrings</literal> containing two elements. The first element will be string <literal>3 * 5</literal> and the second element will be string <literal>hello, world</literal>. Notice that <literal>el="false"</literal> does not prohibit you from using [EL#EL_References EL references].</simpara>
+</section>
+<section id="_further_links_2">
+<title>Further Links</title>
+<itemizedlist>
+<listitem>
+<simpara>
+<ulink url="http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/List.html">Javadoc</ulink>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/List.java">Source</ulink>
+
+
+</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+</article>

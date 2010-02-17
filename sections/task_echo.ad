@@ -1,0 +1,207 @@
+== echo ==
+This task is an extension of Ant's standard `echo` task. The following is a typical example to print the famous `Hello, World` message.
+
+-------------------------------------
+
+<c:echo shift=" 3*." >
+  ; ignore \
+  me (still a comment here) 
+  Hello\
+      >,
+>>World.
+</c:echo>
+
+-------------------------------------
+
+
+This would output
+
+
+-------------------------------------
+
+[c:echo] Hello...,
+[c:echo] ......World.
+
+-------------------------------------
+
+
+Notice the support of comment and continuation lines. Furthermore, not more than two lines are printed - the _empty_ line after the opening `<c:echo>` tag is ignored. Leading whitespace is ignored. Finally, each character `>` is replaced by `...` which is `3` _times_ `.` (3*.).
+
+=== Attributes ===
+
+This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
+
+|| Attribute || Type    || Default || Description ||
+|| `debug`   || boolean || false   || Enables additional debug output for this particular task. As usual, such additional output will be written to stderr regardless of whether debug has been globally enabled on Ant or not. The standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. ||
+|| `comment` || string  || `;`      || Allows for comments. The attribute's (trimmed) value is used to construct a regular expression like `^\s*{<escaped(comment)>}`. Every line matching this regular expression will not show up in the output. Notice the usage of `escaped(comment)`. This means that `comment` is interpreted as is and not a regular expression. Thus something like `[;#]` does _not_ mean either `;` or `#`. Instead it means that a line starting with `[;#]` (and possible leading whitespace) is ignored from output. By default, line starting with character `;` (like in Lisp) are ignored.||
+|| `shift`   || string  || ``       || Allows to prefix each line with `shift` characters. See also Behaviour below. ||
+|| `ic`      || string  || `>`       || Allows to set the indentation character (see explanation below). ||
+
+=== Elements ===
+
+This task accepts implicit text. Text may contain Ant property references `${..}` or [EL Flaka EL] references `#{..}`.
+
+
+=== Behaviour ===
+
+*Continuation Lines* are physical lines ending with the character sequence `\$` where `$` shall denote here the end-of-line character sequence (Unix: `LF`, Windows: `CR LF`). Such a line is continued, i.e. the line will be accumulated with the next line (which could also be a continuation line). 
+
+A (accumulated) line starting with the characters given in attribute `comment` (perhaps lead by whitespace characters) is a *comment line*. Such lines are removed from output. Notice that continuation lines are supported on comment lines as well.
+
+A rather anoying feature of Ant's standard task is to print the echo's text including _all_ whitespace and line ending characters. This makes pretty formatting rather cruel and worse, subject to the formatting of your favorite XML editor. To allow a *decent formatting*, a couple of features have been implemented which are presented now. Let's start with simple message:
+
+
+-------------------------------------
+
+<echo>
+foobar
+</echo>
+
+-------------------------------------
+
+
+Notice the usage of the standard Ant `echo` task. This would give:
+
+-------------------------------------
+
+[echo]
+[echo] foobar
+
+-------------------------------------
+
+Altough the author's intention was to print a single line, standard Ant will actually print _two_ lines. In order to print a single line, one needs to write something like
+
+-------------------------------------
+
+<echo>foobar
+</echo> 
+
+-------------------------------------
+
+Here we have a situation like in real life's politics. There are thousand opinions how to do it proper and finally we end up in a mess. For example, take your favorite editor and format the above and you will end up in something like
+
+-------------------------------------
+
+<echo>
+..foobar
+</echo>
+
+-------------------------------------
+
+To better illustrate the point, I have used `.` to indicate a whitespace character (typically either the blank or tab character). Running the _formatted_ build script again, we end up in
+
+-------------------------------------
+
+[echo]
+[echo] ..foobar
+
+-------------------------------------
+
+As already mentioned, this is like politics because now we get something we definitly didn't want to have in the first place: _Two_ lines are printed and additionally those whitespace characters are popping up. Oh no ..
+
+Let's try and see Flaka's `echo` behaviour:
+
+-------------------------------------
+
+<c:echo>
+..foobar
+</c:echo>
+
+-------------------------------------
+
+This ouputs 
+
+-------------------------------------
+
+[c:echo] foobar
+
+-------------------------------------
+
+and this is exactly what we want to have. Only a single line is printend and now matter how much whitespace there is in front of `foobar`, it's all discarded.
+
+Another example where, again, character `.` indicates a whitespace character:
+
+-------------------------------------
+
+<c:echo>
+..hello,
+....world
+</c:echo>
+
+-------------------------------------
+
+The author's intention is to have `world` intended by two characters. Again, the overall problem is that formatting this snippet with some (XML) editor will very likely remove this extra indentation level. Let's see how Flaka behaves:
+
+-------------------------------------
+
+[c:echo] hello
+[c:echo] world
+
+-------------------------------------
+
+All _extra_ whitespace has been removed! Ok, that's not what we wanted. However, there is something called a `indentation character`, `ic` for short:
+
+-------------------------------------
+
+<c:echo ic=">">
+..hello
+..>>world
+</c:echo>
+
+-------------------------------------
+
+The overall idea is simply to treat the indendentation characgter as whitespace character if appearing before the first non-whitespace character in each line. Then all leading whitespace would be discarded and all `indentation` characters would be printed as whitespace. This gives:
+
+-------------------------------------
+
+[c:echo] hello
+[c:echo] ..world
+
+-------------------------------------
+
+Excellent, now our output is idempotent regarding XML formatting.
+
+As a last wish, how about shifting the whole output by `N` whitespace characters? This is achieved by setting attribute `shift` to the desired level. For example:
+
+-------------------------------------
+
+<c:echo shift="2">
+..hello
+..>>world
+</c:echo>
+
+-------------------------------------
+
+Notice that attribute `ic` is not used here cause `>` is the default ic character. This gives
+
+-------------------------------------
+
+[c:echo] ..hello
+[c:echo] ....World
+
+-------------------------------------
+
+
+If you want to use a different prefix character, use `amount*character` as argument for attribute `shift` as shown below:
+
+-------------------------------------
+
+<c:echo shift="3*%">
+        >
+</c:echo>
+
+-------------------------------------
+
+This gives:
+
+-------------------------------------
+
+[c:echo] %%%
+
+-------------------------------------
+
+
+=== Further Links ===
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Echo.html[Javadoc]
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Echo.java[Source]
+

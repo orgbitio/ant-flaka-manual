@@ -2,7 +2,7 @@
 author wh@haefelinger.it
 1.0, February 2010
 
-== About Flaka ==
+== Introduction ==
 
 In the world of http://en.wikipedia.org/wiki/Java_(programming_language)[Java], build scripts are traditionally written in http://en.wikipedia.org/wiki/Apache_Ant[Ant] and recently also in http://en.wikipedia.org/wiki/Apache_Maven[Maven].
 
@@ -12,149 +12,52 @@ Writing a build script using a Shell is serious business. And so it is when usin
 
 Maven on the other side provides a high abstraction of building a project. Instead of describing how the project needs to be build, just describe project details and reports you like to have and Maven figures out what needs to be done. This is probably the reason why Maven got so much attention recently.
 
-Despite better knowledge I wrote that Maven figures out how a project needs to be build automatically. That’s actually not quite true. In fact, Maven only works fine when following conventions setup by the Maven team. When not “en route”, Maven gets difficult as well. But even when following conventions, the possibilities in Maven are now endless and the http://maven.apache.org/ref/current/maven-model/maven.html[POM seems to be a endless stream of XML tags]. At the end, I found myself using Ant again.
+Despite better knowledge I wrote that Maven figures out how a project needs to be build automatically. That’s actually not quite true. In fact, Maven only works fine when following conventions setup by the Maven team. When not “en route”, Maven gets difficult as well. But even when following conventions, the number of options in Maven are now endless and question the idear of a declarative approach. Have a look at Maven's http://maven.apache.org/ref/current/maven-model/maven.html[POM] being a never ending series of XML tags]. At the end, I found myself using Ant again.
 
 Still I'm not happy with Ant. 
 
-What I'm missing is the full power of a programming language. Yes, I want to have conditionals, loops and exception handling. I want to have typeless variables which I can set or remove for pleasure. No, I don't want string based properties which I can't remove. At least not if that is the only option. And then I want to have some kind of higher abstraction which does the right thing most of the time. This is what Flaka is about.
+What I'm missing is the full power of a programming language. Yes, I want to have conditionals, loops and exception handling. I want to have variables which I can set or remove for pleasure. Such variables can reference any kind of object not only strings. And I need a nice expression language to retrieve and calculate in a simple yet elegant way. And there is no need to have each and everything expressed in XML. And then I want to have some kind of higher abstraction which does the right thing most of the time. This is what Flaka is about:
 
-Flaka is a framework build on top of Ant. It’s main goal is to simplify the process of writing a build script. It comes with a high abstraction a la Maven while providing a dark force to escape from defaults and conventions.
+* Programming Tasks (conditional, loops, exception handling, ..)
+* Embedded Expression Language (EL)
+* Framework to do the _right_ thing, yet allows to use standard Ant when necessary
+* Dependency handling (legacy, to be replaced by Ivy)
 
-This is how a Flaka build script will look like in the near future:
+This four pillars are Flakas approach to simplify the process of writing a build script with Ant. Notice that you are by no means forced to use all four pillars. You can for example just use the  programming tasks with or without elements of EL while you don't need to get in touch with Flakas dependency handling instruments and neither with the framework. 
+
+The folling example of a complete build script shall demonstrate the idear how a build script using Flaka looks like:
 
 -------------------------------------------------
-<project xmlns:c="antlib:net.haefelingerit.net">
- <c:init />
- <c:dependencies>
-  <c:dependency artefactid="log4j" groupid="log4j" version="1.2.13" />
- <c:/dependencies>
+<project xmlns:c="antlib:it.haefelinger.flaka">
+ <c:build />
+ <c:dependency alias="log4j" />
 </project>
 -------------------------------------------------
 
-
-It will essentially a Ant build script. All what should be done by the author is to list dependencies (if they can't be figured out automatically) and _all the rest_ would be done by the Flaka framework (`<c:init/>`). All the rest means:
+The author just lists the dependencies required to build the project. Flaka would do the rest by checking the underlying project structure:
 
 * figure out what type of project should be build (jar, war, ear ..)
 * figure out where project's source code, test cases etc are
 * handle dependencies
 * create targets like `clean`, `compile`, `package`, `test` automatically
 * generate Javadoc and other reports
-* _etc_ 
 
-The next targeted version, *version 1.0*, will not reach all this goals. Instead a set of essential programming tasks will be made available. Furthermore, [http://en.wikipedia.org/wiki/Unified_Expression_Language unified expression language] will be used to eventually glue this control structures together to a higher leveled framework.
+=== Current Status ===
+
+Not all targets have been reached in the current version of Flaka (Release candidate 1). Programming tasks and EL are working fine and can be used. The other two pillars work partially but generally not recommended (yet) to be used.
 
 === Where to go from here? ===
 
- * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the [Installation installation page].
- * Have a look a [BasicScriptingConstructs basic scripting elements] to see tasks, types, macros etc introduced by Flaka.
- * Have a look at the [Tasks task],[Types type] and [Macros macro] reference manuals for gory details.
- * Don't forget to look into [EL expression language], it contains a lot of information on this enormous useful extension.
- * Start writing good build scripts..
+ * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the <<installation,installation page>>.
+ * Have a look at the <<scripting,basic scripting elements>> to get an overview of tasks, types and macros provided by Flaka. Have a closer look in the reference part of this manual for all the gory details of those tasks, types and macros. 
+ * Make sure to look into the chapter about the <<el,expression language>>, it contains a lot of information on this enormous useful extension.
+ * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
 
+//include::install.ad[]
 
-== Installation For The Impatient ==
-
-Download latest version of Flaka and *drop* `ant-flaka.x.y.z.jar` into your local Ant installation. There are various techniques how to _drop_. Please read-on for refreshment.
-
-=== Before You Start! ===
-
-The following *requirements* must be satisfied before you start:
-
-* Flaka requires http://java.sun.com/javase/downloads/index.jsp[Java 1.5] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look at http://ant.apache.org/manual/index.html[Ant's Manual] for other environment variables to be used.
-* http://ant.apache.org[Ant] version 1.7.0 or newer. 
-
-
-=== How to _drop_ the `ant-flaka` jar? ===
-The most primitive technique is to save `ant-flaka-x.y.z.jar` in Ant's library folder `lib`. If you have no clue where Ant is installed, try 
-
--------------------------------------
-
- $ ant -diagnostics | grep ant.home
- ant.home: /opt/ant/1.7.1
-
--------------------------------------
-
-Saving something in Ant's library folder may not work due to lack of permission. There's also the disadvantage that when switching to another Ant installation *Flaka* needs to be installed again. Therefore consider to use Ant's standard option `-lib`: 
-
-
--------------------------------------
-
- $ ant -lib ant-flaka-x.y.z.jar
-
--------------------------------------
-
-
-A pretty nice feature of option `-lib` is that if the argument is a directory, that directory is scanned for jar files. Therefore you may instead want to do something like this:
-
--------------------------------------
-
- $ mkdir $HOME/lib/ant
- $ cp ant-flaka-x.y.z.jar $HOME/lib/ant
- $ ant -lib $HOME/lib/ant
-
--------------------------------------
-
-This approach has the nice advantage that you simply can drop other jar files into folder `$HOME/lib/ant` to make them reachable  without touching the original Ant installation. As already mentioned, this will get handy when you have either multiple Ant installations. Btw, notice that option `-lib` can be applied more than once if the jars to use reside in various folders. Finally notice that folders are not recursively searched.
-
-When working from the command line it's a bit annoying to provide option `-lib` for each and every call of Ant. Fortunatley, Ant recognizes environment variable `ANT_ARGS` which can be used to let `-lib` disappear:
-
--------------------------------------
-
- $ ANT_ARGS="-lib $HOME/lib/ant"
- $ export ANT_ARGS
-
--------------------------------------
-
-The drawback with this technique is that you need to make sure that this variable is set in every environment you start up Ant. This sounds easier than done. Luckily, Ant reads file `$HOME/.antrc` and `$HOME/.ant/ant.conf` on each and every startup. It's is therefore recommended to set `ANT_ARGS ` in one of this files (without the need to export) to make just every plain call to `ant` *Flaka* aware. For example:
-
--------------------------------------
-
- $ cat $HOME/.antrc
- ANT_ARGS="-lib $HOME/lib/ant"
-
--------------------------------------
-
-
-=== Check whether Flaka works! ===
-To check whether your setup of `Flaka` works,  create a local Java project and try to build it. For example, 
-
--------------------------------------
-
- $ mkdir -p hello/src/demo && cd hello 
- $ cat > src/demo/Hello.java << EOF
-   public class Hello {}
- ^D
- $ cat > build.xml << EOF
- <project xmlns:c="antlib:net.haefelingerit.flaka">
-   <c:init />
- </project>
- ^D
- $ # let ant build this project
- $ ant
- :::::::::::::::::::::::::::::::::::::::::::::::::::
- ::               HELLO, FLAKA 1.0                ::
- ::  use `ant -p' to get a list of useful targets ::
- :::::::::::::::::::::::::::::::::::::::::::::::::::
- [..]
- BUILD SUCCESSFUL
- Total time: 2 seconds
-
--------------------------------------
-
-The call to `ant` builds the package. The result will be file `hello-SNAPSHOT.jar` found in folder `build/dist`:
-
--------------------------------------
-
- $ jar tvf dist/hello-SNAPSHOT.jar
-     0 Thu Jan 17 17:04:08 CET 2009 META-INF/
-   667 Thu Jan 17 17:04:06 CET 2009 META-INF/MANIFEST.MF
-   120 Thu Jan 17 17:04:08 CET 2009 Hello.class
-
--------------------------------------
-
-##
-## This should all go into Part 1 (so wee need to have a book here instead of an article)
-##
+//
+// This should all go into Part 1 (so wee need to have a book here instead of an article)
+//
 
 == Programming Constructs ==
 
@@ -448,7 +351,7 @@ which eventually prints the desired greeting.
 
 Macros are a standard feature of Ant.
 
-
+[id="el"]
 == EL, The Expression Language ==
 
 The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] http://www.jcp.org/en/jsr/detail?id=245[(JSR-245)] is a special purpose programming (albeit not turing complete) language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.
@@ -972,163 +875,17 @@ When evaluation a expr in a string context, a string representation of the final
 || boolean               || if true || otherwise ||
 || _other_               || always  || never ||
 
-
-== Howto Flaka ==
-
-A chapter with questions and answers about how to do things with Flaka.
-
-=== How to check whether a property is defined? ===
-
-
--------------------------------------
-
- <c:when test=" has.property[name] ">
-  ...
- </c:when>
-
--------------------------------------
-
-
-=== How to check whether a variable is defined? ===
-
-
--------------------------------------
-
- <c:when test=" has.var[name] ">
-  ...
- </c:when>
-
--------------------------------------
-
-
-=== How to check whether a reference is defined? ===
-
-
--------------------------------------
-
- <c:when test=" has.reference[name] ">
-  ...
- </c:when>
-
--------------------------------------
-
-
-=== How to check whether a target is defined? ===
-
-
--------------------------------------
-
- <c:when test=" has.target[name] ">
-  ..
- </c:when>
-
--------------------------------------
-
-
-
-=== How to check whether a Macro or Task is defined? ===
-
-To check whether a macro or task exists use test -M as shown below:
-
-
--------------------------------------
-
- <c:when test=" has.task[name] ">
-   <echo>either a macro or a task</echo>
- </c:when>
-
--------------------------------------
-
-
-To check for a specific taskdef or macrodef, use `has.taskdef` or `has.macrodef`. 
-
-
-=== How to check whether a property is empty? ===
-
-A property is considered _empty_ if either not defined or consists only of whitespace characters.
-
-
--------------------------------------
-
- <c:when test=" empty property[name] ">
-   ..
- </c:notempty>
-
--------------------------------------
-
-
-
-=== How can I dynamically execute a target? ===
-Use task run-target to run any target. For example
-
-
--------------------------------------
-
-  <c:run-target name="hello" fail="false" />
-
--------------------------------------
-
-
-This would execute the target hello if this target exists. Otherwise this task will simply be ignored in case attribute fail is set to false (which is the default). If fail is true, then calling a non-existing target throws an exception. Note that targets and macros are in a different namespace.
-
-=== How do I dynamically execute a macro or task? ===
-Use task run-macro for this task.
-
-
--------------------------------------
-
- -- just a normal macro .. 
- <macrodef name="greeting">
-  <attribute name="message" />
-  <sequential>
-   <echo>@{message}</echo>
-  </sequential>
- </macrodef>
-
- -- call it statically
- <greeting message="hello, static" />
-
- -- or dynamically
- <c:run-macro name="greeting">
-   <arg name="message" value="hello, world"/>
- </c:run-macro>
-
--------------------------------------
-
-
-Note that there is currently no way to call a macro with elements. Only attributes are supported.
-
-
-
-== Flaka Glossary ==
-
-A compilation of words and their meaning in Flaka.
-
-=== Continuation Lines ===
-
-A continuation line is a sequence of characters ending in `\NL` and not in `\\NL` (where NL is the line ending characters `CR LF` or `LF`. Tasks supporting continuation lines will accumulate the content of such a line with the (accumulated) content of the following line. The continuation character and the line ending characters are not accumulated.
-
--------------------------------------
-
-a \
-b\\
-c\
-
--------------------------------------
- 
-Defines two accumulated lines: (1) `a b\` and (2) `c`.
-
-=== Property Reference ===
-A reference to a http://ant.apache.org/manual/using.html#properties[property] is written as `${..}`. Property references are handled by the Ant property handler. If not changed, then `${x}` will be replaced by the value of property `x` if such a property exists. Otherwise, the reference will be left as is.
-
-=== Expression Reference ===
-
-A reference to an [EL] expression is written as `#{..}`. [EL] is not part of Ant and can thus only be handled by certain tasks. References may appear in attribute values or in text elements. Not all attributes can handled EL references and neither all text elements. If a attribute or text element can handle EL references, it is specifically mentioned.
-
-=== Base Folder ===
-
-Relative files are usually meant to be relative to the current working directory. Not so in Ant, where a file is relative to the folder containing the build script of the current project. This folder is called the base directory or base folder. Ant defines property `basedir` to contain the (absolute) path name of this folder. When using [EL] expressions you can use the empty string to create the base folder as file object, like in ` ''.tofile `.
-
-See also http://ant.apache.org/manual/using.html#built-in-props[built-in-props] for a list of standard Ant properties.
-
-
+//
+//include::howto.ad[]
+//
+
+== Part II ==
+
+here I'm listing all task, types and macros.
+
+//include::sections/task_echo.ad[]
+include::sections/task_let.ad[]
+include::sections/task_list.ad[]
+//include::sections/task_properties.ad[]
+//include::sections/todo.ad[]
+//include::sections/not-yet-ready.ad[]

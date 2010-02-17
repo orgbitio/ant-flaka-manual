@@ -1,0 +1,1176 @@
+== unset ==
+
+The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project. 
+
+
+-------------------------------------
+
+ <c:unset>
+   p1
+   ;; use embedded EL references for dynamic names
+   p#{ index }
+ </c:unset>
+
+-------------------------------------
+
+
+This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
+
+==== Attributes ====
+|| Attribute || Type    || Default || EL || Description ||
+|| debug     || boolean || `false` || no || Turn extra debug information on || 
+|| comment   || String  || `;`     || no || The character that starts a comment line || 
+
+==== Elements ====
+
+This element accepts implicit text.
+
+==== Behaviour ====
+
+Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. `ant.file`) are also removed.
+
+Comment lines and empty lines are ignored. Continuation lines, i.e. lines ending in `\` but not in `\\`, are accumulated before being processed.
+
+References to properties `${..}` and expressions `#{..}` are resolved.
+
+The content of a line defines the property name, for example:
+
+-------------------------------------
+
+<c:unset>
+ ;; property 'foo bar', not 'foo' and 'bar'
+ foo bar
+
+ ;; a line is *not* a EL expression (this will be property '3 * 5')
+ 3 * 5
+
+ ;; use #{..} references for dynamic content (this will be 'p15')
+ p#{3*5}
+</c:unset>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java Source]
+
+<hr/>
+=== rescue ===
+
+Task `rescue` is essentially a container for an arbitrary number of tasks. In addition, it allows to rescue variables and properties.
+
+
+-------------------------------------
+
+<c:rescue>
+ <vars>
+   foo
+ </vars>
+ <properties>
+   bar
+ </properties>
+ task_1
+   ..
+ task_N
+<c:rescue>
+
+-------------------------------------
+
+
+No matter what will happen with property `var` and variable `foo` within `sequential`, this will be unoticable outside of `rescue` cause the values (or better: state) will be restored after having executed all embedded tasks. This will of course also work in case an exception is thrown by one of the tasks.
+
+==== Attributes ====
+
+This task does not define attributes.
+
+==== Elements ====
+
+|| Name    || Cardinality || Description ||
+|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| _task_  || arbitrary   || A (arbitrary) task or macro to be excecuted ||
+
+==== Behaviour ===
+
+Executes all embedded tasks. Variables and properties listed in `vars` and `properties` are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java Source]
+
+<hr/>
+== Looping ==
+=== while ===
+A task implemening a `while` loop:
+
+-------------------------------------
+
+<c:let>
+  i = 3
+</c:let>
+<c:while test=" countdown >= 0 ">
+  <c:echo>#{countdown > 0 ? countdown : 'bang!' }</c:echo>
+<c:while>
+
+-------------------------------------
+
+
+==== Attributes ====
+
+|| Attribute || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || The condition for looping as [EL] expression ||
+
+==== Elements ====
+
+ The body of this task may contain an arbitrary number of tasks or macros.
+
+==== Behaviour ====
+
+All tasks listed as elements are executed as long as the [EL] expression evaluates to `true`. 
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java Source]
+ * [Tasks#break break] to stop the iteration
+ * [Tasks#continue continue] to hide tasks from being executed during a iteration step.
+ * See also [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
+
+<hr/>
+=== for === 
+
+A task that implements a loop statement. Iterating over a list of _objects_:
+
+
+-------------------------------------
+
+ <c:for var="x" in=" list('a', 2, 'src'.tofile, typeof(list())) ">
+   <c:echo>
+      #{x}
+   </c:echo>
+ </c:for>
+
+-------------------------------------
+
+
+==== Attributes ====
+
+|| Attribute || Type   || Default || EL    || Description ||
+|| `var`     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in [EL] enabled tasks. ||
+|| `in`      || string ||         || expr  || The items to be iterated over as [EL] expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||
+
+==== Elements ====
+
+ The body of this task may contain an arbitrary number of tasks or macros.
+
+==== Behaviour ====
+
+This is the shortest possible for statement. It's legal albeit completely useless.
+
+-------------------------------------
+
+ <c:for />
+
+-------------------------------------
+
+
+<wiki:comment>
+TODO: document behaviour
+</wiki:comment>
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java Source]
+ * Task [Tasks#for for] 
+ * Task [Tasks#break break]
+ * Task [Tasks#continue continue]
+ * Quickref [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
+
+<hr/>
+=== break === 
+
+A task mirroring a break statement. When used within a [Tasks#for for]-loop, the loop will be terminated. If this task is used outside of a [Tasks#for for]-loop, a build exception will be thrown.
+
+
+-------------------------------------
+
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+     <c:when test=" i == 3 ">
+       <c:break />
+     </c:when>
+  </c:for>
+
+-------------------------------------
+
+Being executed, the following will be dumped on stdout:
+
+-------------------------------------
+
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+
+-------------------------------------
+
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Terminate loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Terminate if property exists ||
+|| `unless`  || string || -     || #{}  || Terminate if property does not exist ||
+
+==== Behaviour ====
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
+
+The example given above can thus be shortened to 
+
+-------------------------------------
+
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+    <c:break test=" i == 3 " />
+  </c:for>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java Source]
+
+<hr/>
+=== continue === 
+
+A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
+
+
+-------------------------------------
+
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:when test=" i > 3 ">
+     <c:continue />
+   </c:when>
+   <c:echo>i = #{i}</echo>
+  </c:for>
+
+-------------------------------------
+
+
+This would print:
+
+
+-------------------------------------
+
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+
+-------------------------------------
+
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Continue loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Continue if property exists ||
+|| `unless`  || string || -     || #{}  || Continue if property does not exist ||
+
+==== Behaviour ====
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
+
+The example given above can thus be shortened to 
+
+-------------------------------------
+
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:continue test=" i > 3 " />
+   <c:echo>i = #{i}</echo>
+</c:for>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
+ * Task [Tasks#for for] 
+ * Task [Tasks#break break]
+
+<hr/>
+
+== Conditional Tasks ==
+
+=== when === 
+
+Task when represents a else-less if statement. The following example dumps the content of a file to stdout via Ant's echo task if the file exists.
+
+
+-------------------------------------
+
+ <c:when test=" 'path/to/file'.tofile.isfile" >
+   <c:let var="fname" property="true" value=" f " />
+    <loadfile property="__z__" srcFile="${fname}"/>
+    <echo message="${__z__}" />
+ </c:when>
+
+-------------------------------------
+
+
+Note that the example is bit artificial cause Ant's loadfile task is sufficient. 
+
+
+==== Attributes ====
+|| Attribute || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || A [EL] expression that must evaluate to `true` in order to execute the body of this if statement. ||
+
+==== Elements ====
+
+ * Any tasks or macro instances.
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java Source]
+
+<hr/>
+=== unless ===
+
+This task is the logical opposite of task [Tasks#when when]. It's body is only executed if the condition evaluates to false. See [Tasks#when when] for details. This example shows how to create a folder named libdir if such a folder does not already exist.
+
+
+-------------------------------------
+
+ <c:unless test=" 'libdir'.tofile.isdir ">
+  <mkdir dir="libdir" />
+ </c:unless>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java Source]
+
+<hr/>
+=== choose === 
+
+A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then-else_ statement.
+
+==== Attributes ====
+|| Attribute   || Type     || Default || EL || Description ||
+|| _when_.test || string   || `false` ||  = || A EL condition. When `true` corresponding clause will be executed. ||
+|| _unless_.text || string || `true`  ||  = || A EL condition. When `false` corresponding clause will be executed. ||
+|| debug       || boolean  || `false` ||  = || Turn on extra debug information. ||
+
+==== Elements ====
+|| Element   || Cardinality || Description ||
+|| when      || infinite    || To be executed if condition evaluates to `true` ||
+|| unless    || infinite    || To be executed if condition evaluates to `false` ||
+|| otherwise || [0,1]       || To be executed if no `when` or `unless` clause got executed ||
+|| default   || [0,1]       || Synonym for `otherwise` ||
+
+=== Behaviour===
+
+Each `when` and `unless` clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
+
+The shortest possible `choose` statement is
+
+-------------------------------------
+
+ <c:choose />
+
+-------------------------------------
+
+
+It's useless and does nothing, it's completely harmless.
+
+The following example would execute all macros or tasks listed in the `otherwise` clause cause no `when` or `unless` clause got executed.
+
+-------------------------------------
+
+ <c:choose>
+  <otherwise>
+    <!-- macros/tasks -->
+  </otherwise>
+ </c:choose>
+
+-------------------------------------
+
+
+This would execute all macros and tasks listed in the otherwise clause since no when clause got executed.
+
+-------------------------------------
+
+ <c:choose>
+   <when test=" true == false" >
+     <echo>new boolean logic detected ..</echo>
+   </when>
+   <unless test=" 'mydir'.tofile.isdir ">
+     <echo> directory mydir exists already </echo>
+   </when>
+   <otherwise>
+     <echo> Hello,</echo>
+     <echo>World</echo>
+   </otherwise>
+ </c:choose>
+
+-------------------------------------
+
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java Source]
+
+<hr/>
+=== switch ===
+
+Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a [http://en.wikipedia.org/wiki/Regular_expression regular expression] or [http://en.wikipedia.org/wiki/Glob_(programming) glob expression] against a given string value and carry out a sequence of actions in case of a hit.
+
+
+-------------------------------------
+
+ <c:switch value=" 'a${string}#{value}' ">
+  <matches glob="*.jar">          -- #1
+   -- string ending in .jar
+  </matches>
+  <matches re="1|2|3">            -- #2
+    -- one or two or three
+  </matches>
+  <matches re="-\d+">             -- #3
+    -- negative integral number
+  </matches>
+  <otherwise>
+   -- no match so far ..
+  </otherwise>
+ <c:case>
+
+-------------------------------------
+
+
+Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
+
+==== Attributes ====
+|| Attribute || Type   || Default || [EL]  || Description ||
+|| `value`   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
+|| `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
+|| `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
+|| `comments`   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` || 
+|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in [http://en.wikipedia.org/wiki/Perl Perl]. || 
+|| `unixlines`  || bool || false  ||    no || In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). || 
+|| `multiline`  || bool || false || no || In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
+|| `debug`      || bool  || false ||   no || Turn on extra debug information ||
+|| _matches_.`re` || string ||    || #{..} || Element `matches`: Specify a matching pattern as regular expression. ||
+|| _matches_.`pat` || string ||   || #{..} || Element `matches`: Specify a matching pattern as glob expression ||
+
+Note that each `switch` attribute (but `value`) can be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
+
+==== Elements ====
+
+|| Element   || Cardinality || Description ||
+|| `matches` || 0..infinity || An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing `switch` (but `value`). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. ||
+|| `default` || 0..1        || The default statement will be executed if no `matches` element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. ||
+|| `otherwise` || 0..1     || This element is a synonym for element `default` ||
+
+==== Behaviour ====
+
+Attribute `value` is the basis for all further matching. It is a string value which may contain [Glossary#Property_Reference references to properties] or [Glossary#Expression_Reference EL expressions]. Leading and trailing whitespace will be discarded after having resolved all references. 
+
+All other attributes (see above) are default values for subsequent `matches` elements. For example, setting attribute `debug` to `true` will turn on debug on all `matches` elements.
+
+Any number of `matches` elements are allowed and at most one `otherwise` (resp. `default`) element. Whether the `otherwise` element is at the end, in the middle or at the begin does not matter. The order of the `matches` elements are relevant however. Each `matches` element will be tried in the order given until no more untried elements are left. Then, if no element matched, a given `otherwise` element is carried out. Otherwise the matching elment will.
+
+Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
+
+The underlying regular expression engine is the one given by Java. It's [http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at [http://oreilly.com/catalog/9780596528126/index.html Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+
+Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write `\\*` if they want match the literal `*` character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence `\*` remains `\*`.
+
+So called _globs_ are a kind of simplified regular expressions. They lack the full power while simplifying the expression. For example, to specify whether a name input string end in `jar`, we can simply write 
+
+
+-------------------------------------
+
+ <c:switch value=" #{myfile}.name ">
+  <matches glob="*.jar">
+    -- do something with jar file ..
+  </matches>
+ </c:switch>
+
+-------------------------------------
+
+
+The very same can also be expressed as `re="\.jar$"` using regular expressions. The biggest disadvange of globs are that capturing groups are not supported. Thus the match above just indicates that the file name ends in `.jar` while there is nothing to figure the file's basename. Compare this with 
+
+
+-------------------------------------
+
+ <c:switch value=" #{myfile}.name ">
+  <matches re="^(.*)\.jar$" var="m">
+    <c:echo>
+      basename = #{m[1]}
+    </c:echo>       
+  </matches>
+ </c:switch>
+
+-------------------------------------
+
+
+Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be [http://code.google.com/p/flaka/wiki/EL#Matcher_Properties evaluated using properties] for matching details.
+
+Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
+
+-------------------------------------
+
+ <c:switch value=" 'v-uat_3_20_500' " var="m">
+   <matches re="v-(?:([^\d][^_]*)_)?(\d.*)" >
+     <c:echo>
+       pattern      = #{m.p}         -- v-(?:([^\d][^_]*)_)?(\d.*)
+       groups       = #{m.n}         -- 2
+       matched text = #{m}           -- v-uat_3_20_500  (same as m[0])
+       env          = #{m[1]}        -- uat
+       version      = #{m[2]}        -- 3_20_500
+       ;; refering to non existing group
+       ??           = #{m[3]}        -- (empty string)
+       ;; start and end index of first group
+       start        = #{m[1].s}      -- 2
+       end          = #{m[1].e}      -- 5
+     </c:echo>
+   </matches>
+ </c:switch>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java Source]
+
+== Exception Handing ==
+
+<hr/>
+=== fail ===
+
+This task has been derived from [http://ant.apache.org/manual/CoreTasks/fail.html Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
+
+-------------------------------------
+
+<c:fail message="illegal state #{whichstate} seen" />
+
+-------------------------------------
+
+Furthermore, attribute `test` has been added. The value of `test` will be evaluated as EL expression in a boolean context. Being `true`, fail will throw a build exception. When used in this way, `<c:fail test='expr' />` behaves exactly the same as
+
+-------------------------------------
+
+<c:when test="expr">
+ <fail />
+</c:when>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java Source]
+
+<hr/>
+=== trycatch === 
+
+A task mirroring try-catch-finally exception handling found in various languages.
+
+All tasks inside try are executed in order. If an exception is thrown by one of tehm, then several things may happen:
+
+ * If there is a matching catch clause, then all tasks in that clause are executed. If there isn't a catch clause, the exception will be passed to the enclosing environment (except if an exception is also thrown in the finally clause - see below).
+ * An optional finally clause is always executed, regardless of whether an exception gets thrown or or whether a try or catch clause exists.
+ * If a property is set, then that property will hold the message of the exception thrown in a try clause. If a reference is given, then that reference will hold the exception object thrown in the try clause. If an exception is also thrown in a catch or finally clause, then neither will the property or reference update nor set.
+ * If a exception is thrown in a matching catch clause and in a finally clause, then the latter will be passed to the enclosing environment and the former will be discarded.
+
+A catch clause can be given a type and a match argument. Both arguments expect a regular or pattern expression. A catch clauses matches if the type and match matches. The type argument is matched against the classname of the thrown exception. The match argument is matched against the exception message (if any). Both default values ensure that a build exception thrown by Ant is caught while an implementation dependent exception passes.
+
+When matching against the error message, be aware that the actual error message might be slightly different from the actual message given: usually the error message contains also information about where the exception got thrown. It is therefore wise to accepted any leading and trailing space. For example:
+
+
+-------------------------------------
+
+ <c:trycatch>
+  <try><fail message="4711" /></try>
+  <catch match="4711">
+    -- does (very likely) not match
+  </catch>
+  <catch match="4711*">
+    -- neither this one ..
+  </catch>
+  <catch match="*4711">
+    -- bon chance
+  </catch>
+  <catch match="*4711*">
+    -- this is it!
+  </catch>
+ </c:trycatch>
+
+-------------------------------------
+
+  
+
+==== Attributes ====
+
+|| Attribute || Type || Default || [EL] || Description ||
+|| `property` || string || || no || The name of the property that should hold the exception message ||
+|| `reference` || string || `trycatch.object` || no || >The name of the reference to hold the exception object ||
+|| `catch.type` || glob || `*.BuildException` || no || A pattern against the type (Java classname) of the exception object ||
+|| `catch.match` || glob || `*`  || no || A pattern to be applied against the exception message ||
+
+==== Elements ====
+
+ * try<br /> A task container to hold tasks and macros to be given a try. 
+ * catch<br /> A task container to be executed if an exception gets thrown
+ * finally<br/> A task container to be executed in any case
+
+Note that all elements are optional. However, if there's no try element, then there's no chance to execute catch at all, so this constellation does not make too much sense. The optional finally clause will be executed regardless of whether a try clause exists or not.
+
+It is allowed to have more multiple try, catch or finally clauses and further does the oder in which they appear not matter. Be aware though that eventually all try and finally clauses are merged into one try resp. finally clause.
+
+
+==== Behaviour ====
+
+The following snippet demonstrates the usage of trycatch:
+
+
+-------------------------------------
+
+ <c:trycatch property="reason">
+   <try>
+     <echo>1st try ..</echo>
+   </try>
+   <try>
+     <echo>2nd try ..</echo>
+     <fail message="fail within 2nd try" />
+   </try>
+   <try>
+     <fail message="fail within 3rd try" />
+   </try>
+   <catch type="*.BuildException" match="*">
+     <echo>..caught : ${reason}</echo>
+   </catch>
+   <finally>
+     <echo>..finally</echo>   
+   </finally>
+ </c:trycatch>
+
+-------------------------------------
+
+
+Giving:
+
+
+-------------------------------------
+
+    [echo] 1st try ..
+    [echo] 2nd try ..
+    [echo] ..caught : fail within 2nd try
+    [echo] ..finally
+
+-------------------------------------
+
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java Source]
+
+<hr/>
+=== throw ===
+
+A task to re-throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
+
+Note that throw would re-throw the last thrown exception - regardless of the current context. The following would therefore work:
+
+
+-------------------------------------
+
+ <c:trycatch>
+  <try> 
+    <fail message="4711" />
+  </try>
+  <catch>
+    -- handle the exception ..
+  <catch>
+ </c:trycatch>
+ ..
+ .. -- very much later
+ .. 
+ <c:throw /> -- re-throws "4711" exception!!!
+
+-------------------------------------
+
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
+|| `var` || || || no || Same as reference ||
+
+==== Behaviour ====
+
+A typical usage example:
+
+
+-------------------------------------
+
+ <c:trycatch>
+  <try> ..<fail message="4711"/> </try>
+  <catch>
+    <echo>caught exception ..</echo>
+    <c:throw />
+  </c:catch>
+ </c:trycatch>
+
+-------------------------------------
+
+
+When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
+ * Task [Tasks#trycatch trycatch]
+
+
+<hr/>
+== Special Purpose Tasks ==
+=== export === 
+
+Use this task to dump a file within the Flaka package to stdout or a file.  This task's usefulness is rather limited for public use, however this task is used to implement target [Targets#export export].  
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `dst`     || string || (stdout) || no || The destination to dump the file to. If dst is `-` the file will be dumped to stdout. ||
+|| `src`     || string || antlib.xml || no || The file within the package to export. By default, file antlib.xml is exported. ||
+|| `tee`     || bool   || false     || no || If enabled, the file will be exported to src as well as to stdout (similar as standard UNIX command tee does). ||
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Export.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java Source]
+
+<hr/>
+=== find === 
+<wiki:comment>todo:references</wiki:comment>
+
+Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] into a list of `file`s. Used in conjunction with [Tasks#for task for] enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
+
+
+-------------------------------------
+
+<c:find var="filelist" type="f" />
+<c:for var="file" in="filelist">
+ <c:echo>
+  #{file} has been last accessed at #{file.mtime}
+ </c:echo>
+</c:for>
+
+-------------------------------------
+
+
+==== Attributes ====
+
+|| Attribute || Type   || EL || Meaning || Default ||
+|| dir       || string ||  = || The directories to scan. || Basedir of build script (''.tofile) ||
+|| type      || string ||    || `f` to select files and `d` to select folders || all files and folders ||
+|| var       || string ||  r || The name of the variable to hold a list of scanned files or folders || null ||
+
+==== Elements ====
+
+This task implements a [http://ant.apache.org/manual/CoreTypes/fileset.html standard Ant fileset]. All elements of `fileset` are therefore legal elements of `find` as well.
+
+==== Behaviour ====
+
+This task scans all files and folders given by attribute `dir` into a variable given by `var`. If `var` is empty, then no scanning takes place. Attribute `var` may contain [EL#EL_References EL references] which are resolved. If a scanning takes place, then `var` will be created and contains, in any case, a list value.
+
+Attribute `dir` may contain [EL#EL_References EL references] which are resolved. The so resolved string value must be a syntatically legal EL expression. This expression will then be evaluated. If the evaluated object is a list, then each list item will be scanned for files and folder, otherwise only the evaluated object. If such a object to be scanned is not already a file object, then stringized object is used to create the folder to be scanned. The following examples illustrate this behaviour:
+|| Argument           || Same as ||
+|| 'src'              || list('src'.tofile) ||
+|| list('src','lib')  || list('src'.tofile,'lib'.tofile) ||
+
+Attribute `type` is used to filter out unwanted files or folder from being scanned. If `type` is `f`, then only files are taken into account and when `d`, only folders matter. By default files and folders are accumulated.
+
+==== Examples ====
+
+Report all files in the working directory. Note that also files in sub folders are reported.
+
+
+-------------------------------------
+
+ <c:find var="filelist" type="f" />
+
+-------------------------------------
+
+
+Check whether a sub folder ending in '.jar' exists which is not a file but a directory.
+
+
+-------------------------------------
+
+ <c:find var="filelist" type="d">
+   <include name="**/*.jar" />
+ </c:find>
+
+-------------------------------------
+
+ 
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Find.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java Source]
+
+<hr/>
+== Meta Programming ==
+=== run-macro === 
+
+A task to invoke a macro or task (or a list of them) dynamically. 
+
+
+-------------------------------------
+
+ <macrodef name="foobar" >
+  <sequential>...</sequential>
+ <macrodef>
+ ..
+ ..
+ <foobar />                     -- conventional way of using macro foobar
+ <c:run-macro name="foobar" />  -- dynamic way
+
+-------------------------------------
+
+
+The current version does not support calling macros or tasks with arguments. 
+
+==== Attributes ====
+
+|| Attribute || Type || Default || EL || Description ||
+|| `name`    || string ||       || no || The name of the macro to run. Use whitespace chars to specify a list of names.||
+|| `fail`    || bool   || false || no || Whether a exception shall be thrown if macro does not exist||
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-macro.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java Source]
+
+<hr/>
+=== run-target === 
+
+A task to invoke a target dynamically.
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `name ` || string || || no || The name of the target to invoke. ||
+|| `fail ` || bool || `false` || no || Fail if target does not exist ||
+
+==== Example ====
+
+
+-------------------------------------
+
+ <target name="foobar">
+   ..
+ </target>
+ ..
+ <c:run-target name="foobar" />
+
+-------------------------------------
+
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java Source]
+
+
+<hr/>
+=== create-target ===
+
+Use this task to create a dynamic target within the current project. Usually targets are declaratively written within a build file. The following target
+
+
+-------------------------------------
+
+ <target name="foo" depends="bar" description="do foo">
+   <foo-task />
+ </target>
+
+-------------------------------------
+
+
+can also be written as
+
+
+-------------------------------------
+
+ <c:create-target name="foo" depends="bar" description="do foo" task="foo-task" />
+
+-------------------------------------
+
+
+Note: The current version allows only the specification of one task or macro within the body of the target to be created (like foo-task above).
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `name` || string || || no || The name of the target to create. If override is false, an already existing target with that name is not created.||
+|| `task` || string || || no || The task or macro to execute||
+|| `description` || string || || no || The informal description of this target||
+|| `depends` || string || || no || Targets to execute before this target||
+|| `override` || bool || `false` || no || Whether to override an existing target.||
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java Source]
+<hr/>
+
+
+=== set-default-target === 
+
+A task to define the project's default target. 
+
+-------------------------------------
+
+ <project xmlns:c="antlib:ant.epoline" default="this">
+    <c:set-default-target name="foobar" override="true"/>
+    ..
+    <target name="foobar">
+       ..
+    </target>
+ </project>
+
+-------------------------------------
+
+This example changes the default target to be called from this to foobar.
+
+
+==== Attributes ====
+|| Attribute || Type || Default || EL  || Description ||
+|| `name`    || string ||       ||  no || The name of the target ||
+|| `fail`    || bool   || false ||  no || Whether to throw an exception if target does not exist||
+|| `override`|| bool   || false ||  no || Whether to override an already existing default target ||
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Set-default-target.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java Source]
+
+<hr />
+== XML ==
+=== xmlmerge === 
+
+A simple task to merge XML files. 
+
+==== Attributes ====
+|| Attribute || Type || Default || [EL] || Description ||
+|| `dst` || string || - || no || The file to write to. Any intermediate folders are created. writes to stdout if empty string or argument - is given.||
+|| `src` || string || || no || A file or folder argument. If a folder is given, then any file therein matching a given pattern is merged, otherwise the file given. A relative argument is interpreted as being relative to the current working directory.||
+|| `pattern` || regex || `.*\\.xml`|| no || The pattern to apply when matching files to be merged. The pattern can be a regular expression ||
+|| `root` || || string || no || By default the root tag of the first element will be the root tag for the merged content. Use attribute root to specify a different root tag.||
+
+==== Behaviour ====
+
+Assume that folder xmldir contains two files x.xml and y.xml where x.xml looks like
+
+
+-------------------------------------
+
+ <x>
+  <x>This is X/x</x>
+ </x>
+
+-------------------------------------
+
+
+and where y.xml looks similar. Then the following invocation gets:
+
+
+-------------------------------------
+
+ <c:xmlmerge dst = "-" src = "xmldir" pattern = "*.xml" root = "myroot" />
+ <?xml version="1.0" encoding="UTF-8"?>
+ <myroot>
+ <X>
+   <x>This is X/x</x>
+ </X>
+ <Y>
+   <y>This is Y/y</y>
+ </Y>
+ </myroot>
+
+-------------------------------------
+
+
+The same setup as before gives, when no root element is applied, the following:
+
+
+-------------------------------------
+
+ <c:xmlmerge dst = "-" src = "xmldir" pattern = "*.xml" />
+ <?xml version="1.0" encoding="UTF-8"?>
+ <X>
+   <x>This is X/x</x>
+   <Y>
+     <y>This is Y/y</y>
+   </Y>
+ </X>
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/XmlMerger.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java Source]
+
+<hr/>
+== Properties ==
+=== property-by-regex === 
+
+A task to compose a property based on existing properties.
+
+The new property is composed by searching for property names matching a given regular expression. Then the new property is created by  concatenating the value of each matching property using a separator of choice.
+
+==== Attributes ====
+ * property<br />The name of the property to create
+ * regex<br />The regular expression. 
+ * sep<br />The separator to use when concatenating
+==== Example ====
+
+Assume that the following properties are defined:
+
+
+-------------------------------------
+
+ depot.1.url = http://depot/component
+ depot.2.url = http://depot/3rdparty
+ depot.3.url = http://depot/externals
+
+-------------------------------------
+
+
+Then
+
+
+-------------------------------------
+
+ <c:property-by-regex property="depot.csv" regex="depot\.\d+\.url" />
+
+-------------------------------------
+
+
+creates property
+
+
+-------------------------------------
+
+ depot.csv = http://depot/component,http://depot/3rdparty,http://depot/externals
+
+-------------------------------------
+
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Property-by-regex.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java Source]
+
+<hr/>
+=== install-reference-handler ===
+
+A task to install a property handler in addition to the standard one provided by Ant. The new handler will also handle [EL] references like `#{..}` in addition to handling `${..}`. 
+
+
+-------------------------------------
+
+ <c:let>
+    ;; let variable foo to string 'bar'
+    foo = 'bar'
+ <c:let>
+ <echo>
+    [1] #{foo}
+ </echo>
+ <c:install-reference-handler />
+ <echo>
+    [2] #{foo}
+ </echo>
+
+-------------------------------------
+
+
+This snippet would give
+
+-------------------------------------
+
+ [echo] [1] #{foo}
+ [echo] [2] bar
+
+-------------------------------------
+
+
+==== Attributes ====
+|| Attributes || Type    || Default  || EL  || Description ||
+|| type       || string  || 'elonly' || #{} || Install handler with certain additional features  enabled (see below) ||
+      
+==== Behaviour ====
+
+If `type` is `elonly` (exactly as written), then the new handler will only handle `#{..}` in addition. If `type` is `remove`, then unresolved property references are discarded.
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/PropertyHelper.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/PropertyHelper.java Source]
+
+<hr/>
+== Dependencies ==
+=== scandeps ===
+
+A task to scanning for dependencies in files.
+
+
+-------------------------------------
+
+<c:scandeps var="mydeps">
+  <include name="build.xml" />
+</c:scandeps>
+
+-------------------------------------
+
+
+Example above searches for dependencies in file `build.xml` in the [Glossary#Base_Folder project's base folder]. The list of dependencies is assigned with variable `mydeps`. 
+
+==== Attributes ====
+|| Attribute || Type   || Default   || EL  || Description ||
+|| var       || string ||           || #{} || The name of the variable to hold dependencies ||
+|| dir       || string || ''.tofile || yes || The root folder to use when scanning files ||
+|| debug     || bool   || false     ||  no || Turn on extra debug information ||
+
+==== Elements ====
+
+This task is a implicit [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] and may thus contain any elements which can be applied to a fileset. 
+
+==== Behaviour ====
+
+If attribute `var` is not used, then no scanning for dependencies takes place and no warning will be issued (except when `debug` has been enabled). If a variable is used, then a list of dependencies will be assigned in any case. If no dependencies are found, the list will be empty.
+
+Attribute `dir` is evaluated as [EL] expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
+
+This task may take any elements which are applicable for a [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
+
+A dependency is just recognized by it's element name regardless any namespace. Therefore something like
+
+
+-------------------------------------
+
+ <dependency />
+ <x:dependency>
+
+-------------------------------------
+
+
+will be accepted as dependency when scanning.
+
+==== Further Links ====
+ * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/ScanDeps.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java Source]
+
+<hr />
+
