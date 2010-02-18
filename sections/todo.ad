@@ -1,8 +1,8 @@
-=== export === 
+== export ==
 
 Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file.  This task's usefulness is rather limited for public use, however it allows you to have a look at Flaka\'s `antlib.xml`.
 
-==== Attributes ====
+=== Attributes ===
 [cols="15%,3*11%,52%"]
 |===========================
 | Attribute | Type | Default | <<el>> | Description 
@@ -11,11 +11,11 @@ Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file
 | `tee`     | bool   | false     | no | If enabled, the file will be exported to src as well as to stdout (similar as standard UNIX command tee does). 
 |===========================
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Export.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java[Source]
 
-=== find === 
+== find ==
 
 Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] into a list of `file`s. Used in conjunction with <<tasks_for,task for>> enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
 
@@ -32,7 +32,7 @@ Ant lacks a simple task to report all or certain files in a folder. This task le
 -------------------------------------
 
 
-==== Attributes ====
+=== Attributes ===
 
 // cols=5
 [cols="15%,3*11%,52%"]
@@ -43,11 +43,11 @@ Ant lacks a simple task to report all or certain files in a folder. This task le
 | var       | string |  r  | null | The name of the variable to hold a list of scanned files or folders
 |===========================
 
-==== Elements ====
+=== Elements ===
 
 This task implements a http://ant.apache.org/manual/CoreTypes/fileset.html[standard Ant fileset]. All elements of `fileset` are therefore legal elements of `find` as well.
 
-==== Behaviour ====
+=== Behaviour ===
 
 This task scans all files and folders given by attribute `dir` into a variable given by `var`. If `var` is empty, then no scanning takes place. Attribute `var` may contain <<el_references,EL references>> which are resolved. If a scanning takes place, then `var` will be created and contains, in any case, a list value.
 
@@ -62,7 +62,7 @@ Attribute `dir` may contain <<el_references,EL references>> which are resolved. 
 
 Attribute `type` is used to filter out unwanted files or folder from being scanned. If `type` is `f`, then only files are taken into account and when `d`, only folders matter. By default files and folders are accumulated.
 
-==== Examples ====
+=== Examples ===
 
 Report all files in the working directory. Note that also files in sub folders are reported.
 
@@ -87,11 +87,11 @@ Check whether a sub folder ending in '.jar' exists which is not a file but a dir
 
  
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Find.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java[Source]
 
-=== run-macro === 
+== run-macro ==
 
 A task to invoke a macro or task (or a list of them) dynamically. 
 
@@ -111,7 +111,7 @@ A task to invoke a macro or task (or a list of them) dynamically.
 
 The current version does not support calling macros or tasks with arguments. 
 
-==== Attributes ====
+=== Attributes ===
 
 // cols=5
 [cols="15%,3*11%,52%"]
@@ -121,16 +121,16 @@ The current version does not support calling macros or tasks with arguments.
 | `fail`    | bool   | false | no | Whether a exception shall be thrown if macro does not exist
 |===========================
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-macro.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java[Source]
 
 
-=== run-target === 
+== run-target ==
 
 A task to invoke a target dynamically.
 
-==== Attributes ====
+=== Attributes ===
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -139,7 +139,7 @@ A task to invoke a target dynamically.
 | `fail ` | bool | `false` | no | Fail if target does not exist 
 |===========================
 
-==== Example ====
+=== Example ===
 
 
 -------------------------------------
@@ -154,13 +154,13 @@ A task to invoke a target dynamically.
 
 
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-target.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java[Source]
 
 
 
-=== create-target ===
+== create-target ==
 
 Use this task to create a dynamic target within the current project. Usually targets are declaratively written within a build file. The following target
 
@@ -186,7 +186,7 @@ can also be written as
 
 Note: The current version allows only the specification of one task or macro within the body of the target to be created (like foo-task above).
 
-==== Attributes ====
+=== Attributes ===
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -199,12 +199,12 @@ Note: The current version allows only the specification of one task or macro wit
 |===========================
 
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java[Source]
 
 
-=== set-default-target === 
+== set-default-target ==
 
 A task to define the project's default target. 
 
@@ -223,7 +223,7 @@ A task to define the project's default target.
 This example changes the default target to be called from this to foobar.
 
 
-==== Attributes ====
+=== Attributes ===
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -234,16 +234,16 @@ This example changes the default target to be called from this to foobar.
 |===========================
 
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Set-default-target.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java[Source]
 
 
-=== xmlmerge === 
+== xmlmerge ==
 
 A simple task to merge XML files. 
 
-==== Attributes ====
+=== Attributes ===
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -254,7 +254,7 @@ A simple task to merge XML files.
 | `root` | | string | no | By default the root tag of the first element will be the root tag for the merged content. Use attribute root to specify a different root tag.
 |===========================
 
-==== Behaviour ====
+=== Behaviour ===
 
 Assume that folder xmldir contains two files x.xml and y.xml where x.xml looks like
 
@@ -304,17 +304,17 @@ The same setup as before gives, when no root element is applied, the following:
 -------------------------------------
 
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/XmlMerger.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java[Source]
 
-=== property-by-regex === 
+== property-by-regex ==
 
 A task to compose a property based on existing properties.
 
 The new property is composed by searching for property names matching a given regular expression. Then the new property is created by  concatenating the value of each matching property using a separator of choice.
 
-==== Attributes ====
+=== Attributes ===
 
 //cols=2
 [cols="20%,80%"]
@@ -324,7 +324,7 @@ The new property is composed by searching for property names matching a given re
 | sep | The separator to use when concatenating
 |=========================
 
-==== Example ====
+=== Example ===
 
 Assume that the following properties are defined:
 
@@ -356,11 +356,11 @@ creates property
 -------------------------------------
 
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Property-by-regex.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java[Source]
 
-=== scandeps ===
+== scandeps ==
 
 A task to scanning for dependencies in files.
 
@@ -376,7 +376,7 @@ A task to scanning for dependencies in files.
 
 Example above searches for dependencies in file `build.xml` in the <<glossary_basefolder,project\'s base folder>>. The list of dependencies is assigned with variable `mydeps`. 
 
-==== Attributes ====
+=== Attributes ===
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -386,11 +386,11 @@ Example above searches for dependencies in file `build.xml` in the <<glossary_ba
 | debug     | bool   | false     |  no | Turn on extra debug information 
 |===========================
 
-==== Elements ====
+=== Elements ===
 
 This task is a implicit http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] and may thus contain any elements which can be applied to a fileset. 
 
-==== Behaviour ====
+=== Behaviour ===
 
 If attribute `var` is not used, then no scanning for dependencies takes place and no warning will be issued (except when `debug` has been enabled). If a variable is used, then a list of dependencies will be assigned in any case. If no dependencies are found, the list will be empty.
 
@@ -411,7 +411,7 @@ A dependency is just recognized by it's element name regardless any namespace. T
 
 will be accepted as dependency when scanning.
 
-==== Further Links ====
+=== Further ===
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/ScanDeps.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java[Source]
 
