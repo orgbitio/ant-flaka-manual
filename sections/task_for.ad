@@ -14,9 +14,13 @@ A task that implements a loop statement. Iterating over a list of _objects_:
 
 === Attributes ===
 
-|| Attribute || Type   || Default || EL    || Description ||
-|| `var`     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in <<el>> enabled tasks. ||
-|| `in`      || string ||         || expr  || The items to be iterated over as <<el>> expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type   | Default | EL    | Description 
+| `var`     | string |         | #{}   | The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in <<el>> enabled tasks. 
+| `in`      | string |         | expr  | The items to be iterated over as <<el>> expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. 
+|===========================
 
 === Elements ===
 

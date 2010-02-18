@@ -3,7 +3,7 @@
 [[el,EL]]
 == EL, The Expression Language ==
 
-The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] http://www.jcp.org/en/jsr/detail?id=245[(JSR-245)] is a special purpose programming (albeit not turing complete) language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.
+The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.
 
 One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as _string_ object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for _Unified Expression Language_) this becomes an easy task:
 
@@ -93,7 +93,7 @@ To enable handling of EL references on a global level on all tasks, types or  ma
 [[el_references]]
 === EL References ===
 
-Those _not_ familiar with the specification of http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf<<el>>, http://en.wikipedia.org/wiki/JavaServer_Pages[JSP] or http://en.wikipedia.org/wiki/JavaServer_Faces[JSF] may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed footnote:[EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content].
+Those _not_ familiar with the specification of http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[EL], http://en.wikipedia.org/wiki/JavaServer_Pages[JSP] or http://en.wikipedia.org/wiki/JavaServer_Faces[JSF] may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed footnote:[EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content].
 
 For those familiar, the _term EL expression_ is used in a slightly different way in this documentation than in the specification. According to the specification, `#{..}` is an EL expression. 
 

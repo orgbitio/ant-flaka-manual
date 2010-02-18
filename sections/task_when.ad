@@ -17,8 +17,12 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 
 
 === Attributes ===
-|| Attribute || Type   || Default || EL    || Description ||
-|| `test`    || string || `false` || expr  || A <<el>> expression that must evaluate to `true` in order to execute the body of this if statement. ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type   | Default | EL    | Description 
+| `test`    | string | `false` | expr  | A <<el>> expression that must evaluate to `true` in order to execute the body of this if statement. 
+|===========================
 
 === Elements ===
 

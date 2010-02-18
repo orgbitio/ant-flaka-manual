@@ -109,10 +109,779 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </itemizedlist>
 </section>
 </section>
+<section id="el" xreflabel="EL">
+<title>EL, The Expression Language</title>
+<simpara>The <ulink url="http://en.wikipedia.org/wiki/Unified_Expression_Language">Java Unified Expression Language</ulink> is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.</simpara>
+<simpara>One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as <emphasis>string</emphasis> object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for <emphasis>Unified Expression Language</emphasis>) this becomes an easy task:</simpara>
+<screen>&lt;c:echo&gt;
+  ;; basedir is a standard Ant property
+  basedir is ${basedir}
+
+  ;; report last modification time (as Date object)
+  was last modified at #{ '${basedir}'.tofile.mtime }
+
+  ;; dump the full name of this build file
+  ;; where 'ant.file' is a standard property
+  this is #{property['ant.file'] } reporting!
+&lt;/c:echo&gt;</screen>
+<simpara>Being executed, this snippet produces something like</simpara>
+<screen>[c:echo] basedir is /projects/flaka/test
+[c:echo]
+[c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
+[c:echo]
+[c:echo] this is /projects/flaka/test/tryme.xml reporting!</screen>
+<simpara>as output. Notice that Flaka's <xref linkend="task_echo"/> task has been used for this illustration because <xref linkend="el"/> is by default only available on Flaka tasks. If <ulink url="http://ant.apache.org/manual/CoreTasks/echo.html">Ant's standard echo task</ulink> is used, all <literal>#{..}</literal> constructs are left as they are. It is however possible and recommended to turn <xref linkend="el"/> on for <emphasis>all</emphasis> tasks. See <link linkend="el_enable_el">how to enable EL</link> for details.</simpara>
+<simpara>The next code example shows another <emphasis>EL in action</emphasis> sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the <emphasis>root</emphasis> folder:</simpara>
+<screen>&lt;c:let&gt;
+  ; the root folder as file object
+  root = '/'.tofile
+  ; create empty list
+  list = list()
+&lt;/c:let&gt;
+
+&lt;c:for var="file" in=" root.list "&gt;
+  &lt;c:when test=" file.isdir and not file.isread "&gt;
+    &lt;c:let&gt;
+      list = append(file,list)
+    &lt;/c:let&gt;
+  &lt;/c:when&gt;
+&lt;/c:for&gt;
+
+&lt;c:echo&gt;
+  ;; how many unreadable directories ??
+  There are #{size(list)} unreadable directories in #{root}.
+  And here they are #{list}.
+&lt;/c:echo&gt;</screen>
+<simpara>Executed on MacOS 10.5.6 (aka "Leopard") gives:</simpara>
+<screen>[c:echo] There are 2 unreadable directories in /.
+[c:echo] And here they are [/.Trashes, /.Spotlight-V100].</screen>
+<section id="el_ready_tasks">
+<title>EL Ready Tasks</title>
+<simpara>By default can EL expressions can only be used in tasks which are EL aware. This tasks are:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+<xref linkend="task_echo"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_for"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_let"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_properties"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_unless"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_when"/>
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>It is possible though to enable <xref linkend="el"/> on a global level, i.e. for all tasks.</simpara>
+</section>
+<section id="el_enabling_el">
+<title>Globally Enabling EL</title>
+<simpara>To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <xref linkend="task_install_property_handler"/>:</simpara>
+<screen>&lt;c:install-property-handler /&gt;</screen>
+</section>
+<section id="el_references">
+<title>EL References</title>
+<simpara>Those <emphasis>not</emphasis> familiar with the specification of <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">EL</ulink>, <ulink url="http://en.wikipedia.org/wiki/JavaServer_Pages">JSP</ulink> or <ulink url="http://en.wikipedia.org/wiki/JavaServer_Faces">JSF</ulink> may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed <footnote><simpara>EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content</simpara></footnote>.</simpara>
+<simpara>For those familiar, the <emphasis>term EL expression</emphasis> is used in a slightly different way in this documentation than in the specification. According to the specification, <literal>#{..}</literal> is an EL expression.</simpara>
+<simpara>Not so in this documentation. Here only the inner part, denoted by <literal>..</literal> is a <emphasis>EL expression</emphasis> while <literal>#{ ..}</literal> is considered a <emphasis>reference to an EL expression</emphasis>. A reference to an expression is used in contexts which are partially evaluated. Take task <xref linkend="task_echo"/> as example. Clearly, when writing</simpara>
+<screen>&lt;c:echo&gt;
+ I said 'Hello world'!
+&lt;/c:echo&gt;</screen>
+<simpara>we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what <literal>#{..}</literal> is good for:</simpara>
+<screen>&lt;c:let&gt;
+ what = 'Hello world'
+&lt;/c:let&gt;
+
+&lt;c:echo&gt;
+ I said '#{ what }'!
+&lt;/c:echo&gt;</screen>
+<simpara>In other contexts, like in <literal>&lt;c:when test=" condition " /&gt;</literal>, a EL expression is expected anyway and it does not make the slightest sense to require the expression to be referenced. As an example, assume that we want to check whether a property named <emphasis>foobar</emphasis> exists. Instead of writing</simpara>
+<screen>&lt;c:when test=" #{has.property['foobar']} " /&gt;   -- don't!</screen>
+<simpara>as seen in popular JSP tag libraries, just write</simpara>
+<screen>&lt;c:when test=" has.property['foobar'] " /&gt;   -- yes!!!</screen>
+<simpara>And forget about that unnecessary clutter.</simpara>
+<simpara>Notice however, that in all contexts where a expression is expected, a expression reference can be used. This allows for advanced meta programming like shown in the following example:</simpara>
+<screen>&lt;c:when test=" has.property['#{propertyname}'] " /&gt;   -- sic!</screen>
+</section>
+<section id="_handling_of_literal_literal">
+<title>Handling of <literal>${..}</literal></title>
+<simpara><emphasis>EL</emphasis> defines two types of references:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+<emphasis role="strong">deferred</emphasis>, indicated by <literal>#{..}</literal> ; and
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">dynamic</emphasis>, indicated by <literal>${..}</literal>
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Dynamic references <literal>${..}</literal> are handled by Ant to resolve properties. There are two execptions to this however. Ant will leave a dynamic reference as is if the reference value does not denote a (existing) property. Secondly, Ant allows to escape a reference by by doubling character <literal>$</literal> as in <literal>$${a}</literal>. In any case, <literal>${..}</literal> does not denote a legal EL reference and will be left as is. Be aware that you can install a property handler to get rit of unresolved <literal>${..}</literal> property references.</simpara>
+</section>
+<section id="_handling_of_literal_literal_2">
+<title>Handling of <literal>#{..}</literal></title>
+<simpara>Deferred references <literal>#{..}</literal> are evaluated according to regular EL rules. Each reference is evaluated independently. Thus</simpara>
+<screen> The #{ 'Good' }, the Bad and the #{ 'Ug' 'ly' }, a well known #{ 'movie' }.</screen>
+<simpara>Would print</simpara>
+<screen> The Good, the Bad and the , a well known movie.</screen>
+<simpara>cause the second reference is illegal. Notice however that all valid references are evaluated.</simpara>
+</section>
+<section id="_nested_references">
+<title>Nested References</title>
+<simpara>Nested references are not supported. The following reference is therefore illegal</simpara>
+<screen> #{ item[ #{index} ] }</screen>
+</section>
+<section id="_the_great_escape">
+<title>The Great Escape</title>
+<simpara>This section is about how to stop a EL reference from being evaluated and treated as text instead:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+Use character backslash like in <literal>\#{abc}</literal> ; or use this rather awkward
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>#{'#{'}abc}</literal> construct.
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Both variants have the same result, the string <literal>#{abc}</literal>.</simpara>
+</section>
+<section id="_gory_el_details">
+<title>Gory EL Details</title>
+<simpara>The gory details of <emphasis>EL</emphasis> are laid out in the <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">the official JSR 245 specification</ulink> and are not repeated here. In short however, <emphasis>EL</emphasis> let&#8217;s you formulate <ulink url="http://en.wikipedia.org/wiki/Expression_(programming)">programming expressions</ulink> like</simpara>
+<screen>  7 * (5.0+x) &gt;= 0        ;; 1
+  a and not (b || false)  ;; 2
+  empty x ? 'foo' : x[0]  ;; 3</screen>
+<simpara>The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable <literal>x</literal> and similar does (2) on <literal>a</literal> and <literal>b</literal>. Line (3) shows the usage of two built-in <link linkend="el_operators">operators (see below for details)</link>.</simpara>
+<simpara>The rest of this chapter introduces relevant details of EL in order to use it within Flaka.</simpara>
+</section>
+<section id="_data_types">
+<title>Data Types</title>
+<simpara><emphasis>EL</emphasis>'s data types are integral and floating point numbers, strings, boolean and type <literal>null</literal>. Example data values of each type, except type <literal>null</literal>, are given above (1-3). Type <literal>null</literal> has once instance value also named <literal>null</literal>. While <literal>null</literal> can&#8217;t be used to formulate an expression, it is important to understand that the result of evaluating an expression can be <literal>null</literal>. For example, the evaluation of a variable named <literal>x</literal> is the data object associated with that name. If no data is associcated however (i.e. if <literal>x</literal> is undefined), then <literal>x</literal> evaluates to <literal>null</literal>.</simpara>
+</section>
+<section id="_strings">
+<title>Strings</title>
+<simpara>A EL string starts and ends with the same quotation character. Possible quotation characters are single the quote <literal>'</literal> and double quote <literal>"</literal> character. If string uses <literal>'</literal> as quotation character, then there is no need to <emphasis>escape</emphasis> quoation character <literal>"</literal> within that string. Thus the following strings are valid:</simpara>
+<screen> "a'b"   --&gt; a'b
+ 'a"b'   --&gt; a"b</screen>
+<simpara>If however the string&#8217;s quotation character is to be used within the string, then the quoation character needs to be escaped from it&#8217;s usual meaning. This is done by prepending character backslash:</simpara>
+<screen> "a\"b"  --&gt; a"b
+ 'a\'b'  --&gt; a'b</screen>
+<simpara>To escape the backslash character from it&#8217;s usual meaning (escaping that is), escape the backslash character with a backslash:</simpara>
+<screen> "a\\"   --&gt; a\
+ 'a\\'   --&gt; a\</screen>
+<simpara>Other characters than the quotation and backslash character can&#8217;t be escaped. Thus</simpara>
+<screen> "a\bc"  --&gt; a\bc, NOT abc</screen>
+<simpara>However, a escaped backslash evaluates always into a single backslash character:</simpara>
+<screen> "a\\b"  --&gt; a\b,  NOT a\\b</screen>
+<simpara>This rules allow for an easy handling of strings. Just take an quoation character. Then, escape any occurences of the quoation and escape character within the string to preserve the original input string.</simpara>
+<simpara>Here are same further examples strings:</simpara>
+<screen>"abc"        -- abc
+'abc'        -- abc
+"a'c'        -- illegal
+"a'c"        -- a'c
+'a\'c'       -- a'c
+'a\bc'       -- a\bc
+'a\\bc'      -- a\\bc
+'a\"bc'      -- a\"bc
+'a\\"bc'     -- a\\"bc
+'ab\'        -- illegal
+'ab\\'       -- ab\</screen>
+</section>
+<section id="el_operators">
+<title>Operators</title>
+<simpara>Four <emphasis>operators</emphasis> are defined in <emphasis>EL</emphasis>:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>
+<literal>empty</literal> checks whether a variable is empty or not and returns either <literal>true</literal> or <literal>false</literal>. It is important to understand that <literal>null</literal> is considered empty.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+condition operator <literal>c ? a : b</literal> evaluates <literal>c</literal> in a boolean context and returns the evaluation of expression <literal>a</literal> if <literal>c</literal> evaluates to <literal>true</literal>; otherwise <literal>eval(b)</literal> will be the result of this operator.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>.</literal> and ;
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>[]</literal> are property operators described in <link linkend="el_properties">section <emphasis>Properties</emphasis></link> below.
+</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section id="el_properties">
+<title>Properties</title>
+<simpara>Every data object in <emphasis>EL</emphasis> may have properties associated. Which properties are available has not been standardized in the <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">specification</ulink>. In fact, this depends heavily on the underlying implementation and usage domain. What <emphasis>EL</emphasis> specifies however, is how to query a property:</simpara>
+<screen>a.b.c</screen>
+<simpara>This expression can be translated into pseudo code as</simpara>
+<screen> (property 'c' (property 'b' (eval a)))</screen>
+<simpara>which means that first variable <literal>a</literal> is evaluted, then property <literal>b</literal> is looked up on the evaluation result (giving a new evaluation result) and finally <literal>c</literal> is looked up giving the final result.</simpara>
+<simpara>Perhaps the most important point to notice is looking up a property on <literal>null</literal> is not an error but perfectly legal. No exception gets raised and no warning message generated. In fact, the result of such a operation is just <literal>null</literal> again.</simpara>
+<simpara>From a practial point a question might be asked how to query a property which happens to contain the dot (<literal>.</literal>) character. In <literal>a.b.c</literal> example shown above, how would we lookup property <literal>b.c</literal> on <literal>a</literal>? Operator <literal>[]</literal> comes to rescue:</simpara>
+<screen> a['b']        =&gt; a.b
+ (a['b'])['c'] =&gt; a.b.c
+ a['b']['c']   =&gt; a.b.c
+ a[b]          =&gt; can't be expressed using '.'
+ a[b.c]        =&gt; neither this ..
+ a['b.c']      =&gt; query property 'b.c' on a</screen>
+<simpara>So far, properties don&#8217;t seem of any good use. The picture changes perhaps with this example:</simpara>
+<screen> 'abc'.toupper           =&gt; 'ABC'
+ 'abc'.length*4          =&gt; 12
+ 'abc'['tofile'].mkdir   =&gt; true/false</screen>
+<simpara>The last example demonstrates that there might also be <ulink url="http://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effects</ulink> querying a property. In the example above, which is specific for Flaka, a directory <literal>abc</literal> gets created and the whole expression evaluates to <literal>true</literal> if the directory could get created and <literal>false</literal> otherwise.</simpara>
+<simpara>See further down which properties are available on various data types.</simpara>
+</section>
+<section id="el_implicit_objects">
+<title>Implicit Objects</title>
+<simpara>Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with <emphasis>something</emphasis>, <xref linkend="el"/> allows the implementation to provide <emphasis>implicit</emphasis> objects and <link linkend="el_functions">top level functions (see below)</link>.</simpara>
+<simpara>The following implicit objects are defined by Flaka:</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Implicit Object</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>name</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>If <emphasis>name</emphasis> is not a predefined name as listed in the rest of this table, then <emphasis>name</emphasis> will be the same as <literal>var[name]</literal>, i.e. <emphasis>name</emphasis> will resolve to the object associated with variable <emphasis>name</emphasis>.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>project</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Ant&#8217;s underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>property</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Use this object to query project properties.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>var</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>A object containing all project references.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>reference</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>var</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>target</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Use this object to query a target</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>taskdef</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Query taskdefs</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>macrodefs</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Macros</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>tasks</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>Either taskdef or macrodef. Macros are specialized task and thus same the same namespace.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>filter</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>A object containing all filters defined in this project.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>e</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical <ulink url="http://en.wikipedia.org/wiki/E_(mathematical_constant)">constant e</ulink>, also known as <ulink url="http://en.wikipedia.org/wiki/Euler">Euler</ulink>'s number.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>pi</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The  mathematical <ulink url="http://en.wikipedia.org/wiki/P">constant pi</ulink></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara>An example for an EL expression fetching property <literal>foo</literal> is:</simpara>
+<screen>property.foo
+project.properties.foo</screen>
+<simpara>Similar, a variable named <literal>foo</literal> is fetched like</simpara>
+<screen>foo                     -- (1)
+var.foo                 -- (2)
+reference.foo           -- (3)
+project.references.foo  -- (4)</screen>
+</section>
+<section id="el_functions">
+<title>Functions</title>
+<simpara><emphasis>EL</emphasis> also allows the implementation to provide top level functions. The following sections describe functions provided by Flaka. Some functions take an arbitrary number of arguments (inclusive no argument at all). This is denoted by two dots (<literal>..</literal>). An example of such a function is <literal>list(object..)</literal> which takes an arbitrary number of object to create a list.</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="25*"/>
+<colspec colname="col_2" colwidth="10*"/>
+<colspec colname="col_3" colwidth="65*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Function</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Meaning</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>typeof(object)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>The type of <literal>object</literal>, <literal>int</literal>, <literal>string</literal>, <literal>file</literal> etc</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>size(object)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the object&#8217;s size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying <literal>size()</literal> method or <literal>size</literal> or <literal>length</literal> attribute of the object in question.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>sizeof(object)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>same as <literal>size(object)</literal>, see above</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>null(object)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>Evaluates to <literal>true</literal> if object is the <literal>nil</literal> entity; otherwise <literal>false</literal>. This function can be used to check whether a reference (var) or property exists. Operator <literal>empty</literal> can&#8217;t be used for this task, cause <literal>empty</literal> returns <literal>true</literal> if either not existing or if literatly <emphasis>empty</emphasis> (for example the empty string).</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>file(object)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>File</simpara></entry>
+<entry align="left" valign="top"><simpara>Creates and returns a file object out of <literal>object</literal>. If <literal>object</literal> is already a file, the object is simply returned. Otherwise, the object is streamed into a string and that string is taken as the file&#8217;s path name.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>concat(object..)</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>Creates a string by concatenating all stringized objects. If no object is provided, the empty string is returned.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>list(object..)</simpara></entry>
+<entry align="left" valign="top"><simpara>list</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns a list where the list&#8217;s elements consists of the objects provided. If no objects are provided, the empty list is returned.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>append(object..)</simpara></entry>
+<entry align="left" valign="top"><simpara>list</simpara></entry>
+<entry align="left" valign="top"><simpara>This function is similar to <literal>list</literal>. It takes the objects in order and creates a list elements out of them. If a object is a list, then elements of that list are inserted instead of the list object itself. For example <literal>append('a,list('b'),'c')</literal> evaluates to list <literal>('a','b','c')</literal></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara>Some mathematical functions are defined as well:</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="20*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="65*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>sin(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">sine</ulink> function</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>cos(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">cosine</ulink> function</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>tan(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical <ulink url="http://en.wikipedia.org/wiki/Trigonometric_functions">tangent</ulink> function</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>exp(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical exponential function, <literal>e</literal> raised to the power of the given argument</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>log(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>The mathematical logarithm function of base <literal>e</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>pow(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the value of the first argument raised to the power of the second argument.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>sqrt(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the correctly rounded positive square root of a double value.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>abs(double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the absolute value of a double value.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>min(double, double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the smaller of two double values.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>max(double, double)</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns the larget of two double values.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>rand()</simpara></entry>
+<entry align="left" valign="top"><simpara>double</simpara></entry>
+<entry align="left" valign="top"><simpara>Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_available_properties">
+<title>Available Properties</title>
+<simpara>In general properties are mapped as <emphasis>attribute</emphasis> on the underlying data object. In Java, every <emphasis>getX</emphasis> method taking no arguments identifies property <emphasis>x</emphasis>. As an example, assume that we have</simpara>
+<screen>public class Foo {
+ public .. getBar() { .. }
+}</screen>
+<simpara>then an data object of type <emphasis>Foo</emphasis> will have property <emphasis>bar</emphasis> and thus the following expression <literal>x.bar</literal> would eventually call <literal>Foo.getBar()</literal> assuming that <literal>x</literal> evaluates to an object of type <literal>Foo</literal>. Such properties are the <emphasis role="strong">natural</emphasis> properties of a type.</simpara>
+</section>
+<section id="_primitve_types">
+<title>Primitve Types</title>
+<simpara>Primite data types (int, double, bool, null) have no properties.</simpara>
+</section>
+<section id="_list_and_arrays">
+<title>List and Arrays</title>
+<simpara>Besides their <emphasis>natural</emphasis> properties (see discussion above) are <emphasis>index</emphasis> properties available:</simpara>
+<screen>list('a','b')[1]  =&gt; 'b'</screen>
+<simpara>Negative indexes are currently not supported. If an index is specfies an not existing element, <literal>null</literal> is returned.</simpara>
+</section>
+<section id="el_string_properties">
+<title>String Properties</title>
+<simpara>Besides <emphasis>natural</emphasis> properties (see discussion above) are the following properties supported:</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Property</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>length</simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>number of characters in this string</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>size</simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>same as property <literal>length</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>tolower</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>return this string in lowercase characters only</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>toupper</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>return this string in uppercase characters only</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>trim</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>remove leading and trailing whitespace characters</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>tofile</simpara></entry>
+<entry align="left" valign="top"><simpara>file</simpara></entry>
+<entry align="left" valign="top"><simpara>create a file based on this string; the so created will be relative to the current build file&#8217;s base folder if the string&#8217;s value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project&#8217;s base folder (i.e. the folder containing the build script currently executed). Notice that <literal>.</literal> and <literal>..</literal> denote absolute paths, not relative ones.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="el_file_properties">
+<title>File Properties</title>
+<simpara>Files and folders is Ant&#8217;s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to <emphasis>get</emphasis> a file object in the first place. This is most easily done by using string property <literal>tofile</literal>:</simpara>
+<screen>  'myfolder'.tofile.isdir</screen>
+<simpara>In this example of an EL expression, string <literal>myfolder</literal> is converted in a File object using property <literal>tofile</literal>. In addition, the so created object is checked whether it is a folder or not.</simpara>
+<simpara>The following <emphasis>properties</emphasis> are defined on File objects:</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Property</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>parent</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>File</simpara></entry>
+<entry align="left" valign="top"><simpara>parent of file or folder as file object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>toabs</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>File</simpara></entry>
+<entry align="left" valign="top"><simpara>file or folder as absolute file object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>exists</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether file or folder exists</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>isfile</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether a file</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>isdir</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether a folder (directory)</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>ishidden</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether a hidden file or folder</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>isread</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether a file or folder is readable</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>iswrite</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>check whether a file or folder is writable</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>size</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>number of bytes in a (existing) file; 0 otherwise</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>length</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>same as <literal>size</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>mtime</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>Date</simpara></entry>
+<entry align="left" valign="top"><simpara>last modification date</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>list</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>File</simpara></entry>
+<entry align="left" valign="top"><simpara>array of files in folder ; otherwise <literal>null</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>tostr</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>String</simpara></entry>
+<entry align="left" valign="top"><simpara>file name as string object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>touri</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>URI</simpara></entry>
+<entry align="left" valign="top"><simpara>file as URI object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>tourl</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>URL</simpara></entry>
+<entry align="left" valign="top"><simpara>file as URL object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>delete</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>deletes the file or folder (true); false otherwise</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>mkdir</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>creates the folder (and intermediate) folders (true); false otherwise</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_matcher_properties">
+<title>Matcher Properties</title>
+<simpara>A <emphasis>matcher object</emphasis> is created by task <xref linkend="task_switch"/> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Property</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>start</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>The position within the input where the match starts.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>s</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>start</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>end</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>The position within the input where the match ends (the character at <literal>end</literal> is the last matching character)</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>e</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>end</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>groups</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>The number of capturing groups in the (regular) expression.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>size</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>length</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>n</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>pattern</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>p</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>pattern</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>i</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara>matcher</simpara></entry>
+<entry align="left" valign="top"><simpara>The matcher object for <emphasis>i</emphasis>'th capturing group. See task <xref linkend="task_switch"/> for examples.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_evaluating_in_a_boolean_context">
+<title>Evaluating in a boolean context</title>
+<simpara>When evaluation a expr in a string context, a string representation of the final object is created. Similar, when a evaluation in a boolean context takes place, a conversion into a boolean value of the evaluated object takes place. The following table describes this boolean conversion:</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>evaluated object type</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>true</literal></simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>file</simpara></entry>
+<entry align="left" valign="top"><simpara>if the file exists</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal> otherwise</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>if string is empty</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal> otherwise</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>null</simpara></entry>
+<entry align="left" valign="top"><simpara>never</simpara></entry>
+<entry align="left" valign="top"><simpara>always</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>boolean</simpara></entry>
+<entry align="left" valign="top"><simpara>if true</simpara></entry>
+<entry align="left" valign="top"><simpara>otherwise</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>other</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara>always</simpara></entry>
+<entry align="left" valign="top"><simpara>never</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+</section>
 <section id="_programming_constructs">
 <title>Programming Constructs</title>
 <simpara>This chapter provides an overview of programming constructs Flaka provides. This programming constructs are one of the Flaka&#8217;s pillars.</simpara>
-<section id="_strings">
+<section id="_strings_2">
 <title>Strings</title>
 <simpara>Like Ant, Flaka supports currently strings and, when applicable, pointer to resources (by referencing a symbol). Ant provides no functionality manipulate a string value and neither does Flaka. However, Flaka&#8217;s expression language contains string functions to create new strings.</simpara>
 </section>
@@ -230,7 +999,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_repetition">
 <title>Repetition</title>
-<simpara>Flaka has a looping statement. Use task <xref linkend="task_for"/> to iterate over a <emphasis>list</emphasis> of items. Use <xref linkend="task_break"/> and <xref linkend="tasks_continue"/> to terminate the loop or to continue the loop with the next item.</simpara>
+<simpara>Flaka has a looping statement. Use task <xref linkend="task_for"/> to iterate over a <emphasis>list</emphasis> of items. Use <xref linkend="task_break"/> and <xref linkend="task_continue"/> to terminate the loop or to continue the loop with the next item.</simpara>
 <screen> &lt;c:for var=" name " in=" ''.tofile.list "&gt;
     -- sequence of task or macros
     -- used &lt;c:continue /&gt; to continue ; and
@@ -322,10 +1091,48 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 [c:echo] i = 3</screen>
 <section id="_attributes">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
-|| <literal>test</literal>    || string || -     || expr || Terminate loop when <xref linkend="el"/> expression evaluates to <literal>true</literal> ||
-|| <literal>if</literal>      || string || -     || #{}  || Terminate if property exists ||
-|| <literal>unless</literal>  || string || -     || #{}  || Terminate if property does not exist ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>test</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>expr</simpara></entry>
+<entry align="left" valign="top"><simpara>Terminate loop when <xref linkend="el"/> expression evaluates to <literal>true</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>if</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>#{}</simpara></entry>
+<entry align="left" valign="top"><simpara>Terminate if property exists</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>unless</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>#{}</simpara></entry>
+<entry align="left" valign="top"><simpara>Terminate if property does not exist</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour">
 <title>Behaviour</title>
@@ -357,18 +1164,88 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <simpara>A task implementing a series of <emphasis>ifelse</emphasis> statements, i.e. a generalized <emphasis>if-then-else</emphasis> statement.</simpara>
 <section id="_attributes_2">
 <title>Attributes</title>
-<simpara>|| Attribute   || Type     || Default || EL || Description ||
-|| <emphasis>when</emphasis>.test || string   || <literal>false</literal> ||  = || A EL condition. When <literal>true</literal> corresponding clause will be executed. ||
-|| <emphasis>unless</emphasis>.text || string || <literal>true</literal>  ||  = || A EL condition. When <literal>false</literal> corresponding clause will be executed. ||
-|| debug       || boolean  || <literal>false</literal> ||  = || Turn on extra debug information. ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>when</emphasis>.test</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>=</simpara></entry>
+<entry align="left" valign="top"><simpara>A EL condition. When <literal>true</literal> corresponding clause will be executed.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>unless</emphasis>.text</simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>true</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>=</simpara></entry>
+<entry align="left" valign="top"><simpara>A EL condition. When <literal>false</literal> corresponding clause will be executed.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>debug</simpara></entry>
+<entry align="left" valign="top"><simpara>boolean</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>=</simpara></entry>
+<entry align="left" valign="top"><simpara>Turn on extra debug information.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements">
 <title>Elements</title>
-<simpara>|| Element   || Cardinality || Description ||
-|| when      || infinite    || To be executed if condition evaluates to <literal>true</literal> ||
-|| unless    || infinite    || To be executed if condition evaluates to <literal>false</literal> ||
-|| otherwise || [0,1]       || To be executed if no <literal>when</literal> or <literal>unless</literal> clause got executed ||
-|| default   || [0,1]       || Synonym for <literal>otherwise</literal> ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="35*"/>
+<colspec colname="col_3" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Element</simpara></entry>
+<entry align="left" valign="top"><simpara>Cardinality</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>when</simpara></entry>
+<entry align="left" valign="top"><simpara>infinite</simpara></entry>
+<entry align="left" valign="top"><simpara>To be executed if condition evaluates to <literal>true</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>unless</simpara></entry>
+<entry align="left" valign="top"><simpara>infinite</simpara></entry>
+<entry align="left" valign="top"><simpara>To be executed if condition evaluates to <literal>false</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>otherwise</simpara></entry>
+<entry align="left" valign="top"><simpara>[0,1]</simpara></entry>
+<entry align="left" valign="top"><simpara>To be executed if no <literal>when</literal> or <literal>unless</literal> clause got executed</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>default</simpara></entry>
+<entry align="left" valign="top"><simpara>[0,1]</simpara></entry>
+<entry align="left" valign="top"><simpara>Synonym for <literal>otherwise</literal></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour_2">
 <title>Behaviour===</title>
@@ -427,10 +1304,48 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 [c:echo] i = 3</screen>
 <section id="_attributes_3">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
-|| <literal>test</literal>    || string || -     || expr || Continue loop when <xref linkend="el"/> expression evaluates to <literal>true</literal> ||
-|| <literal>if</literal>      || string || -     || #{}  || Continue if property exists ||
-|| <literal>unless</literal>  || string || -     || #{}  || Continue if property does not exist ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>test</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>expr</simpara></entry>
+<entry align="left" valign="top"><simpara>Continue loop when <xref linkend="el"/> expression evaluates to <literal>true</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>if</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>#{}</simpara></entry>
+<entry align="left" valign="top"><simpara>Continue if property exists</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>unless</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>#{}</simpara></entry>
+<entry align="left" valign="top"><simpara>Continue if property does not exist</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour_3">
 <title>Behaviour</title>
@@ -657,9 +1572,41 @@ rowsep="1" colsep="1"
  &lt;/c:for&gt;</screen>
 <section id="_attributes_5">
 <title>Attributes</title>
-<simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>var</literal>     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like <literal>#{var}</literal> where <literal>var</literal> is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use <literal>#{..}</literal> only in <xref linkend="el"/> enabled tasks. ||
-|| <literal>in</literal>      || string ||         || expr  || The items to be iterated over as <xref linkend="el"/> expression. A iteration takes place except if <literal>null</literal> is the evaluation result. Otherwise, if the evaluation result is <emphasis>not iterable object</emphasis>, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>var</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>#{}</simpara></entry>
+<entry align="left" valign="top"><simpara>The variable holding each loop item. This variable can be referenced within the body like <literal>#{var}</literal> where <literal>var</literal> is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use <literal>#{..}</literal> only in <xref linkend="el"/> enabled tasks.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>in</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>expr</simpara></entry>
+<entry align="left" valign="top"><simpara>The items to be iterated over as <xref linkend="el"/> expression. A iteration takes place except if <literal>null</literal> is the evaluation result. Otherwise, if the evaluation result is <emphasis>not iterable object</emphasis>, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_3">
 <title>Elements</title>
@@ -1069,9 +2016,41 @@ rowsep="1" colsep="1"
 &lt;/c:properties&gt;</screen>
 <section id="_attributes_9">
 <title>Attributes</title>
-<simpara>|| Attribute || Type    || Default || EL || Description ||
-|| debug     || boolean || <literal>false</literal> || no || Turn extra debug information on ||
-|| comment   || String  || <literal>;</literal>     || no || The character that starts a comment line ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>debug</simpara></entry>
+<entry align="left" valign="top"><simpara>boolean</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Turn extra debug information on</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>comment</simpara></entry>
+<entry align="left" valign="top"><simpara>String</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>;</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>The character that starts a comment line</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_6">
 <title>Elements</title>
@@ -1128,10 +2107,38 @@ rowsep="1" colsep="1"
 </section>
 <section id="_elements_7">
 <title>Elements</title>
-<simpara>|| Name    || Cardinality || Description ||
-|| <literal>vars</literal>  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled. ||
-|| <literal>properties</literal> || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled. ||
-|| <emphasis>task</emphasis>  || arbitrary   || A (arbitrary) task or macro to be excecuted ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="35*"/>
+<colspec colname="col_3" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Name</simpara></entry>
+<entry align="left" valign="top"><simpara>Cardinality</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>vars</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>0..1</simpara></entry>
+<entry align="left" valign="top"><simpara>Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>properties</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>0..1</simpara></entry>
+<entry align="left" valign="top"><simpara>Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>task</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara>arbitrary</simpara></entry>
+<entry align="left" valign="top"><simpara>A (arbitrary) task or macro to be excecuted</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour_10">
 <title>Behaviour ==</title>
@@ -1174,25 +2181,133 @@ rowsep="1" colsep="1"
 <simpara>Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third <literal>matches</literal> element. Utilization of glob and regular expressions make <literal>switch</literal> a very flexible and powerful conditional statement.</simpara>
 <section id="_attributes_11">
 <title>Attributes</title>
-<simpara>|| Attribute || Type   || Default || <xref linkend="el"/>  || Description ||
-|| <literal>value</literal>   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is <emphasis>normalized</emphasis>, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
-|| <literal>var</literal>     || string ||       - || #{..} || Save details of this match as <literal>matching object</literal> using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
-|| <literal>ignorecase</literal> || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression <literal>(?i)</literal> ||
-|| <literal>comments</literal>   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression <literal>(?x)</literal> ||
-|| <literal>dotall</literal>     || bool || false ||     no || In dotall mode, the literal <literal>.</literal> matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression <literal>(?s)</literal>, where <literal>s</literal> is a mnemonic for <emphasis>single-line</emphasis> mode, which is what this mode is called in <ulink url="http://en.wikipedia.org/wiki/Perl">Perl</ulink>. ||
-|| <literal>unixlines</literal>  || bool || false  ||    no || In this mode, only character <literal>LF</literal> is accepted as line terminator character when using <literal>.</literal>, <literal>^</literal>, and <literal>$</literal>. Unix lines mode can also be enabled via the embedded flag expression (?d). ||
-|| <literal>multiline</literal>  || bool || false || no || In multiline mode, the literals <literal>^</literal> and <literal>$</literal> match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
-|| <literal>debug</literal>      || bool  || false ||   no || Turn on extra debug information ||
-|| <emphasis>matches</emphasis>.<literal>re</literal> || string ||    || #{..} || Element <literal>matches</literal>: Specify a matching pattern as regular expression. ||
-|| <emphasis>matches</emphasis>.<literal>pat</literal> || string ||   || #{..} || Element <literal>matches</literal>: Specify a matching pattern as glob expression ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>value</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>el</simpara></entry>
+<entry align="left" valign="top"><simpara>The (string) value that needs to be matched against. Note that the value given is <emphasis>normalized</emphasis>, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>var</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara>-</simpara></entry>
+<entry align="left" valign="top"><simpara>#{..}</simpara></entry>
+<entry align="left" valign="top"><simpara>Save details of this match as <literal>matching object</literal> using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>ignorecase</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression <literal>(?i)</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>comments</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression <literal>(?x)</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>dotall</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>In dotall mode, the literal <literal>.</literal> matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression <literal>(?s)</literal>, where <literal>s</literal> is a mnemonic for <emphasis>single-line</emphasis> mode, which is what this mode is called in <ulink url="http://en.wikipedia.org/wiki/Perl">Perl</ulink>.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>unixlines</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>In this mode, only character <literal>LF</literal> is accepted as line terminator character when using <literal>.</literal>, <literal>^</literal>, and <literal>$</literal>. Unix lines mode can also be enabled via the embedded flag expression (?d).</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>multiline</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>In multiline mode, the literals <literal>^</literal> and <literal>$</literal> match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m).</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>debug</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>bool</simpara></entry>
+<entry align="left" valign="top"><simpara>false</simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Turn on extra debug information</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>matches</emphasis>.<literal>re</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>#{..}</simpara></entry>
+<entry align="left" valign="top"><simpara>Element <literal>matches</literal>: Specify a matching pattern as regular expression.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>matches</emphasis>.<literal>pat</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>#{..}</simpara></entry>
+<entry align="left" valign="top"><simpara>Element <literal>matches</literal>: Specify a matching pattern as glob expression</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 <simpara>Note that each <literal>switch</literal> attribute (but <literal>value</literal>) can be applied to a <literal>matches</literal> element. Applied on <literal>switch</literal> has the effect of providing the default value for subsequenct <literal>matches</literal> elements.</simpara>
 </section>
 <section id="_elements_8">
 <title>Elements</title>
-<simpara>|| Element   || Cardinality || Description ||
-|| <literal>matches</literal> || 0..infinity || An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing <literal>switch</literal> (but <literal>value</literal>). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. ||
-|| <literal>default</literal> || 0..1        || The default statement will be executed if no <literal>matches</literal> element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. ||
-|| <literal>otherwise</literal> || 0..1     || This element is a synonym for element <literal>default</literal> ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="35*"/>
+<colspec colname="col_3" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Element</simpara></entry>
+<entry align="left" valign="top"><simpara>Cardinality</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>matches</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>0..infinity</simpara></entry>
+<entry align="left" valign="top"><simpara>An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing <literal>switch</literal> (but <literal>value</literal>). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>default</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>0..1</simpara></entry>
+<entry align="left" valign="top"><simpara>The default statement will be executed if no <literal>matches</literal> element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>otherwise</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>0..1</simpara></entry>
+<entry align="left" valign="top"><simpara>This element is a synonym for element <literal>default</literal></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour_11">
 <title>Behaviour</title>
@@ -1269,9 +2384,41 @@ rowsep="1" colsep="1"
  &lt;c:throw /&gt; -- re-throws "4711" exception!!!</screen>
 <section id="_attributes_12">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
-|| <literal>reference</literal> || string || <literal>trycatch.object</literal> || no || The name of the reference holding the previously thrown exception ||
-|| <literal>var</literal> || || || no || Same as reference ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>reference</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>trycatch.object</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>The name of the reference holding the previously thrown exception</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>var</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as reference</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_behaviour_12">
 <title>Behaviour</title>
@@ -1351,11 +2498,55 @@ If a exception is thrown in a matching catch clause and in a finally clause, the
  &lt;/c:trycatch&gt;</screen>
 <section id="_attributes_13">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
-|| <literal>property</literal> || string || || no || The name of the property that should hold the exception message ||
-|| <literal>reference</literal> || string || <literal>trycatch.object</literal> || no || &gt;The name of the reference to hold the exception object ||
-|| <literal>catch.type</literal> || glob || <literal>*.BuildException</literal> || no || A pattern against the type (Java classname) of the exception object ||
-|| <literal>catch.match</literal> || glob || <literal>*</literal>  || no || A pattern to be applied against the exception message ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>property</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>The name of the property that should hold the exception message</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>reference</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>trycatch.object</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>&gt;The name of the reference to hold the exception object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>catch.type</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>glob</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>*.BuildException</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>A pattern against the type (Java classname) of the exception object</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>catch.match</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>glob</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>*</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>A pattern to be applied against the exception message</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_9">
 <title>Elements</title>
@@ -1455,9 +2646,41 @@ finally&lt;br/&gt; A task container to be executed in any case
 <simpara>This example demonstrates how to remove properties <literal>p1</literal> and a property whose name dependes on the curent value of <literal>index</literal>.</simpara>
 <section id="_attributes_14">
 <title>Attributes</title>
-<simpara>|| Attribute || Type    || Default || EL || Description ||
-|| debug     || boolean || <literal>false</literal> || no || Turn extra debug information on ||
-|| comment   || String  || <literal>;</literal>     || no || The character that starts a comment line ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>debug</simpara></entry>
+<entry align="left" valign="top"><simpara>boolean</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>Turn extra debug information on</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>comment</simpara></entry>
+<entry align="left" valign="top"><simpara>String</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>;</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>no</simpara></entry>
+<entry align="left" valign="top"><simpara>The character that starts a comment line</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_10">
 <title>Elements</title>
@@ -1507,8 +2730,34 @@ finally&lt;br/&gt; A task container to be executed in any case
 <simpara>Note that the example is bit artificial cause Ant&#8217;s loadfile task is sufficient.</simpara>
 <section id="_attributes_15">
 <title>Attributes</title>
-<simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>test</literal>    || string || <literal>false</literal> || expr  || A <xref linkend="el"/> expression that must evaluate to <literal>true</literal> in order to execute the body of this if statement. ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>test</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>expr</simpara></entry>
+<entry align="left" valign="top"><simpara>A <xref linkend="el"/> expression that must evaluate to <literal>true</literal> in order to execute the body of this if statement.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_11">
 <title>Elements</title>
@@ -1547,8 +2796,34 @@ Any tasks or macro instances.
 &lt;c:while&gt;</screen>
 <section id="_attributes_16">
 <title>Attributes</title>
-<simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>test</literal>    || string || <literal>false</literal> || expr  || The condition for looping as <xref linkend="el"/> expression ||</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="5">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="11*"/>
+<colspec colname="col_3" colwidth="11*"/>
+<colspec colname="col_4" colwidth="11*"/>
+<colspec colname="col_5" colwidth="52*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Attribute</simpara></entry>
+<entry align="left" valign="top"><simpara>Type</simpara></entry>
+<entry align="left" valign="top"><simpara>Default</simpara></entry>
+<entry align="left" valign="top"><simpara>EL</simpara></entry>
+<entry align="left" valign="top"><simpara>Description</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>test</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>string</simpara></entry>
+<entry align="left" valign="top"><simpara><literal>false</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>expr</simpara></entry>
+<entry align="left" valign="top"><simpara>The condition for looping as <xref linkend="el"/> expression</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="_elements_12">
 <title>Elements</title>

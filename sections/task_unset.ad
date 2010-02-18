@@ -14,9 +14,13 @@ The unset statement allows the removal of properties. Use this task with care as
 This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
 
 === Attributes ===
-|| Attribute || Type    || Default || EL || Description ||
-|| debug     || boolean || `false` || no || Turn extra debug information on || 
-|| comment   || String  || `;`     || no || The character that starts a comment line || 
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type    | Default | EL | Description 
+| debug     | boolean | `false` | no | Turn extra debug information on 
+| comment   | String  | `;`     | no | The character that starts a comment line 
+|===========================
 
 === Elements ===
 

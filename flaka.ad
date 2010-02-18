@@ -53,7 +53,12 @@ Not all targets have been reached in the current version of Flaka (Release candi
  * Make sure to look into the chapter about the <<el,expression language>>, it contains a lot of information on this enormous useful extension.
  * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
 
-//include::install.ad[]
+//
+// The EL chapter.
+//
+
+include::sections/el.ad[]
+
 
 //
 // This should all go into Part 1 (so wee need to have a book here instead of an article)
@@ -225,7 +230,7 @@ Each case is tried in turn _to match_ the string value (given as <<el>> expressi
 
 === Repetition ===
 
-Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<tasks_continue>> to terminate the loop or to continue the loop with the next item.
+Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<task_continue>> to terminate the loop or to continue the loop with the next item.
 
 
 -------------------------------------
@@ -351,11 +356,6 @@ which eventually prints the desired greeting.
 
 Macros are a standard feature of Ant.
 
-//
-// The EL chapter.
-//
-
-//include::sections/el.ad[]
 
 //
 //include::howto.ad[]
@@ -385,6 +385,20 @@ include::sections/task_when.ad[]
 include::sections/task_while.ad[]
 
 
-//include::sections/task_properties.ad[]
+//
+// A chapter about doing things with Flaka
+//
 //include::sections/todo.ad[]
+
+
+//
+// How to install Flaka
+//
+
+include::install.ad[]
+
+
+//
+// More stuff 
+//include::sections/missing.txt[]
 //include::sections/not-yet-ready.ad[]

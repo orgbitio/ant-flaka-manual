@@ -26,9 +26,13 @@ A task to set multiple properties in one go. It is typically used to _inline_ pr
 
 === Attributes ===
 
-|| Attribute || Type    || Default || EL || Description ||
-|| debug     || boolean || `false` || no || Turn extra debug information on || 
-|| comment   || String  || `;`     || no || The character that starts a comment line || 
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type    | Default | EL | Description 
+| debug     | boolean | `false` | no | Turn extra debug information on 
+| comment   | String  | `;`     | no | The character that starts a comment line 
+|===========================
 
 === Elements ===
 

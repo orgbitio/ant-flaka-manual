@@ -6,17 +6,25 @@
 A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then-else_ statement.
 
 === Attributes ===
-|| Attribute   || Type     || Default || EL || Description ||
-|| _when_.test || string   || `false` ||  = || A EL condition. When `true` corresponding clause will be executed. ||
-|| _unless_.text || string || `true`  ||  = || A EL condition. When `false` corresponding clause will be executed. ||
-|| debug       || boolean  || `false` ||  = || Turn on extra debug information. ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute   | Type     | Default | EL | Description 
+| _when_.test | string   | `false` |  = | A EL condition. When `true` corresponding clause will be executed. 
+| _unless_.text | string | `true`  |  = | A EL condition. When `false` corresponding clause will be executed. 
+| debug       | boolean  | `false` |  = | Turn on extra debug information. 
+|===========================
 
 === Elements ===
-|| Element   || Cardinality || Description ||
-|| when      || infinite    || To be executed if condition evaluates to `true` ||
-|| unless    || infinite    || To be executed if condition evaluates to `false` ||
-|| otherwise || [0,1]       || To be executed if no `when` or `unless` clause got executed ||
-|| default   || [0,1]       || Synonym for `otherwise` ||
+// cols=3
+[cols="15%,1*35%,50%"]
+|===========================
+| Element   | Cardinality | Description 
+| when      | infinite    | To be executed if condition evaluates to `true` 
+| unless    | infinite    | To be executed if condition evaluates to `false` 
+| otherwise | [0,1]       | To be executed if no `when` or `unless` clause got executed 
+| default   | [0,1]       | Synonym for `otherwise` 
+|===========================
 
 === Behaviour===
 

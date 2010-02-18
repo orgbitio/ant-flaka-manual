@@ -23,10 +23,14 @@ This would print:
 --------------------------------------
 
 === Attributes ===
-|| Attribute || Type || Default || <<el>> || Description ||
-|| `test`    || string || -     || expr || Continue loop when <<el>> expression evaluates to `true` ||
-|| `if`      || string || -     || #{}  || Continue if property exists ||
-|| `unless`  || string || -     || #{}  || Continue if property does not exist ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type | Default | <<el>> | Description 
+| `test`    | string | -     | expr | Continue loop when <<el>> expression evaluates to `true` 
+| `if`      | string | -     | #{}  | Continue if property exists 
+| `unless`  | string | -     | #{}  | Continue if property does not exist 
+|===========================
 
 === Behaviour ===
 

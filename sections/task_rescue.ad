@@ -26,10 +26,14 @@ This task does not define attributes.
 
 === Elements ===
 
-|| Name    || Cardinality || Description ||
-|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. ||
-|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. ||
-|| _task_  || arbitrary   || A (arbitrary) task or macro to be excecuted ||
+// cols=3
+[cols="15%,1*35%,50%"]
+|===========================
+| Name    | Cardinality | Description 
+| `vars`  | 0..1        | Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. 
+| `properties` | 0..1   | Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. 
+| _task_  | arbitrary   | A (arbitrary) task or macro to be excecuted 
+|===========================
 
 === Behaviour ==
 

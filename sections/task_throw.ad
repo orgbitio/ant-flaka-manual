@@ -22,9 +22,13 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
 --------------------------------------
 
 === Attributes ===
-|| Attribute || Type || Default || <<el>> || Description ||
-|| `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
-|| `var` || || || no || Same as reference ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type | Default | <<el>> | Description 
+| `reference` | string | `trycatch.object` | no | The name of the reference holding the previously thrown exception 
+| `var` | | | no | Same as reference 
+|===========================
 
 === Behaviour ===
 

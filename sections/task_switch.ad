@@ -24,26 +24,34 @@ Task `switch` has been designed to ease pattern matching. The idea is to try to 
 Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
 
 === Attributes ===
-|| Attribute || Type   || Default || <<el>>  || Description ||
-|| `value`   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
-|| `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
-|| `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
-|| `comments`   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` || 
-|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. || 
-|| `unixlines`  || bool || false  ||    no || In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). || 
-|| `multiline`  || bool || false || no || In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
-|| `debug`      || bool  || false ||   no || Turn on extra debug information ||
-|| _matches_.`re` || string ||    || #{..} || Element `matches`: Specify a matching pattern as regular expression. ||
-|| _matches_.`pat` || string ||   || #{..} || Element `matches`: Specify a matching pattern as glob expression ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type   | Default | <<el>>  | Description 
+| `value`   | string |       - |   el  | The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.
+| `var`     | string |       - | #{..} | Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. 
+| `ignorecase` | bool | false  |    no | Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` 
+| `comments`   | bool | false  |    no | Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` 
+| `dotall`     | bool | false |     no | In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. 
+| `unixlines`  | bool | false  |    no | In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). 
+| `multiline`  | bool | false | no | In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). 
+| `debug`      | bool  | false |   no | Turn on extra debug information 
+| _matches_.`re` | string |    | #{..} | Element `matches`: Specify a matching pattern as regular expression. 
+| _matches_.`pat` | string |   | #{..} | Element `matches`: Specify a matching pattern as glob expression 
+|===========================
 
 Note that each `switch` attribute (but `value`) can be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
 
 === Elements ===
 
-|| Element   || Cardinality || Description ||
-|| `matches` || 0..infinity || An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing `switch` (but `value`). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. ||
-|| `default` || 0..1        || The default statement will be executed if no `matches` element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. ||
-|| `otherwise` || 0..1     || This element is a synonym for element `default` ||
+// cols=3
+[cols="15%,1*35%,50%"]
+|===========================
+| Element   | Cardinality | Description 
+| `matches` | 0..infinity | An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing `switch` (but `value`). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. 
+| `default` | 0..1        | The default statement will be executed if no `matches` element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. 
+| `otherwise` | 0..1     | This element is a synonym for element `default` 
+|===========================
 
 === Behaviour ===
 

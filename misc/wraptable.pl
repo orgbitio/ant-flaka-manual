@@ -3,8 +3,19 @@
 !defined $insec && /^\|\|/ && do {
   $insec = 1;
   # how man many '||' do we have here??
+  $count = 0;
   $count++ while $_ =~ /\|\|/g;
-  print "[cols=$count]\n";
+  $count--; # last one does not count ..
+  # Let the last column be 50% and split rest equally. However, Asciidoc does
+  # not allow for rational numbers, only integral numbers are allowed. Further-
+  # more, the total percentage must be 100%.
+  #
+  # Make the first column 15% wide fixed. 
+  $c = int($count - 2);
+  $w = int((50-15) / $c);
+  $r = int(100 - ($c * $w) - 15);
+  print "// cols=$count\n";
+  print "[cols=\"15%,$c*$w%,$r%\"]\n"; 
   print "|===========================\n";
 };
 

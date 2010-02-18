@@ -19,10 +19,14 @@ Being executed, the following will be dumped on stdout:
 --------------------------------------
 
 === Attributes ===
-|| Attribute || Type || Default || <<el>> || Description ||
-|| `test`    || string || -     || expr || Terminate loop when <<el>> expression evaluates to `true` ||
-|| `if`      || string || -     || #{}  || Terminate if property exists ||
-|| `unless`  || string || -     || #{}  || Terminate if property does not exist ||
+// cols=5
+[cols="15%,3*11%,52%"]
+|===========================
+| Attribute | Type | Default | <<el>> | Description 
+| `test`    | string | -     | expr | Terminate loop when <<el>> expression evaluates to `true` 
+| `if`      | string | -     | #{}  | Terminate if property exists 
+| `unless`  | string | -     | #{}  | Terminate if property does not exist 
+|===========================
 
 === Behaviour ===
 
