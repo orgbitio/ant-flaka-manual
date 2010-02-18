@@ -14,7 +14,7 @@ When executed by Ant, this dumps
 [echo] foobar
 -------------------------------------
 
-However, one day you reformat your XML build file footnote::http://xmlsoft.org/xmllint.html[xmlint][is a good choice] and you end up in
+However, one day you reformat your XML build file footnote::[http://xmlsoft.org/xmllint.html[xmlint] is a good choice] and you end up in
 
 -------------------------------------
 <echo>

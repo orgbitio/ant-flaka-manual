@@ -57,7 +57,7 @@ Notice the usage of the quote character `'` in the former example and the absenc
 
 Task _properties_ supports, like task <<tasks_let,let>> does, continuation lines and comments. Furthermore, variable references `#{..}` and property references `${..}` are resolved on both sides of `=`.
 
-If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is `null`, a property with string value `null` will be assigned if the property does not already exist (this is very much different than when using task [#let let] to create properties.
+If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is `null`, a property with string value `null` will be assigned if the property does not already exist (this is very much different than when using task <<task_let>> to create properties.
 
 Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant (and responsible for unexpected and hard to track script behaviour).
 

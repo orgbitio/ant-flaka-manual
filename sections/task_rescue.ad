@@ -30,12 +30,12 @@ This task does not define attributes.
 [cols="15%,1*35%,50%"]
 |===========================
 | Name    | Cardinality | Description 
-| `vars`  | 0..1        | Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. 
-| `properties` | 0..1   | Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. 
+| `vars`  | 0..1        | Defines a <<task_list>> of variable names. Attributes and behaviour is that of task <<task_list>> except that interpretation of lines as <<el>> expressions are disabled. 
+| `properties` | 0..1   | Defines a <<task_list>> of property names. Attributes and behaviour is that of task <<task_list>> except that interpretation of lines as <<el>> expressions are disabled. 
 | _task_  | arbitrary   | A (arbitrary) task or macro to be excecuted 
 |===========================
 
-=== Behaviour ==
+=== Behaviour ===
 
 Executes all embedded tasks. Variables and properties listed in `vars` and `properties` are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
 

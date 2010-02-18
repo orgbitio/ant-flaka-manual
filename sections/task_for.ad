@@ -41,5 +41,5 @@ This is the shortest possible for statement. It's legal albeit completely useles
  * Task <<tasks_for,for>> 
  * Task <<tasks_break,break>>
  * Task <<tasks_continue,continue>>
- * Quickref [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
+ * See section <<looping,Looping>> for an introduction to looping in Flaka
 

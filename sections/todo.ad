@@ -1,8 +1,8 @@
 === export === 
 
-Use this task to dump a file within the Flaka package to stdout or a file.  This task's usefulness is rather limited for public use, however this task is used to implement target [Targets#export export].  
+Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file.  This task's usefulness is rather limited for public use, however it allows you to have a look at Flaka\'s `antlib.xml`.
 
-==== Attributes ====// cols=5
+==== Attributes ====
 [cols="15%,3*11%,52%"]
 |===========================
 | Attribute | Type | Default | <<el>> | Description 
@@ -37,10 +37,10 @@ Ant lacks a simple task to report all or certain files in a folder. This task le
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
-| Attribute | Type   | EL | Meaning | Default 
-| dir       | string |  = | The directories to scan. | Basedir of build script (''.tofile) 
-| type      | string |    | `f` to select files and `d` to select folders | all files and folders 
-| var       | string |  r | The name of the variable to hold a list of scanned files or folders | null 
+| Attribute | Type   | EL  | Default | Descroption
+| dir       | string |  = | Basedir of build script (''.tofile) | The directories to scan. 
+| type      | string |     | all files and folders | `f` to select files and `d` to select folders
+| var       | string |  r  | null | The name of the variable to hold a list of scanned files or folders
 |===========================
 
 ==== Elements ====
@@ -49,9 +49,9 @@ This task implements a http://ant.apache.org/manual/CoreTypes/fileset.html[stand
 
 ==== Behaviour ====
 
-This task scans all files and folders given by attribute `dir` into a variable given by `var`. If `var` is empty, then no scanning takes place. Attribute `var` may contain [EL#EL_References EL references] which are resolved. If a scanning takes place, then `var` will be created and contains, in any case, a list value.
+This task scans all files and folders given by attribute `dir` into a variable given by `var`. If `var` is empty, then no scanning takes place. Attribute `var` may contain <<el_references,EL references>> which are resolved. If a scanning takes place, then `var` will be created and contains, in any case, a list value.
 
-Attribute `dir` may contain [EL#EL_References EL references] which are resolved. The so resolved string value must be a syntatically legal EL expression. This expression will then be evaluated. If the evaluated object is a list, then each list item will be scanned for files and folder, otherwise only the evaluated object. If such a object to be scanned is not already a file object, then stringized object is used to create the folder to be scanned. The following examples illustrate this behaviour:
+Attribute `dir` may contain <<el_references,EL references>> which are resolved. The so resolved string value must be a syntatically legal EL expression. This expression will then be evaluated. If the evaluated object is a list, then each list item will be scanned for files and folder, otherwise only the evaluated object. If such a object to be scanned is not already a file object, then stringized object is used to create the folder to be scanned. The following examples illustrate this behaviour:
 // cols=2
 [cols="20%,80%"]
 |===========================
@@ -317,7 +317,7 @@ The new property is composed by searching for property names matching a given re
 ==== Attributes ====
 
 //cols=2
-[cols="20%,80%]
+[cols="20%,80%"]
 |=========================
 |property | The name of the property to create
 | regex |The regular expression. 
@@ -374,7 +374,7 @@ A task to scanning for dependencies in files.
 -------------------------------------
 
 
-Example above searches for dependencies in file `build.xml` in the [Glossary#Base_Folder project's base folder]. The list of dependencies is assigned with variable `mydeps`. 
+Example above searches for dependencies in file `build.xml` in the <<glossary_basefolder,project\'s base folder>>. The list of dependencies is assigned with variable `mydeps`. 
 
 ==== Attributes ====
 // cols=5
@@ -394,7 +394,7 @@ This task is a implicit http://ant.apache.org/manual/CoreTypes/fileset.html[file
 
 If attribute `var` is not used, then no scanning for dependencies takes place and no warning will be issued (except when `debug` has been enabled). If a variable is used, then a list of dependencies will be assigned in any case. If no dependencies are found, the list will be empty.
 
-Attribute `dir` is evaluated as <<el>> expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
+Attribute `dir` is evaluated as <<el>> expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current <<glossary_base_folder,basefolder>> is used as root.
 
 This task may take any elements which are applicable for a http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
 

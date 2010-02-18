@@ -1,13 +1,15 @@
 
 
 [[overview]]
-== Programming Constructs ==
+== Overview ==
 
 This chapter provides an overview of programming constructs Flaka provides. This programming constructs are one of the Flaka's pillars.
 
+[[strings]]
 === Strings ===
 Like Ant, Flaka supports currently strings and, when applicable, pointer to resources (by referencing a symbol). Ant provides no functionality manipulate a string value and neither does Flaka. However, Flaka's expression language contains string functions to create new strings.
 
+[[symbols]]
 === Symbols ===
 
 Symbols are names carrying associated data. The name of a symbol is a sequence of characters. The allowed characters are basically unlimited. It is recommended to stick with well known characters [a-zA-Z0-9._-]. Symbols can be used as variables, target, task, type or macro names. 
@@ -19,10 +21,10 @@ Symbols are names carrying associated data. The name of a symbol is a sequence o
  * `<typedef name=sym>` Use _sym_ as type name
  * `id=sym` Use sym as reference: assign the evaluation of task (or macro) to _id_ 
 
+[[properties]]
 === Properties === 
 
 To reference a property, enclose it's symbol name with curly braces and prefix with the dollar character like:
-
 
 -------------------------------------
 
@@ -74,7 +76,7 @@ Properties have their own symbol table (as targets, tasks, macros and types have
 
 -------------------------------------
 
-
+[[sequencing]]
 === Sequencing ===
 
 To evaluate a sequence of expressions (tasks or macros) where only one expression is allowed, use http://ant.apache.org/manual/CoreTasks/sequential.html[Ant's sequential task]:
@@ -91,6 +93,7 @@ To evaluate a sequence of expressions (tasks or macros) where only one expressio
 
 Note that _sequential_ returns nothing. Use properties to communicate with the caller if necessary.
 
+[[conditionals]]
 === Conditionals ===
 
 With standard Ant, task http://ant.apache.org/manual/CoreTasks/condition.html[condition] is used to set a property if a condition is given. Then a macro, task or target can be conditionally executed  by checking the existence or absence of that property (using standard attributes _if_ or _unless_. Flaka defines a couple of control structures to handle conditionals in a simpler way.
@@ -165,6 +168,7 @@ A programming task often seen is to check whether a (string) value matches a giv
 
 Each case is tried in turn _to match_ the string value (given as <<el>> expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.
 
+[[looping]]
 === Repetition ===
 
 Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<task_continue>> to terminate the loop or to continue the loop with the next item.
@@ -185,7 +189,7 @@ Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of
 
 Attribute `in` will be evaluated as <<el>> expression. In the example above, that <<el>> expression is `''.tofile.list` which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at <<el_string_properties,properties>> of a string] and <<el_file_properties,properties>> of a file.
 
-
+[[exception_handling]]
 === Exception Handling ===
 
 Flaka has been charged with exception handling tasks.
@@ -253,6 +257,7 @@ Task <<task_throw>> throws a (build) exception.
 
 This task can also be used to rethrow an existing exception.
 
+[[macros]]
 === Macros  ===
 
 The (almost) equivalent of a function is a macro in Ant and Flaka. For example:

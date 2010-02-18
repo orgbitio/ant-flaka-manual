@@ -29,7 +29,7 @@ Notice the usage of a glob expression in the first and the usage of regular expr
 |===========================
 | Attribute | Type   | Default | <<el>>  | Description 
 | `value`   | string |       - |   el  | The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.
-| `var`     | string |       - | #{..} | Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. 
+| `var`     | string |       - | #{..} | Save details of this match as `matching object` using the variable name given. See <<el_matcher_properties,matcher properties>> for a list of available properties; see also below for examples. 
 | `ignorecase` | bool | false  |    no | Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` 
 | `comments`   | bool | false  |    no | Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` 
 | `dotall`     | bool | false |     no | In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. 
@@ -55,7 +55,7 @@ Note that each `switch` attribute (but `value`) can be applied to a `matches` el
 
 === Behaviour ===
 
-Attribute `value` is the basis for all further matching. It is a string value which may contain [Glossary#Property_Reference references to properties] or [Glossary#Expression_Reference EL expressions]. Leading and trailing whitespace will be discarded after having resolved all references. 
+Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,references to properties>> or <<glossary_expression_reference,EL expressions>>. Leading and trailing whitespace will be discarded after having resolved all references. 
 
 All other attributes (see above) are default values for subsequent `matches` elements. For example, setting attribute `debug` to `true` will turn on debug on all `matches` elements.
 
@@ -89,7 +89,7 @@ The very same can also be expressed as `re="\.jar$"` using regular expressions. 
  </c:switch>
 --------------------------------------
 
-Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be http://code.google.com/p/flaka/wiki/EL#Matcher_Properties[evaluated using properties] for matching details.
+Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then <<el_matcher_properties,evaluated using properties>> for matching details.
 
 Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
 --------------------------------------
