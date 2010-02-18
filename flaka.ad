@@ -56,6 +56,10 @@ include::sections/todo.ad[]
 include::sections/howto.ad[]
 //
 
+//
+// The glossary
+//
+include::sections/glossary.ad[]
 
 == Part IV, Installation ==
 
