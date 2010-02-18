@@ -34,8 +34,8 @@ This is the shortest possible for statement. It's legal albeit completely useles
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java Source]
- * Task [Tasks#for for] 
- * Task [Tasks#break break]
- * Task [Tasks#continue continue]
+ * Task <<tasks_for,for>> 
+ * Task <<tasks_break,break>>
+ * Task <<tasks_continue,continue>>
  * Quickref [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
 

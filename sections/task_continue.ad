@@ -3,7 +3,7 @@
 [[task_continue,continue]]
 == continue == 
 
-A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
+A task mirroring a continue statement. When used within a <<tasks_for,for>>-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
 
 --------------------------------------
  <c:for var="i" in=" list(1,2,3,4,5,6) ">
@@ -30,7 +30,7 @@ This would print:
 
 === Behaviour ===
 
-When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
+When used without any attributes, the surrounding <<tasks_for,for>> or <<tasks_while,while>> be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
 
 The example given above can thus be shortened to 
 --------------------------------------
@@ -43,7 +43,7 @@ The example given above can thus be shortened to
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
- * Task [Tasks#for for] 
- * Task [Tasks#break break]
+ * Task <<tasks_for,for>> 
+ * Task <<tasks_break,break>>
 
 

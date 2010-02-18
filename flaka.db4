@@ -309,7 +309,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="task_break" xreflabel="break">
 <title>break</title>
-<simpara>A task mirroring a break statement. When used within a [Tasks#for for]-loop, the loop will be terminated. If this task is used outside of a [Tasks#for for]-loop, a build exception will be thrown.</simpara>
+<simpara>A task mirroring a break statement. When used within a <link linkend="tasks_for">for</link>-loop, the loop will be terminated. If this task is used outside of a <link linkend="tasks_for">for</link>-loop, a build exception will be thrown.</simpara>
 <screen>  &lt;c:for var="i" in=" list(1,2,3,4,5,6) "&gt;
     &lt;c:echo&gt;i = #{i}&lt;/echo&gt;
      &lt;c:when test=" i == 3 "&gt;
@@ -329,7 +329,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_behaviour">
 <title>Behaviour</title>
-<simpara>When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to <literal>true</literal>. Otherwise, the loop will not be terminated and continues as usual.</simpara>
+<simpara>When used without any attributes, the surrounding <link linkend="tasks_for">for</link> or <link linkend="tasks_while">while</link> loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to <literal>true</literal>. Otherwise, the loop will not be terminated and continues as usual.</simpara>
 <simpara>The example given above can thus be shortened to</simpara>
 <screen>  &lt;c:for var="i" in=" list(1,2,3,4,5,6) "&gt;
     &lt;c:echo&gt;i = #{i}&lt;/echo&gt;
@@ -414,7 +414,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="task_continue" xreflabel="continue">
 <title>continue</title>
-<simpara>A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.</simpara>
+<simpara>A task mirroring a continue statement. When used within a <link linkend="tasks_for">for</link>-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.</simpara>
 <screen> &lt;c:for var="i" in=" list(1,2,3,4,5,6) "&gt;
    &lt;c:when test=" i &gt; 3 "&gt;
      &lt;c:continue /&gt;
@@ -434,7 +434,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_behaviour_3">
 <title>Behaviour</title>
-<simpara>When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to <literal>true</literal>. Otherwise, the subsequent tasks or macros are executed.</simpara>
+<simpara>When used without any attributes, the surrounding <link linkend="tasks_for">for</link> or <link linkend="tasks_while">while</link> be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to <literal>true</literal>. Otherwise, the subsequent tasks or macros are executed.</simpara>
 <simpara>The example given above can thus be shortened to</simpara>
 <screen> &lt;c:for var="i" in=" list(1,2,3,4,5,6) "&gt;
    &lt;c:continue test=" i &gt; 3 " /&gt;
@@ -456,12 +456,12 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#for for]
+Task <link linkend="tasks_for">for</link>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#break break]
+Task <link linkend="tasks_break">break</link>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -685,17 +685,17 @@ rowsep="1" colsep="1"
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#for for]
+Task <link linkend="tasks_for">for</link>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#break break]
+Task <link linkend="tasks_break">break</link>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#continue continue]
+Task <link linkend="tasks_continue">continue</link>
 </simpara>
 </listitem>
 <listitem>
@@ -1300,7 +1300,7 @@ rowsep="1" colsep="1"
 </listitem>
 <listitem>
 <simpara>
-Task [Tasks#trycatch trycatch]
+Task <link linkend="tasks_trycatch">trycatch</link>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1424,7 +1424,7 @@ finally&lt;br/&gt; A task container to be executed in any case
 </section>
 <section id="task_unless" xreflabel="unless">
 <title>unless</title>
-<simpara>This task is the logical opposite of task [Tasks#when when]. It&#8217;s body is only executed if the condition evaluates to false. See [Tasks#when when] for details. This example shows how to create a folder named libdir if such a folder does not already exist.</simpara>
+<simpara>This task is the logical opposite of task <link linkend="tasks_when">when</link>. It&#8217;s body is only executed if the condition evaluates to false. See <link linkend="tasks_when">when</link> for details. This example shows how to create a folder named libdir if such a folder does not already exist.</simpara>
 <screen> &lt;c:unless test=" 'libdir'.tofile.isdir "&gt;
   &lt;mkdir dir="libdir" /&gt;
  &lt;/c:unless&gt;</screen>
@@ -1573,12 +1573,12 @@ Any tasks or macro instances.
 </listitem>
 <listitem>
 <simpara>
-[Tasks#break break] to stop the iteration
+<link linkend="tasks_break">break</link> to stop the iteration
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[Tasks#continue continue] to hide tasks from being executed during a iteration step.
+<link linkend="tasks_continue">continue</link> to hide tasks from being executed during a iteration step.
 </simpara>
 </listitem>
 <listitem>

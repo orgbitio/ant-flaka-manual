@@ -45,5 +45,5 @@ When being executed, Ant would receive a build exception (re-thrown within the c
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
- * Task [Tasks#trycatch trycatch]
+ * Task <<tasks_trycatch,trycatch>>
 
