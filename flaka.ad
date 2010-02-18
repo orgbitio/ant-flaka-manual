@@ -2,56 +2,11 @@
 author wh@haefelinger.it
 1.0, February 2010
 
-== Introduction ==
+//
+// The introduction to Flaka
+//
 
-In the world of http://en.wikipedia.org/wiki/Java_(programming_language)[Java], build scripts are traditionally written in http://en.wikipedia.org/wiki/Apache_Ant[Ant] and recently also in http://en.wikipedia.org/wiki/Apache_Maven[Maven].
-
-When it comes to write a build script using Ant, it feels like using a Shell script in a rather awkward language (XML). Each Ant task solves a particular problem. This is similar to a Shell where you have this small masterpieces like `mkdir`, `cp`, `tar` plus some control structures to eventually being able to put the one big thing together.
-
-Writing a build script using a Shell is serious business. And so it is when using Ant. Ant does not provide you any abstraction how the project needs to be build. There is no underlying logic. In fact you, the author, need to know what to do. Step by step. What's more, you have to use the unfriendly http://en.wikipedia.org/wiki/XML[XML] syntax and restrictions, a control structure is missing and you have to use immutable properties to communicate between tasks. Therefore, Ant scripts are large, notoriously difficult to understand, usually not portable (usuallyt they just work on the authors host) and each author uses a different set of targets and properties.
-
-Maven on the other side provides a high abstraction of building a project. Instead of describing how the project needs to be build, just describe project details and reports you like to have and Maven figures out what needs to be done. This is probably the reason why Maven got so much attention recently.
-
-Despite better knowledge I wrote that Maven figures out how a project needs to be build automatically. That’s actually not quite true. In fact, Maven only works fine when following conventions setup by the Maven team. When not “en route”, Maven gets difficult as well. But even when following conventions, the number of options in Maven are now endless and question the idear of a declarative approach. Have a look at Maven's http://maven.apache.org/ref/current/maven-model/maven.html[POM] being a never ending series of XML tags]. At the end, I found myself using Ant again.
-
-Still I'm not happy with Ant. 
-
-What I'm missing is the full power of a programming language. Yes, I want to have conditionals, loops and exception handling. I want to have variables which I can set or remove for pleasure. Such variables can reference any kind of object not only strings. And I need a nice expression language to retrieve and calculate in a simple yet elegant way. And there is no need to have each and everything expressed in XML. And then I want to have some kind of higher abstraction which does the right thing most of the time. This is what Flaka is about:
-
-* Programming Tasks (conditional, loops, exception handling, ..)
-* Embedded Expression Language (EL)
-* Framework to do the _right_ thing, yet allows to use standard Ant when necessary
-* Dependency handling (legacy, to be replaced by Ivy)
-
-This four pillars are Flakas approach to simplify the process of writing a build script with Ant. Notice that you are by no means forced to use all four pillars. You can for example just use the  programming tasks with or without elements of EL while you don't need to get in touch with Flakas dependency handling instruments and neither with the framework. 
-
-The folling example of a complete build script shall demonstrate the idear how a build script using Flaka looks like:
-
--------------------------------------------------
-<project xmlns:c="antlib:it.haefelinger.flaka">
- <c:build />
- <c:dependency alias="log4j" />
-</project>
--------------------------------------------------
-
-The author just lists the dependencies required to build the project. Flaka would do the rest by checking the underlying project structure:
-
-* figure out what type of project should be build (jar, war, ear ..)
-* figure out where project's source code, test cases etc are
-* handle dependencies
-* create targets like `clean`, `compile`, `package`, `test` automatically
-* generate Javadoc and other reports
-
-=== Current Status ===
-
-Not all targets have been reached in the current version of Flaka (Release candidate 1). Programming tasks and EL are working fine and can be used. The other two pillars work partially but generally not recommended (yet) to be used.
-
-=== Where to go from here? ===
-
- * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the <<installation,installation page>>.
- * Have a look at the <<scripting,basic scripting elements>> to get an overview of tasks, types and macros provided by Flaka. Have a closer look in the reference part of this manual for all the gory details of those tasks, types and macros. 
- * Make sure to look into the chapter about the <<el,expression language>>, it contains a lot of information on this enormous useful extension.
- * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
+include::section/introduction.ad[]
 
 //
 // The EL chapter.
@@ -395,7 +350,7 @@ include::sections/task_while.ad[]
 // How to install Flaka
 //
 
-include::install.ad[]
+include::sections/install.ad[]
 
 
 //
