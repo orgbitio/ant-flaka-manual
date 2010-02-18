@@ -32,7 +32,7 @@ Being executed, this snippet produces something like
 [c:echo] this is /projects/flaka/test/tryme.xml reporting!
 -------------------------------------
 
-as output. Notice that Flaka\'s <<task_echo>> task has been used for this illustration because <<el>> is by default only available on Flaka tasks. If http://ant.apache.org/manual/CoreTasks/echo.html[Ant\'s standard echo task] is used, all `#{..}` constructs are left as they are. It is however possible and recommended to turn <<el>> on for _all_ tasks. See <<el_enable_el,how to enable EL>> for details.
+as output. Notice that Flaka\'s <<task_echo>> task has been used for this illustration because <<el>> is by default only available on Flaka tasks. If http://ant.apache.org/manual/CoreTasks/echo.html[Ant\'s standard echo] task is used, all `#{..}` constructs are left as they are. It is however possible and recommended to turn <<el>> on for _all_ tasks. See <<el_enable_el,how to enable EL>> for details.
 
 The next code example shows another _EL in action_ sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the _root_ folder:
 
