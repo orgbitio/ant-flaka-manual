@@ -322,8 +322,8 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 [c:echo] i = 3</screen>
 <section id="_attributes">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || [EL] || Description ||
-|| <literal>test</literal>    || string || -     || expr || Terminate loop when [EL] expression evaluates to <literal>true</literal> ||
+<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
+|| <literal>test</literal>    || string || -     || expr || Terminate loop when <xref linkend="el"/> expression evaluates to <literal>true</literal> ||
 || <literal>if</literal>      || string || -     || #{}  || Terminate if property exists ||
 || <literal>unless</literal>  || string || -     || #{}  || Terminate if property does not exist ||</simpara>
 </section>
@@ -341,12 +341,12 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -401,12 +401,12 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -427,8 +427,8 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 [c:echo] i = 3</screen>
 <section id="_attributes_3">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || [EL] || Description ||
-|| <literal>test</literal>    || string || -     || expr || Continue loop when [EL] expression evaluates to <literal>true</literal> ||
+<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
+|| <literal>test</literal>    || string || -     || expr || Continue loop when <xref linkend="el"/> expression evaluates to <literal>true</literal> ||
 || <literal>if</literal>      || string || -     || #{}  || Continue if property exists ||
 || <literal>unless</literal>  || string || -     || #{}  || Continue if property does not exist ||</simpara>
 </section>
@@ -446,12 +446,12 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java">Source</ulink>
 </simpara>
 </listitem>
 <listitem>
@@ -473,7 +473,7 @@ Task <link linkend="tasks_break">break</link>
 <screen>&lt;echo&gt;foobar&lt;/echo&gt;</screen>
 <simpara>When executed by Ant, this dumps</simpara>
 <screen>[echo] foobar</screen>
-<simpara>However, one day you reformat your XML build file <footnote><simpara><ulink url="http://xmlsoft.org/xmllint.html">xmlint</ulink> is a good choice</simpara></footnote> and you end up in</simpara>
+<simpara>However, one day you reformat your XML build file footnote::<ulink url="http://xmlsoft.org/xmllint.html">xmlint</ulink>[is a good choice] and you end up in</simpara>
 <screen>&lt;echo&gt;
 ...foobar
 &lt;/echo&gt;</screen>
@@ -625,7 +625,7 @@ rowsep="1" colsep="1"
 </section>
 <section id="task_fail" xreflabel="fail">
 <title>fail</title>
-<simpara>This task has been derived from [<ulink url="http://ant.apache.org/manual/CoreTasks/fail.html">http://ant.apache.org/manual/CoreTasks/fail.html</ulink> Ant&#8217;s standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:</simpara>
+<simpara>This task has been derived from <ulink url="http://ant.apache.org/manual/CoreTasks/fail.html">Ant&#8217;s standard fail task</ulink>. All attributes and elements are supported. When defining a message however, EL references can be used:</simpara>
 <screen>&lt;c:fail message="illegal state #{whichstate} seen" /&gt;</screen>
 <simpara>Furthermore, attribute <literal>test</literal> has been added. The value of <literal>test</literal> will be evaluated as EL expression in a boolean context. Being <literal>true</literal>, fail will throw a build exception. When used in this way, <literal>&lt;c:fail test='expr' /&gt;</literal> behaves exactly the same as</simpara>
 <screen>&lt;c:when test="expr"&gt;
@@ -636,12 +636,12 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -658,8 +658,8 @@ rowsep="1" colsep="1"
 <section id="_attributes_5">
 <title>Attributes</title>
 <simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>var</literal>     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like <literal>#{var}</literal> where <literal>var</literal> is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use <literal>#{..}</literal> only in [EL] enabled tasks. ||
-|| <literal>in</literal>      || string ||         || expr  || The items to be iterated over as [EL] expression. A iteration takes place except if <literal>null</literal> is the evaluation result. Otherwise, if the evaluation result is <emphasis>not iterable object</emphasis>, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||</simpara>
+|| <literal>var</literal>     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like <literal>#{var}</literal> where <literal>var</literal> is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use <literal>#{..}</literal> only in <xref linkend="el"/> enabled tasks. ||
+|| <literal>in</literal>      || string ||         || expr  || The items to be iterated over as <xref linkend="el"/> expression. A iteration takes place except if <literal>null</literal> is the evaluation result. Otherwise, if the evaluation result is <emphasis>not iterable object</emphasis>, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||</simpara>
 </section>
 <section id="_elements_3">
 <title>Elements</title>
@@ -675,12 +675,12 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java">Source</ulink>
 </simpara>
 </listitem>
 <listitem>
@@ -1129,8 +1129,8 @@ rowsep="1" colsep="1"
 <section id="_elements_7">
 <title>Elements</title>
 <simpara>|| Name    || Cardinality || Description ||
-|| <literal>vars</literal>  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
-|| <literal>properties</literal> || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| <literal>vars</literal>  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled. ||
+|| <literal>properties</literal> || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <xref linkend="el"/> expressions are disabled. ||
 || <emphasis>task</emphasis>  || arbitrary   || A (arbitrary) task or macro to be excecuted ||</simpara>
 </section>
 <section id="_behaviour_10">
@@ -1142,12 +1142,12 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1156,7 +1156,7 @@ rowsep="1" colsep="1"
 </section>
 <section id="task_switch" xreflabel="switch">
 <title>switch</title>
-<simpara>Task <literal>switch</literal> has been designed to ease pattern matching. The idea is to try to match a pattern, a [<ulink url="http://en.wikipedia.org/wiki/Regular_expression">http://en.wikipedia.org/wiki/Regular_expression</ulink> regular expression] or [<ulink url="http://en.wikipedia.org/wiki/Glob_(programming">http://en.wikipedia.org/wiki/Glob_(programming</ulink>) glob expression] against a given string value and carry out a sequence of actions in case of a hit.</simpara>
+<simpara>Task <literal>switch</literal> has been designed to ease pattern matching. The idea is to try to match a pattern, a <ulink url="http://en.wikipedia.org/wiki/Regular_expression">regular expression</ulink> or <ulink url="http://en.wikipedia.org/wiki/Glob_(programming)">glob expression</ulink> against a given string value and carry out a sequence of actions in case of a hit.</simpara>
 <screen> &lt;c:switch value=" 'a${string}#{value}' "&gt;
   &lt;matches glob="*.jar"&gt;          -- #1
    -- string ending in .jar
@@ -1174,12 +1174,12 @@ rowsep="1" colsep="1"
 <simpara>Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third <literal>matches</literal> element. Utilization of glob and regular expressions make <literal>switch</literal> a very flexible and powerful conditional statement.</simpara>
 <section id="_attributes_11">
 <title>Attributes</title>
-<simpara>|| Attribute || Type   || Default || [EL]  || Description ||
+<simpara>|| Attribute || Type   || Default || <xref linkend="el"/>  || Description ||
 || <literal>value</literal>   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is <emphasis>normalized</emphasis>, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
 || <literal>var</literal>     || string ||       - || #{..} || Save details of this match as <literal>matching object</literal> using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
 || <literal>ignorecase</literal> || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression <literal>(?i)</literal> ||
 || <literal>comments</literal>   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression <literal>(?x)</literal> ||
-|| <literal>dotall</literal>     || bool || false ||     no || In dotall mode, the literal <literal>.</literal> matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression <literal>(?s)</literal>, where <literal>s</literal> is a mnemonic for <emphasis>single-line</emphasis> mode, which is what this mode is called in [<ulink url="http://en.wikipedia.org/wiki/Perl">http://en.wikipedia.org/wiki/Perl</ulink> Perl]. ||
+|| <literal>dotall</literal>     || bool || false ||     no || In dotall mode, the literal <literal>.</literal> matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression <literal>(?s)</literal>, where <literal>s</literal> is a mnemonic for <emphasis>single-line</emphasis> mode, which is what this mode is called in <ulink url="http://en.wikipedia.org/wiki/Perl">Perl</ulink>. ||
 || <literal>unixlines</literal>  || bool || false  ||    no || In this mode, only character <literal>LF</literal> is accepted as line terminator character when using <literal>.</literal>, <literal>^</literal>, and <literal>$</literal>. Unix lines mode can also be enabled via the embedded flag expression (?d). ||
 || <literal>multiline</literal>  || bool || false || no || In multiline mode, the literals <literal>^</literal> and <literal>$</literal> match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
 || <literal>debug</literal>      || bool  || false ||   no || Turn on extra debug information ||
@@ -1200,7 +1200,7 @@ rowsep="1" colsep="1"
 <simpara>All other attributes (see above) are default values for subsequent <literal>matches</literal> elements. For example, setting attribute <literal>debug</literal> to <literal>true</literal> will turn on debug on all <literal>matches</literal> elements.</simpara>
 <simpara>Any number of <literal>matches</literal> elements are allowed and at most one <literal>otherwise</literal> (resp. <literal>default</literal>) element. Whether the <literal>otherwise</literal> element is at the end, in the middle or at the begin does not matter. The order of the <literal>matches</literal> elements are relevant however. Each <literal>matches</literal> element will be tried in the order given until no more untried elements are left. Then, if no element matched, a given <literal>otherwise</literal> element is carried out. Otherwise the matching elment will.</simpara>
 <simpara>Carrying out an element means that all enclosed tasks or macros are executed in the order given.</simpara>
-<simpara>The underlying regular expression engine is the one given by Java. It&#8217;s [<ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html</ulink> Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at [<ulink url="http://oreilly.com/catalog/9780596528126/index.html">http://oreilly.com/catalog/9780596528126/index.html</ulink> Mastering Regular Expressions] by Jeffrey E. F. Friedl.</simpara>
+<simpara>The underlying regular expression engine is the one given by Java. It&#8217;s <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Javadoc</ulink> documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at <ulink url="http://oreilly.com/catalog/9780596528126/index.html">Mastering Regular Expressions</ulink> by Jeffrey E. F. Friedl.</simpara>
 <simpara>Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write <literal>\\*</literal> if they want match the literal <literal>*</literal> character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence <literal>\*</literal> remains <literal>\*</literal>.</simpara>
 <simpara>So called <emphasis>globs</emphasis> are a kind of simplified regular expressions. They lack the full power while simplifying the expression. For example, to specify whether a name input string end in <literal>jar</literal>, we can simply write</simpara>
 <screen> &lt;c:switch value=" #{myfile}.name "&gt;
@@ -1216,7 +1216,7 @@ rowsep="1" colsep="1"
     &lt;/c:echo&gt;
   &lt;/matches&gt;
  &lt;/c:switch&gt;</screen>
-<simpara>Here we use a capturing group for the basename. A matcher object will be associated with variable <literal>m</literal>. This object can then be [<ulink url="http://code.google.com/p/flaka/wiki/EL#Matcher_Properties">http://code.google.com/p/flaka/wiki/EL#Matcher_Properties</ulink> evaluated using properties] for matching details.</simpara>
+<simpara>Here we use a capturing group for the basename. A matcher object will be associated with variable <literal>m</literal>. This object can then be <ulink url="http://code.google.com/p/flaka/wiki/EL#Matcher_Properties">evaluated using properties</ulink> for matching details.</simpara>
 <simpara>Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion <literal>schema-(env_)version</literal>, where <literal>(env_)</literal> was optional, <literal>schema</literal> indicated the tag&#8217;s semantic and where <literal>version</literal> was the products version or build number:</simpara>
 <screen> &lt;c:switch value=" 'v-uat_3_20_500' " var="m"&gt;
    &lt;matches re="v-(?:([^\d][^_]*)_)?(\d.*)" &gt;
@@ -1240,12 +1240,12 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1269,7 +1269,7 @@ rowsep="1" colsep="1"
  &lt;c:throw /&gt; -- re-throws "4711" exception!!!</screen>
 <section id="_attributes_12">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || [EL] || Description ||
+<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
 || <literal>reference</literal> || string || <literal>trycatch.object</literal> || no || The name of the reference holding the previously thrown exception ||
 || <literal>var</literal> || || || no || Same as reference ||</simpara>
 </section>
@@ -1290,12 +1290,12 @@ rowsep="1" colsep="1"
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java">Source</ulink>
 </simpara>
 </listitem>
 <listitem>
@@ -1351,7 +1351,7 @@ If a exception is thrown in a matching catch clause and in a finally clause, the
  &lt;/c:trycatch&gt;</screen>
 <section id="_attributes_13">
 <title>Attributes</title>
-<simpara>|| Attribute || Type || Default || [EL] || Description ||
+<simpara>|| Attribute || Type || Default || <xref linkend="el"/> || Description ||
 || <literal>property</literal> || string || || no || The name of the property that should hold the exception message ||
 || <literal>reference</literal> || string || <literal>trycatch.object</literal> || no || &gt;The name of the reference to hold the exception object ||
 || <literal>catch.type</literal> || glob || <literal>*.BuildException</literal> || no || A pattern against the type (Java classname) of the exception object ||
@@ -1411,12 +1411,12 @@ finally&lt;br/&gt; A task container to be executed in any case
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1433,12 +1433,12 @@ finally&lt;br/&gt; A task container to be executed in any case
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1485,12 +1485,12 @@ finally&lt;br/&gt; A task container to be executed in any case
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1508,7 +1508,7 @@ finally&lt;br/&gt; A task container to be executed in any case
 <section id="_attributes_15">
 <title>Attributes</title>
 <simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>test</literal>    || string || <literal>false</literal> || expr  || A [EL] expression that must evaluate to <literal>true</literal> in order to execute the body of this if statement. ||</simpara>
+|| <literal>test</literal>    || string || <literal>false</literal> || expr  || A <xref linkend="el"/> expression that must evaluate to <literal>true</literal> in order to execute the body of this if statement. ||</simpara>
 </section>
 <section id="_elements_11">
 <title>Elements</title>
@@ -1525,12 +1525,12 @@ Any tasks or macro instances.
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java">Source</ulink>
 </simpara>
 </listitem>
 </itemizedlist>
@@ -1548,7 +1548,7 @@ Any tasks or macro instances.
 <section id="_attributes_16">
 <title>Attributes</title>
 <simpara>|| Attribute || Type   || Default || EL    || Description ||
-|| <literal>test</literal>    || string || <literal>false</literal> || expr  || The condition for looping as [EL] expression ||</simpara>
+|| <literal>test</literal>    || string || <literal>false</literal> || expr  || The condition for looping as <xref linkend="el"/> expression ||</simpara>
 </section>
 <section id="_elements_12">
 <title>Elements</title>
@@ -1556,19 +1556,19 @@ Any tasks or macro instances.
 </section>
 <section id="_behaviour_15">
 <title>Behaviour</title>
-<simpara>All tasks listed as elements are executed as long as the [EL] expression evaluates to <literal>true</literal>.</simpara>
+<simpara>All tasks listed as elements are executed as long as the <xref linkend="el"/> expression evaluates to <literal>true</literal>.</simpara>
 </section>
 <section id="_further_links_18">
 <title>Further Links</title>
 <itemizedlist>
 <listitem>
 <simpara>
-[<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html">http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html</ulink> Javadoc]
+<ulink url="http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html">Javadoc</ulink>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java">http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java</ulink> Source]
+<ulink url="http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java">Source</ulink>
 </simpara>
 </listitem>
 <listitem>

@@ -13,8 +13,9 @@ A task implemening a `while` loop:
 
 === Attributes ===
 
-|| Attribute || Type   || Default || EL    || Description ||
-|| `test`    || string || `false` || expr  || The condition for looping as [EL] expression ||
+|========================
+| Attribute  || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || The condition for looping as <<el>> expression ||
 
 === Elements ===
 
@@ -22,11 +23,11 @@ A task implemening a `while` loop:
 
 === Behaviour ===
 
-All tasks listed as elements are executed as long as the [EL] expression evaluates to `true`. 
+All tasks listed as elements are executed as long as the <<el>> expression evaluates to `true`. 
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java[Source]
  * <<tasks_break,break>> to stop the iteration
  * <<tasks_continue,continue>> to hide tasks from being executed during a iteration step.
  * See also [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka

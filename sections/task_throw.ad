@@ -22,7 +22,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
 --------------------------------------
 
 === Attributes ===
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
 || `var` || || || no || Same as reference ||
 
@@ -43,7 +43,7 @@ A typical usage example:
 When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java[Source]
  * Task <<tasks_trycatch,trycatch>>
 

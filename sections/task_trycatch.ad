@@ -36,7 +36,7 @@ When matching against the error message, be aware that the actual error message 
 
 === Attributes ===
 
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `property` || string || || no || The name of the property that should hold the exception message ||
 || `reference` || string || `trycatch.object` || no || >The name of the reference to hold the exception object ||
 || `catch.type` || glob || `*.BuildException` || no || A pattern against the type (Java classname) of the exception object ||
@@ -89,6 +89,6 @@ Giving:
 
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java[Source]
 

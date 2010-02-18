@@ -52,8 +52,8 @@ The content of a line defines the property name, for example:
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java[Source]
 
 <hr/>
 === rescue ===
@@ -96,8 +96,8 @@ This task does not define attributes.
 Executes all embedded tasks. Variables and properties listed in `vars` and `properties` are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java[Source]
 
 <hr/>
 == Looping ==
@@ -130,8 +130,8 @@ A task implemening a `while` loop:
 All tasks listed as elements are executed as long as the <<el>> expression evaluates to `true`. 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java[Source]
  * <<tasks_break,break>> to stop the iteration
  * <<tasks_continue,continue>> to hide tasks from being executed during a iteration step.
  * See also [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
@@ -179,8 +179,8 @@ TODO: document behaviour
 </wiki:comment>
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java[Source]
  * Task <<tasks_for,for>> 
  * Task <<tasks_break,break>>
  * Task <<tasks_continue,continue>>
@@ -237,8 +237,8 @@ The example given above can thus be shortened to
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java[Source]
 
 <hr/>
 === continue === 
@@ -293,8 +293,8 @@ The example given above can thus be shortened to
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java[Source]
  * Task <<tasks_for,for>> 
  * Task <<tasks_break,break>>
 
@@ -330,8 +330,8 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
  * Any tasks or macro instances.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java[Source]
 
 <hr/>
 === unless ===
@@ -349,8 +349,8 @@ This task is the logical opposite of task <<tasks_when,when>>. It's body is only
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unless.java[Source]
 
 <hr/>
 === choose === 
@@ -420,13 +420,13 @@ This would execute all macros and tasks listed in the otherwise clause since no 
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java[Source]
 
 <hr/>
 === switch ===
 
-Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a [http://en.wikipedia.org/wiki/Regular_expression regular expression] or [http://en.wikipedia.org/wiki/Glob_(programming) glob expression] against a given string value and carry out a sequence of actions in case of a hit.
+Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a http://en.wikipedia.org/wiki/Regular_expression[regular expression] or http://en.wikipedia.org/wiki/Glob_(programming)[glob expression] against a given string value and carry out a sequence of actions in case of a hit.
 
 
 -------------------------------------
@@ -457,7 +457,7 @@ Notice the usage of a glob expression in the first and the usage of regular expr
 || `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
 || `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
 || `comments`   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` || 
-|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in [http://en.wikipedia.org/wiki/Perl Perl]. || 
+|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. || 
 || `unixlines`  || bool || false  ||    no || In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). || 
 || `multiline`  || bool || false || no || In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
 || `debug`      || bool  || false ||   no || Turn on extra debug information ||
@@ -483,7 +483,7 @@ Any number of `matches` elements are allowed and at most one `otherwise` (resp. 
 
 Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
 
-The underlying regular expression engine is the one given by Java. It's [http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at [http://oreilly.com/catalog/9780596528126/index.html Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
 
 Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write `\\*` if they want match the literal `*` character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence `\*` remains `\*`.
 
@@ -517,7 +517,7 @@ The very same can also be expressed as `re="\.jar$"` using regular expressions. 
 -------------------------------------
 
 
-Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be [http://code.google.com/p/flaka/wiki/EL#Matcher_Properties evaluated using properties] for matching details.
+Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be http://code.google.com/p/flaka/wiki/EL#Matcher_Properties[evaluated using properties] for matching details.
 
 Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
 
@@ -544,15 +544,15 @@ Here is a more complicated example. It was used once to examine a CVS tag which 
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java[Source]
 
 == Exception Handing ==
 
 <hr/>
 === fail ===
 
-This task has been derived from [http://ant.apache.org/manual/CoreTasks/fail.html Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
+This task has been derived from http://ant.apache.org/manual/CoreTasks/fail.html[Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
 
 -------------------------------------
 
@@ -572,8 +572,8 @@ Furthermore, attribute `test` has been added. The value of `test` will be evalua
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java[Source]
 
 <hr/>
 === trycatch === 
@@ -677,8 +677,8 @@ Giving:
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java[Source]
 
 <hr/>
 === throw ===
@@ -732,8 +732,8 @@ A typical usage example:
 When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java[Source]
  * Task <<tasks_trycatch,trycatch>>
 
 
@@ -750,14 +750,14 @@ Use this task to dump a file within the Flaka package to stdout or a file.  This
 || `tee`     || bool   || false     || no || If enabled, the file will be exported to src as well as to stdout (similar as standard UNIX command tee does). ||
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Export.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Export.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java[Source]
 
 <hr/>
 === find === 
 <wiki:comment>todo:references</wiki:comment>
 
-Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] into a list of `file`s. Used in conjunction with <<tasks_for,task for>> enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
+Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] into a list of `file`s. Used in conjunction with <<tasks_for,task for>> enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
 
 
 -------------------------------------
@@ -781,7 +781,7 @@ Ant lacks a simple task to report all or certain files in a folder. This task le
 
 ==== Elements ====
 
-This task implements a [http://ant.apache.org/manual/CoreTypes/fileset.html standard Ant fileset]. All elements of `fileset` are therefore legal elements of `find` as well.
+This task implements a http://ant.apache.org/manual/CoreTypes/fileset.html[standard Ant fileset]. All elements of `fileset` are therefore legal elements of `find` as well.
 
 ==== Behaviour ====
 
@@ -820,8 +820,8 @@ Check whether a sub folder ending in '.jar' exists which is not a file but a dir
  
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Find.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Find.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java[Source]
 
 <hr/>
 == Meta Programming ==
@@ -852,8 +852,8 @@ The current version does not support calling macros or tasks with arguments.
 || `fail`    || bool   || false || no || Whether a exception shall be thrown if macro does not exist||
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-macro.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-macro.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java[Source]
 
 <hr/>
 === run-target === 
@@ -881,8 +881,8 @@ A task to invoke a target dynamically.
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-target.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Run-target.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java[Source]
 
 
 <hr/>
@@ -922,8 +922,8 @@ Note: The current version allows only the specification of one task or macro wit
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java[Source]
 <hr/>
 
 
@@ -954,8 +954,8 @@ This example changes the default target to be called from this to foobar.
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Set-default-target.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Set-default-target.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java[Source]
 
 <hr />
 == XML ==
@@ -1021,8 +1021,8 @@ The same setup as before gives, when no root element is applied, the following:
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/XmlMerger.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/XmlMerger.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java[Source]
 
 <hr/>
 == Properties ==
@@ -1071,8 +1071,8 @@ creates property
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Property-by-regex.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Property-by-regex.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java[Source]
 
 <hr/>
 <hr/>
@@ -1101,7 +1101,7 @@ Example above searches for dependencies in file `build.xml` in the [Glossary#Bas
 
 ==== Elements ====
 
-This task is a implicit [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] and may thus contain any elements which can be applied to a fileset. 
+This task is a implicit http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] and may thus contain any elements which can be applied to a fileset. 
 
 ==== Behaviour ====
 
@@ -1109,7 +1109,7 @@ If attribute `var` is not used, then no scanning for dependencies takes place an
 
 Attribute `dir` is evaluated as <<el>> expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
 
-This task may take any elements which are applicable for a [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
+This task may take any elements which are applicable for a http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
 
 A dependency is just recognized by it's element name regardless any namespace. Therefore something like
 
@@ -1125,8 +1125,8 @@ A dependency is just recognized by it's element name regardless any namespace. T
 will be accepted as dependency when scanning.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/ScanDeps.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/ScanDeps.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java[Source]
 
 <hr />
 

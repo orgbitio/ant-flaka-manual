@@ -9,8 +9,8 @@ A simple task to install or uninstall a special component handler supposed to ge
  * fail<br />Whether to fail if the installation or un-installation can't be carried out.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Component-handler.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Component-handler.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Component-handler.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Component-handler.java[Source]
 
 
 
@@ -86,8 +86,8 @@ would set the following properties:
 
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Cvsstat.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Cvsstat.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Cvsstat.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Cvsstat.java[Source]
 
 <hr/>
 <hr/>
@@ -135,15 +135,15 @@ Such a property will not make it into your JVM's system properties. They will on
 [1] http://www.onjava.com/pub/a/onjava/2001/05/03/java_security.html This article contains also some background information on keystores etc.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Initssl.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Initssl.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Initssl.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Initssl.java[Source]
 
 <hr/>
 === taskdotclasspath ===
 
 This task can be used to perform low level operations on a .classpath file. Supported operations are appending or removing classpath entries or to query the existence of certain entries. Operating on a non existing file does not throw a build exception nor will anything happen, i.e. appending to a non existing file will not create the file. It is expected that other tasks, for example the standard Ant task echoxml are being used to create an initial .classpath file.
 
-taskdotclasspath has been implemented as core task. This is a reference to it's [http://flaka.code.google.com/javadoc/net.haefelingerit.flaka/DotClassPath.html  accompanying Java documentation].
+taskdotclasspath has been implemented as core task. This is a reference to it's http://flaka.code.google.com/javadoc/net.haefelingerit.flaka/DotClassPath.html[accompanying Java documentation].
 
 ==== Attributes ====
  * op<br/>The operation to be executed where 'a' means append, 'r' means remove and 'q' means query. The character 'u' means update and is a historical synonym for append. When specifying an operation, the input string is trimmed and the first character in the remaining string determines the operation. Further characters given are not taken into account. The default operation is 'a' for append.
@@ -329,8 +329,8 @@ The variable given, being are-projects-crosslinked, is only touched if the query
 When using more than one entry, then each entry must match. This condition can be changed using attribute logic. When being set to a logical or, it is enough that one entry matches.
 
 ==== Further Links ====
- * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Taskdotclasspath.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Taskdotclasspath.java Source]
+ * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Taskdotclasspath.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Taskdotclasspath.java[Source]
 
 
 #summary A summary of all Types implemented by Flaka
@@ -569,7 +569,7 @@ The following example deletes all binary files from folder src.
 
 Ant provides so called mapper types used to translate (i.e. map) a filename in another one. A typical mapper is for example a mapper translating a *.java file in it's appropriate *.class file (by translating each '/' into a '.' and by changing the extension). See {{AntRefType|1=mapper.html|2=Ant's manual page}} for a list of mappers.
 
-A useful mapper is [http://ant.apache.org/manual/CoreTypes/mapper.html#glob  the glob mapper] providing the basic functionality to change filenames on simple patterns. The following example would create a safe copy of all Java source files.
+A useful mapper is http://ant.apache.org/manual/CoreTypes/mapper.html#glob[the glob mapper] providing the basic functionality to change filenames on simple patterns. The following example would create a safe copy of all Java source files.
 
 
 -------------------------------------
@@ -602,10 +602,10 @@ The question is what happens with all the other files that might exist in folder
 This would copy all files in folder src and only rename *.java files. Yes, this example is not very striking! 
 
 === Attribute ===
-See type [http://ant.apache.org/manual/CoreTypes/mapper.html#glob glob] for a list of supported attributes
+See type http://ant.apache.org/manual/CoreTypes/mapper.html#glob[glob] for a list of supported attributes
 
 === Element ===
-See type [http://ant.apache.org/manual/CoreTypes/mapper.html#glob glob] for a list of supported attributes
+See type http://ant.apache.org/manual/CoreTypes/mapper.html#glob[glob] for a list of supported attributes
 
 === Reference ===
  * Implementation: {{ViewCVS|1=net/haefelingerit/GlobMap.java}}
@@ -1003,7 +1003,7 @@ A internal macro used to scan and retrieve dependencies without resolving agains
 
 == dependency ==
 
-A macro to emulate a [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven style dependency]. In addition to the Maven style, there are also attribute equivalents for each element (see below).
+A macro to emulate a http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html[Maven style dependency]. In addition to the Maven style, there are also attribute equivalents for each element (see below).
     
         
 === Attributes ===
@@ -1024,10 +1024,10 @@ A macro to emulate a [http://maven.apache.org/guides/introduction/introduction-t
  * transitive<br />True to resolve this dependency transitively, false otherwise
  * changing<br /> True if the dependency artifacts may change without revision change, false otherwise    
 
-Note that [http://ant.apache.org/ivy/history/latest-milestone/ivyfile/dependency.html _Ivy_ attributes branch, force, conf, transitive] and changing are currently not supported.
+Note that http://ant.apache.org/ivy/history/latest-milestone/ivyfile/dependency.html[_Ivy_ attributes branch, force, conf, transitive] and changing are currently not supported.
 
 === Element ===
-The following elements have been pioneered by [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven]]. All of this elements have synonym attributes. If the same element and attribute is given, the element will eventually override. See also task <<tasks_getdeps,getdeps>> for dependency handling:
+The following elements have been pioneered by http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html[Maven]]. All of this elements have synonym attributes. If the same element and attribute is given, the element will eventually override. See also task <<tasks_getdeps,getdeps>> for dependency handling:
 
  * groupId 
  * artifactId 
@@ -1548,7 +1548,7 @@ This macro puts a folder or any path like structure  in front of an existing [ht
  * refid <br/>A reference to an existing path object
 
 === Element ===
- * element-path <br/>Any element accepted by a [http://ant.apache.org/manual/using.html#path path] object.
+ * element-path <br/>Any element accepted by a http://ant.apache.org/manual/using.html#path[path] object.
 
 == reload-baseline ==
 
@@ -1582,7 +1582,7 @@ A macro to remove files from the folder containing distributable. The macro is a
  * dir <br/>The folder to be cleaned-up [<code>${dist.dir}</code>]
 
 === Element ===
- * fileset-element <br/>Any suitable [http://ant.apache/org/manual/fileset.html fileset] element.
+ * fileset-element <br/>Any suitable http://ant.apache/org/manual/fileset.html[fileset] element.
 
 == resources-copy ==
 

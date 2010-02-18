@@ -18,13 +18,13 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 
 === Attributes ===
 || Attribute || Type   || Default || EL    || Description ||
-|| `test`    || string || `false` || expr  || A [EL] expression that must evaluate to `true` in order to execute the body of this if statement. ||
+|| `test`    || string || `false` || expr  || A <<el>> expression that must evaluate to `true` in order to execute the body of this if statement. ||
 
 === Elements ===
 
  * Any tasks or macro instances.
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java[Source]
 

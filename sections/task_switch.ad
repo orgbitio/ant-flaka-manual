@@ -2,7 +2,7 @@
 [[task_switch,switch]]
 == switch ==
 
-Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a [http://en.wikipedia.org/wiki/Regular_expression regular expression] or [http://en.wikipedia.org/wiki/Glob_(programming) glob expression] against a given string value and carry out a sequence of actions in case of a hit.
+Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a http://en.wikipedia.org/wiki/Regular_expression[regular expression] or http://en.wikipedia.org/wiki/Glob_(programming)[glob expression] against a given string value and carry out a sequence of actions in case of a hit.
 
 --------------------------------------
  <c:switch value=" 'a${string}#{value}' ">
@@ -24,12 +24,12 @@ Task `switch` has been designed to ease pattern matching. The idea is to try to 
 Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
 
 === Attributes ===
-|| Attribute || Type   || Default || [EL]  || Description ||
+|| Attribute || Type   || Default || <<el>>  || Description ||
 || `value`   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
 || `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
 || `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
 || `comments`   || bool || false  ||    no || Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` || 
-|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in [http://en.wikipedia.org/wiki/Perl Perl]. || 
+|| `dotall`     || bool || false ||     no || In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. || 
 || `unixlines`  || bool || false  ||    no || In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). || 
 || `multiline`  || bool || false || no || In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). ||
 || `debug`      || bool  || false ||   no || Turn on extra debug information ||
@@ -55,7 +55,7 @@ Any number of `matches` elements are allowed and at most one `otherwise` (resp. 
 
 Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
 
-The underlying regular expression engine is the one given by Java. It's [http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at [http://oreilly.com/catalog/9780596528126/index.html Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
 
 Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write `\\*` if they want match the literal `*` character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence `\*` remains `\*`.
 
@@ -81,7 +81,7 @@ The very same can also be expressed as `re="\.jar$"` using regular expressions. 
  </c:switch>
 --------------------------------------
 
-Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be [http://code.google.com/p/flaka/wiki/EL#Matcher_Properties evaluated using properties] for matching details.
+Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be http://code.google.com/p/flaka/wiki/EL#Matcher_Properties[evaluated using properties] for matching details.
 
 Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
 --------------------------------------
@@ -104,7 +104,7 @@ Here is a more complicated example. It was used once to examine a CVS tag which 
 --------------------------------------
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Switch.java[Source]
 
 

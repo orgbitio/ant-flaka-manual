@@ -1,4 +1,13 @@
 
+
+;;
+;; To try out substitutions, it is useful to only print those matching lines.
+;; This can be done like:
+
+$ perl -n -e '/re/ && s/re/sub/g && print' ..
+
+cons: re must be repeated. Is there a better way to do?
+
 ;;
 ;; convert source code delimeter Google -> AsciiDoc
 ;; 
@@ -8,3 +17,9 @@ $ perl -pi -e 's/^({{{|}}})/--------------------------------------/g' sections/*
 ;;
 ;;
 perl -pi -e 's/\[Tasks#(\w+)\s+([^]]+)\]/<<tasks_$1,$2>>/g' sections/*.ad 
+
+
+;;
+;; translate external http references.
+;;
+perl -pi -e 's/\[(http:\/\/[^\s]+)\s+([^]]+)\]/$1\[$2\]/g' sections/*.ad

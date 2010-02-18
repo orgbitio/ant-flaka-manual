@@ -19,8 +19,8 @@ Being executed, the following will be dumped on stdout:
 --------------------------------------
 
 === Attributes ===
-|| Attribute || Type || Default || [EL] || Description ||
-|| `test`    || string || -     || expr || Terminate loop when [EL] expression evaluates to `true` ||
+|| Attribute || Type || Default || <<el>> || Description ||
+|| `test`    || string || -     || expr || Terminate loop when <<el>> expression evaluates to `true` ||
 || `if`      || string || -     || #{}  || Terminate if property exists ||
 || `unless`  || string || -     || #{}  || Terminate if property does not exist ||
 
@@ -37,6 +37,6 @@ The example given above can thus be shortened to
 --------------------------------------
 
 === Further Links ===
- * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html Javadoc] 
- * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java Source]
+ * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html[Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java[Source]
 
