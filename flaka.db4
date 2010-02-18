@@ -191,7 +191,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_when_and_unless">
 <title>when and unless</title>
-<simpara>Task [Tasks#when when] evaluates an [EL EL expr]. If the evaluation gives <literal>true</literal>, the sequence of tasks are executed. Nothing else happens in case of <literal>false</literal>.</simpara>
+<simpara>Task [Tasks#when when] evaluates an <link linkend="el">EL expr</link>. If the evaluation gives <literal>true</literal>, the sequence of tasks are executed. Nothing else happens in case of <literal>false</literal>.</simpara>
 <screen>&lt;c:when test=" expr "&gt;
    -- executed if expr evaluates to true
 &lt;/c:when&gt;</screen>
@@ -226,7 +226,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
     -- catch all body
   &lt;/otherwise&gt;
  &lt;/c:switch&gt;</screen>
-<simpara>Each case is tried in turn <emphasis>to match</emphasis> the string value (given as [EL] expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.</simpara>
+<simpara>Each case is tried in turn <emphasis>to match</emphasis> the string value (given as <link linkend="el">EL expression</link>). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.</simpara>
 </section>
 <section id="_repetition">
 <title>Repetition</title>
@@ -238,7 +238,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
     -- use #{name} to refer to current item (as shown below)
     &lt;c:echo&gt;#{name}&lt;/c:echo&gt;
  &lt;/c:for&gt;</screen>
-<simpara>Attribute <literal>in</literal> will be evaluated as [EL] expression. In the example above, that [EL] expression is <literal>''.tofile.list</literal> which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at [EL#String_Properties properties of a string] and [EL#File_Properties properties of a file].</simpara>
+<simpara>Attribute <literal>in</literal> will be evaluated as <link linkend="el">EL</link> expression. In the example above, that <link linkend="el">EL</link> expression is <literal>''.tofile.list</literal> which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at [EL#String_Properties properties of a string] and [EL#File_Properties properties of a file].</simpara>
 </section>
 <section id="_exception_handling">
 <title>Exception Handling</title>
@@ -303,7 +303,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <simpara>Macros are a standard feature of Ant.</simpara>
 </section>
 </section>
-<section id="el">
+<section id="el" xreflabel="EL">
 <title>EL, The Expression Language</title>
 <simpara>The <ulink url="http://en.wikipedia.org/wiki/Unified_Expression_Language">Java Unified Expression Language</ulink> <ulink url="http://www.jcp.org/en/jsr/detail?id=245">(JSR-245)</ulink> is a special purpose programming (albeit not turing complete) language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.</simpara>
 <simpara>One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as <emphasis>string</emphasis> object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (sort for Unified Expression Language) this becomes an easy task:</simpara>
@@ -1029,24 +1029,24 @@ rowsep="1" colsep="1"
 </section>
 <section id="_part_ii">
 <title>Part II</title>
-<simpara>here I&#8217;m listing all task, types and macros.</simpara>
+<simpara>Each of the following chapters describes a task in all it's details.</simpara>
 </section>
-<section id="_echo">
+<section id="task_echo">
 <title>echo</title>
 <simpara>Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example.</simpara>
 <screen>&lt;echo&gt;foobar&lt;/echo&gt;</screen>
 <simpara>When executed by Ant, this dumps</simpara>
 <screen>[echo] foobar</screen>
-<simpara>However, one day you reformat your XML build file <footnote><simpara> <ulink url="http://xmlsoft.org/xmllint.html">xmlint</ulink> is a good choice</simpara></footnote> and you end up in</simpara>
+<simpara>However, one day you reformat your XML build file <footnote><simpara><ulink url="http://xmlsoft.org/xmllint.html">xmlint</ulink> is a good choice</simpara></footnote> and you end up in</simpara>
 <screen>&lt;echo&gt;
 ...foobar
 &lt;/echo&gt;</screen>
-<simpara>Notice that I&#8217;m using here the dot character <literal>.</literal> to make whitespace characters (except line ending characters) visible. If you execute this, you will get</simpara>
+<simpara>Notice the usage of character <literal>.</literal> (dot) in this example and the rest of this (and only this) chapter to visualize a <emphasis>space</emphasis> <footnote><simpara>Also known as <emphasis>blank</emphasis> character</simpara></footnote> character. If you execute this, you will get</simpara>
 <screen>[echo]
 [echo] ...foobar
 [echo]</screen>
 <simpara>This is definitly not what you had in mind.</simpara>
-<simpara>Task <literal>&lt;c:echo/&gt; is an extension of Ant's standard `echo</literal> task. It uses Ant&#8217;s standard <literal>echo</literal> task for doing the low level work, i.e. dumping text on streams on loggers while some features have been implemented intented to generate nicly formatted output.</simpara>
+<simpara>Task <literal>&lt;c:echo/&gt;</literal> is an extension of Ant's standard <literal>echo</literal> task. That standard task is used for doing all that low level work, i.e. dumping text on streams on loggers. On top of it, some features have been implemented intented to generate nicly formatted output.</simpara>
 <simpara>Here is the <literal>foobar</literal> example again:</simpara>
 <screen>&lt;c:echo&gt;
 
@@ -1103,7 +1103,7 @@ rowsep="1" colsep="1"
 </section>
 <section id="_elements">
 <title>Elements</title>
-<simpara>This task accepts implicit text. Text may contain Ant property references <literal>${..}</literal> or [EL Flaka EL] references <literal>#{..}</literal>.</simpara>
+<simpara>This task optionally accepts implicit text. That text may contain Ant property <literal>${..}</literal> or <xref linkend="el"/> <literal>#{..}</literal> references.</simpara>
 </section>
 <section id="_behaviour">
 <title>Behaviour</title>

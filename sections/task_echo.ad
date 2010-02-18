@@ -1,5 +1,5 @@
 
-
+[id="task_echo"]
 == echo ==
 
 Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example. 
@@ -14,7 +14,7 @@ When executed by Ant, this dumps
 [echo] foobar
 -------------------------------------
 
-However, one day you reformat your XML build file footnote::[ http://xmlsoft.org/xmllint.html[xmlint] is a good choice] and you end up in
+However, one day you reformat your XML build file footnote::[http://xmlsoft.org/xmllint.html[xmlint] is a good choice] and you end up in
 
 -------------------------------------
 <echo>
@@ -22,7 +22,7 @@ However, one day you reformat your XML build file footnote::[ http://xmlsoft.org
 </echo>
 -------------------------------------
 
-Notice that I'm using here the dot character `.` to make whitespace characters (except line ending characters) visible. If you execute this, you will get 
+Notice the usage of character `.` (dot) in this example and the rest of this (and only this) chapter to visualize a _space_ footnote::[Also known as _blank_ character] character. If you execute this, you will get 
 -------------------------------------
 [echo] 
 [echo] ...foobar
@@ -31,7 +31,7 @@ Notice that I'm using here the dot character `.` to make whitespace characters (
 
 This is definitly not what you had in mind.
 
-Task `<c:echo/> is an extension of Ant's standard `echo` task. It uses Ant's standard `echo` task for doing the low level work, i.e. dumping text on streams on loggers while some features have been implemented intented to generate nicly formatted output.
+Task `<c:echo/>` is an extension of Ant\'s standard `echo` task. That standard task is used for doing all that low level work, i.e. dumping text on streams on loggers. On top of it, some features have been implemented intented to generate nicly formatted output.
 
 Here is the `foobar` example again:
 
@@ -70,7 +70,7 @@ The trimmed *`comment`* attribute value is used to construct a regular expressio
 
 === Elements ===
 
-This task accepts implicit text. Text may contain Ant property references `${..}` or [EL Flaka EL] references `#{..}`.
+This task optionally accepts implicit text. That text may contain Ant property `${..}` or <<el>> `#{..}` references. 
 
 
 === Behaviour ===
