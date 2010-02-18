@@ -2,8 +2,7 @@
 
 Use this task to dump a file within the Flaka package to stdout or a file.  This task's usefulness is rather limited for public use, however this task is used to implement target [Targets#export export].  
 
-==== Attributes ====
-// cols=5
+==== Attributes ====// cols=5
 [cols="15%,3*11%,52%"]
 |===========================
 | Attribute | Type | Default | <<el>> | Description 
@@ -203,7 +202,6 @@ Note: The current version allows only the specification of one task or macro wit
 ==== Further Links ====
  * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Create-target.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java[Source]
-<hr/>
 
 
 === set-default-target === 
@@ -317,20 +315,24 @@ A task to compose a property based on existing properties.
 The new property is composed by searching for property names matching a given regular expression. Then the new property is created by  concatenating the value of each matching property using a separator of choice.
 
 ==== Attributes ====
- * property<br />The name of the property to create
- * regex<br />The regular expression. 
- * sep<br />The separator to use when concatenating
+
+//cols=2
+[cols="20%,80%]
+|=========================
+|property | The name of the property to create
+| regex |The regular expression. 
+| sep | The separator to use when concatenating
+|=========================
+
 ==== Example ====
 
 Assume that the following properties are defined:
 
 
 -------------------------------------
-
  depot.1.url = http://depot/component
  depot.2.url = http://depot/3rdparty
  depot.3.url = http://depot/externals
-
 -------------------------------------
 
 
