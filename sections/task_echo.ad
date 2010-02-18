@@ -1,5 +1,5 @@
 
-[id="task_echo"]
+[[task_echo,echo]]
 == echo ==
 
 Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example. 

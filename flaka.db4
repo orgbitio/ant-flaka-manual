@@ -165,7 +165,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 &lt;echo&gt;
   value of property x is ${x}    -- .. is 99
 &lt;/echo&gt;</screen>
-<simpara>It can be done using Flaka&#8217;s task [Tasks#let] or [Task#unset] as the following snippet demonstrates.</simpara>
+<simpara>It can be done using Flaka&#8217;s task <xref linkend="task_let"/> or <xref linkend="task_unset"/> as the following snippet demonstrates.</simpara>
 <screen>&lt;property name="x" value="99" /&gt;
 &lt;c:let&gt;
    x ::= "The quick brown fox .."
@@ -191,11 +191,11 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_when_and_unless">
 <title>when and unless</title>
-<simpara>Task [Tasks#when when] evaluates an <link linkend="el">EL expr</link>. If the evaluation gives <literal>true</literal>, the sequence of tasks are executed. Nothing else happens in case of <literal>false</literal>.</simpara>
+<simpara>Task <xref linkend="task_when"/> evaluates an <xref linkend="el"/> expressio. If the evaluation gives <literal>true</literal>, the sequence of tasks are executed. Nothing else happens in case of <literal>false</literal>.</simpara>
 <screen>&lt;c:when test=" expr "&gt;
    -- executed if expr evaluates to true
 &lt;/c:when&gt;</screen>
-<simpara>The logical negation of <literal>when</literal> is task [Tasks#unless unless] which executes the sequence of tasks only in case the evaluation of <emphasis>expr</emphasis> returns <literal>false</literal>.</simpara>
+<simpara>The logical negation of <literal>when</literal> is task <xref linkend="task_unless"/> which executes the sequence of tasks only in case the evaluation of <emphasis>expr</emphasis> returns <literal>false</literal>.</simpara>
 <screen> &lt;c:unless test=" expr "&gt;
    -- executed if expr evaluates to false
  &lt;/c:unless&gt;</screen>
@@ -203,7 +203,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_choose">
 <title>choose</title>
-<simpara>Task [Tasks#choose choose] tests each <literal>when</literal> condition in turn until an <emphasis>expr</emphasis> evalutes to <literal>true</literal>. It executes then the body of that when condition. Subsequent <literal>whens</literal> are then not further tested (nor executed). If all expressions evaluate to <literal>false</literal>, an optional <emphasis>catch-all</emphasis> clause gets executed.</simpara>
+<simpara>Task <xref linkend="task_choose"/> tests each <literal>when</literal> condition in turn until an <emphasis>expr</emphasis> evalutes to <literal>true</literal>. It executes then the body of that when condition. Subsequent <literal>whens</literal> are then not further tested (nor executed). If all expressions evaluate to <literal>false</literal>, an optional <emphasis>catch-all</emphasis> clause gets executed.</simpara>
 <screen> &lt;c:choose&gt;
   &lt;when test="expr_1"&gt;
     -- body_1
@@ -216,7 +216,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_switch">
 <title>switch</title>
-<simpara>A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of <emphasis>when</emphasis> statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the [Tasks#switch switch] task:</simpara>
+<simpara>A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of <emphasis>when</emphasis> statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the <xref linkend="task_switch"/> task:</simpara>
 <screen> &lt;c:switch value=" 'some string' "&gt;
   &lt;matches re="regular expression or pattern" &gt;
     -- body_1
@@ -226,11 +226,11 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
     -- catch all body
   &lt;/otherwise&gt;
  &lt;/c:switch&gt;</screen>
-<simpara>Each case is tried in turn <emphasis>to match</emphasis> the string value (given as <link linkend="el">EL expression</link>). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.</simpara>
+<simpara>Each case is tried in turn <emphasis>to match</emphasis> the string value (given as <xref linkend="el"/> expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.</simpara>
 </section>
 <section id="_repetition">
 <title>Repetition</title>
-<simpara>Flaka has a looping statement. Use task [Tasks#for for] to iterate over a <emphasis>list</emphasis> of items. Use [Tasks#break break] and [Tasks#continue continue] to terminate the loop or to continue the loop with the next item.</simpara>
+<simpara>Flaka has a looping statement. Use task <xref linkend="task_for"/> to iterate over a <emphasis>list</emphasis> of items. Use <xref linkend="task_break"/> and <xref linkend="tasks_continue"/> to terminate the loop or to continue the loop with the next item.</simpara>
 <screen> &lt;c:for var=" name " in=" ''.tofile.list "&gt;
     -- sequence of task or macros
     -- used &lt;c:continue /&gt; to continue ; and
@@ -238,7 +238,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
     -- use #{name} to refer to current item (as shown below)
     &lt;c:echo&gt;#{name}&lt;/c:echo&gt;
  &lt;/c:for&gt;</screen>
-<simpara>Attribute <literal>in</literal> will be evaluated as <link linkend="el">EL</link> expression. In the example above, that <link linkend="el">EL</link> expression is <literal>''.tofile.list</literal> which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at [EL#String_Properties properties of a string] and [EL#File_Properties properties of a file].</simpara>
+<simpara>Attribute <literal>in</literal> will be evaluated as <xref linkend="el"/> expression. In the example above, that <xref linkend="el"/> expression is <literal>''.tofile.list</literal> which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at <link linkend="el_string_properties">properties</link> of a string] and <link linkend="el_file_properties">properties</link> of a file.</simpara>
 </section>
 <section id="_exception_handling">
 <title>Exception Handling</title>
@@ -246,7 +246,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_trycatch">
 <title>trycatch</title>
-<simpara>Flaka contains a task to handle exceptions thrown by tasks, [Tasks#trycatch trycatch]. This task implements the usual <emphasis>try/catch/finally</emphasis> trinity found in various programming languages (like in Java for example):</simpara>
+<simpara>Flaka contains a task to handle exceptions thrown by tasks, <xref linkend="task_trycatch"/>. This task implements the usual <emphasis>try/catch/finally</emphasis> trinity found in various programming languages (like in Java for example):</simpara>
 <screen> &lt;c:trycatch&gt;
    &lt;try&gt;
      -- sequence of task or macros
@@ -279,7 +279,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_throw">
 <title>throw</title>
-<simpara>Task [Tasks#throw throw] throws a (build) exception.</simpara>
+<simpara>Task <xref linkend="task_throw"/> throws a (build) exception.</simpara>
 <screen> &lt;c:throw [var="sym"] /&gt;</screen>
 <simpara>This task can also be used to rethrow an existing exception.</simpara>
 </section>
@@ -306,7 +306,7 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 <section id="el" xreflabel="EL">
 <title>EL, The Expression Language</title>
 <simpara>The <ulink url="http://en.wikipedia.org/wiki/Unified_Expression_Language">Java Unified Expression Language</ulink> <ulink url="http://www.jcp.org/en/jsr/detail?id=245">(JSR-245)</ulink> is a special purpose programming (albeit not turing complete) language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.</simpara>
-<simpara>One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as <emphasis>string</emphasis> object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (sort for Unified Expression Language) this becomes an easy task:</simpara>
+<simpara>One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as <emphasis>string</emphasis> object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for <emphasis>Unified Expression Language</emphasis>) this becomes an easy task:</simpara>
 <screen>&lt;c:echo&gt;
   ;; basedir is a standard Ant property
   basedir is ${basedir}
@@ -324,12 +324,12 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 [c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
 [c:echo]
 [c:echo] this is /projects/flaka/test/tryme.xml reporting!</screen>
-<simpara>as output. Notice the usage of task [Tasks#echo echo]. When being tried with <ulink url="http://ant.apache.org/manual/CoreTasks/echo.html">Ant&#8217;s standard echo task</ulink>, a totally different output needs to be expected. Most important, [#EL_References EL references] <literal>#{..}</literal> are not resolved but rather print as given.</simpara>
-<section id="_another_el_example">
-<title>Another EL Example</title>
-<simpara>The code snippet following shows <emphasis>EL</emphasis> in action. The idea is to list all unreadable files in a certain directory (here the root folder). The snippet shows how EL is used in [#EL_Ready_Tasks Flaka various EL enabled tasks].</simpara>
+<simpara>as output. Notice that Flaka's <xref linkend="task_echo"/> task has been used for this illustration because <xref linkend="el"/> is by default only available on Flaka tasks. If <ulink url="http://ant.apache.org/manual/CoreTasks/echo.html">Ant's standard echo task</ulink> is used, all <literal>#{..}</literal> constructs are left as they are. It is however possible and recommended to turn <xref linkend="el"/> on for <emphasis>all</emphasis> tasks. See <link linkend="el_enable_el">how to enable EL</link> for details.</simpara>
+<simpara>The next code example shows another <emphasis>EL in action</emphasis> sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the <emphasis>root</emphasis> folder:</simpara>
 <screen>&lt;c:let&gt;
+  ; the root folder as file object
   root = '/'.tofile
+  ; create empty list
   list = list()
 &lt;/c:let&gt;
 
@@ -346,63 +346,65 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
   There are #{size(list)} unreadable directories in #{root}.
   And here they are #{list}.
 &lt;/c:echo&gt;</screen>
-<simpara>Executed on MacOS 10.5.6 (aka "Leopard"), this gives:</simpara>
+<simpara>Executed on MacOS 10.5.6 (aka "Leopard") gives:</simpara>
 <screen>[c:echo] There are 2 unreadable directories in /.
 [c:echo] And here they are [/.Trashes, /.Spotlight-V100].</screen>
-</section>
-<section id="_disabling_el">
-<title>Disabling EL</title>
-<simpara>By default, <emphasis>EL</emphasis> is enabled. <emphasis>EL</emphasis> can be disabled by setting property <literal>ant.el</literal> to <literal>false</literal> (exactly as written). For example:</simpara>
-<screen>&lt;!-- globally disable EL ---&gt;
-&lt;property name="ant.el" value="false" /&gt;</screen>
-<simpara>If the property is not set, or set to a different value, then <emphasis>EL</emphasis> is enabled.</simpara>
-</section>
-<section id="_el_ready_tasks">
+<section id="el_ready_tasks">
 <title>EL Ready Tasks</title>
-<simpara><emphasis>EL</emphasis> expressions can only be used in tasks which are <emphasis>EL</emphasis> ready. This are:</simpara>
+<simpara>By default can EL expressions can only be used in tasks which are EL aware. This tasks are:</simpara>
 <itemizedlist>
 <listitem>
 <simpara>
-[Tasks#let let]
+<xref linkend="task_echo"/>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[Tasks#properties properties]
+<xref linkend="task_for"/>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[Tasks#when when], [Tasks#unless unless]
+<xref linkend="task_let"/>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[Tasks#for for]
+<xref linkend="task_properties"/>
 </simpara>
 </listitem>
 <listitem>
 <simpara>
-[Tasks#echo echo]
+<xref linkend="task_unless"/>
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<xref linkend="task_when"/>
 </simpara>
 </listitem>
 </itemizedlist>
-<simpara>Further tasks to follow. See also how to enable EL on a [#Globally_Enabling_EL global level].</simpara>
+<simpara>It is possible though to enable <xref linkend="el"/> on a global level, i.e. for all tasks.</simpara>
 </section>
-<section id="_globally_enabling_el">
+<section id="el_enabling_el">
 <title>Globally Enabling EL</title>
-<simpara>To enable handling of EL references on a global level - i.e. on all tasks, types or  macros and independent of the vendor - use task [Tasks#install-reference-handler install-reference-handler].</simpara>
+<simpara>To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <xref linkend="task_install_property_handler"/>:</simpara>
+<screen>&lt;c:install-property-handler /&gt;</screen>
 </section>
-<section id="_el_references">
+<section id="el_references">
 <title>EL References</title>
 <simpara>Those <emphasis>not</emphasis> familiar with the specification of <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">EL</ulink>, <ulink url="http://en.wikipedia.org/wiki/JavaServer_Pages">JSP</ulink> or <ulink url="http://en.wikipedia.org/wiki/JavaServer_Faces">JSF</ulink> may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed <footnote><simpara>EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content</simpara></footnote>.</simpara>
 <simpara>For those familiar, the <emphasis>term EL expression</emphasis> is used in a slightly different way in this documentation than in the specification. According to the specification, <literal>#{..}</literal> is an EL expression.</simpara>
-<simpara>Not so in this documentation. Here only the inner part, denoted by <literal>..</literal> is a <emphasis>EL expression</emphasis> while <literal>#{ ..}</literal> is considered a <emphasis>reference to an EL expression</emphasis>. A reference to an expression is used in contexts which are partially evaluated. Take task [Tasks#echo echo] as example. Clearly, when writing</simpara>
+<simpara>Not so in this documentation. Here only the inner part, denoted by <literal>..</literal> is a <emphasis>EL expression</emphasis> while <literal>#{ ..}</literal> is considered a <emphasis>reference to an EL expression</emphasis>. A reference to an expression is used in contexts which are partially evaluated. Take task <xref linkend="task_echo"/> as example. Clearly, when writing</simpara>
 <screen>&lt;c:echo&gt;
  I said 'Hello world'!
 &lt;/c:echo&gt;</screen>
 <simpara>we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what <literal>#{..}</literal> is good for:</simpara>
-<screen>&lt;c:echo&gt;
+<screen>&lt;c:let&gt;
+ what = 'Hello world'
+&lt;/c:let&gt;
+
+&lt;c:echo&gt;
  I said '#{ what }'!
 &lt;/c:echo&gt;</screen>
 <simpara>In other contexts, like in <literal>&lt;c:when test=" condition " /&gt;</literal>, a EL expression is expected anyway and it does not make the slightest sense to require the expression to be referenced. As an example, assume that we want to check whether a property named <emphasis>foobar</emphasis> exists. Instead of writing</simpara>
@@ -415,10 +417,20 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_handling_of_literal_literal">
 <title>Handling of <literal>${..}</literal></title>
-<simpara><emphasis>EL</emphasis> defines two types of references:
- * <emphasis role="strong">deferred</emphasis>, indicated by <literal>#{..}</literal> ; and
- * <emphasis role="strong">dynamic</emphasis>, indicated by <literal>${..}</literal></simpara>
-<simpara>Dynamic references <literal>${..}</literal> are handled by Ant to resolve properties. There are two execptions to this however. Ant will leave a dynamic reference as is if the reference value does not denote a (existing) property. Secondly, Ant allows to escape a reference by by doubling character <literal>$</literal> as in <literal>$${a}</literal>. In any case, <literal>${..}</literal> does not denote a legal EL reference and will be left as is (notice that you can install a property handler to get rif of unresolved <literal>${..}</literal> property references.</simpara>
+<simpara><emphasis>EL</emphasis> defines two types of references:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+<emphasis role="strong">deferred</emphasis>, indicated by <literal>#{..}</literal> ; and
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<emphasis role="strong">dynamic</emphasis>, indicated by <literal>${..}</literal>
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Dynamic references <literal>${..}</literal> are handled by Ant to resolve properties. There are two execptions to this however. Ant will leave a dynamic reference as is if the reference value does not denote a (existing) property. Secondly, Ant allows to escape a reference by by doubling character <literal>$</literal> as in <literal>$${a}</literal>. In any case, <literal>${..}</literal> does not denote a legal EL reference and will be left as is. Be aware that you can install a property handler to get rit of unresolved <literal>${..}</literal> property references.</simpara>
 </section>
 <section id="_handling_of_literal_literal_2">
 <title>Handling of <literal>#{..}</literal></title>
@@ -435,10 +447,20 @@ Start writing build scripts using Flaka and give <ulink url="mailto:flaka@haefel
 </section>
 <section id="_the_great_escape">
 <title>The Great Escape</title>
-<simpara>This section is about how to stop a EL reference from being evaluated and treated as text instead:
- # Use character backslash like in <literal>\#{abc}</literal> ; or use this rather awkward
- # <literal>#{'#{'}abc}</literal> construct.
-Both variants have the same result, the string <literal>#{abc}</literal>.</simpara>
+<simpara>This section is about how to stop a EL reference from being evaluated and treated as text instead:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>
+Use character backslash like in <literal>\#{abc}</literal> ; or use this rather awkward
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>#{'#{'}abc}</literal> construct.
+</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Both variants have the same result, the string <literal>#{abc}</literal>.</simpara>
 </section>
 <section id="_gory_el_details">
 <title>Gory EL Details</title>
@@ -446,7 +468,7 @@ Both variants have the same result, the string <literal>#{abc}</literal>.</simpa
 <screen>  7 * (5.0+x) &gt;= 0        ;; 1
   a and not (b || false)  ;; 2
   empty x ? 'foo' : x[0]  ;; 3</screen>
-<simpara>The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable <literal>x</literal> and similar does (2) on <literal>a</literal> and <literal>b</literal>. Line (3) shows the usage of two buildin operators, [#Operators see below for details].</simpara>
+<simpara>The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable <literal>x</literal> and similar does (2) on <literal>a</literal> and <literal>b</literal>. Line (3) shows the usage of two built-in <link linkend="el_operators">operators (see below for details)</link>.</simpara>
 <simpara>The rest of this chapter introduces relevant details of EL in order to use it within Flaka.</simpara>
 </section>
 <section id="_data_types">
@@ -482,15 +504,33 @@ Both variants have the same result, the string <literal>#{abc}</literal>.</simpa
 'ab\'        -- illegal
 'ab\\'       -- ab\</screen>
 </section>
-<section id="_operators">
+<section id="el_operators">
 <title>Operators</title>
-<simpara>Four <emphasis>operators</emphasis> are defined in <emphasis>EL</emphasis>:
- # <literal>empty</literal> checks whether a variable is empty or not and returns either <literal>true</literal> or <literal>false</literal>. It is important to understand that <literal>null</literal> is considered empty.
- #  condition operator <literal>c ? a : b</literal> evaluates <literal>c</literal> in a boolean context and returns the evaluation of expression <literal>a</literal> if <literal>c</literal> evaluates to <literal>true</literal>; otherwise <literal>eval(b)</literal> will be the result of this operator.
- # <literal>.</literal> and ;
- # <literal>[]</literal> are property operators described in [#Properties Properties] below.</simpara>
+<simpara>Four <emphasis>operators</emphasis> are defined in <emphasis>EL</emphasis>:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>
+<literal>empty</literal> checks whether a variable is empty or not and returns either <literal>true</literal> or <literal>false</literal>. It is important to understand that <literal>null</literal> is considered empty.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+condition operator <literal>c ? a : b</literal> evaluates <literal>c</literal> in a boolean context and returns the evaluation of expression <literal>a</literal> if <literal>c</literal> evaluates to <literal>true</literal>; otherwise <literal>eval(b)</literal> will be the result of this operator.
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>.</literal> and ;
+</simpara>
+</listitem>
+<listitem>
+<simpara>
+<literal>[]</literal> are property operators described in <link linkend="el_properties">section <emphasis>Properties</emphasis></link> below.
+</simpara>
+</listitem>
+</orderedlist>
 </section>
-<section id="_properties_2">
+<section id="el_properties">
 <title>Properties</title>
 <simpara>Every data object in <emphasis>EL</emphasis> may have properties associated. Which properties are available has not been standardized in the <ulink url="http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf">specification</ulink>. In fact, this depends heavily on the underlying implementation and usage domain. What <emphasis>EL</emphasis> specifies however, is how to query a property:</simpara>
 <screen>a.b.c</screen>
@@ -512,18 +552,18 @@ Both variants have the same result, the string <literal>#{abc}</literal>.</simpa
 <simpara>The last example demonstrates that there might also be <ulink url="http://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effects</ulink> querying a property. In the example above, which is specific for Flaka, a directory <literal>abc</literal> gets created and the whole expression evaluates to <literal>true</literal> if the directory could get created and <literal>false</literal> otherwise.</simpara>
 <simpara>See further down which properties are available on various data types.</simpara>
 </section>
-<section id="_implicit_objects">
+<section id="el_implicit_objects">
 <title>Implicit Objects</title>
-<simpara>Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with <emphasis>something</emphasis>, [EL] allows the implementation to provide <emphasis>implicit</emphasis> objects and [#Functions top level functions (see below)].</simpara>
+<simpara>Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with <emphasis>something</emphasis>, <xref linkend="el"/> allows the implementation to provide <emphasis>implicit</emphasis> objects and <link linkend="el_functions">top level functions (see below)</link>.</simpara>
 <simpara>The following implicit objects are defined by Flaka:</simpara>
 <informaltable
 frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>Implicit Object</simpara></entry>
@@ -602,7 +642,7 @@ var.foo                 -- (2)
 reference.foo           -- (3)
 project.references.foo  -- (4)</screen>
 </section>
-<section id="_functions">
+<section id="el_functions">
 <title>Functions</title>
 <simpara><emphasis>EL</emphasis> also allows the implementation to provide top level functions. The following sections describe functions provided by Flaka. Some functions take an arbitrary number of arguments (inclusive no argument at all). This is denoted by two dots (<literal>..</literal>). An example of such a function is <literal>list(object..)</literal> which takes an arbitrary number of object to create a list.</simpara>
 <informaltable
@@ -610,9 +650,9 @@ frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="25*"/>
+<colspec colname="col_2" colwidth="10*"/>
+<colspec colname="col_3" colwidth="65*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>Function</simpara></entry>
@@ -668,9 +708,9 @@ frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="20*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="65*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>sin(double)</simpara></entry>
@@ -713,12 +753,12 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara>Returns the absolute value of a double value.</simpara></entry>
 </row>
 <row>
-<entry align="left" valign="top"><simpara>min(double,double)</simpara></entry>
+<entry align="left" valign="top"><simpara>min(double, double)</simpara></entry>
 <entry align="left" valign="top"><simpara>double</simpara></entry>
 <entry align="left" valign="top"><simpara>Returns the smaller of two double values.</simpara></entry>
 </row>
 <row>
-<entry align="left" valign="top"><simpara>max(double,double)</simpara></entry>
+<entry align="left" valign="top"><simpara>max(double, double)</simpara></entry>
 <entry align="left" valign="top"><simpara>double</simpara></entry>
 <entry align="left" valign="top"><simpara>Returns the larget of two double values.</simpara></entry>
 </row>
@@ -749,7 +789,7 @@ rowsep="1" colsep="1"
 <screen>list('a','b')[1]  =&gt; 'b'</screen>
 <simpara>Negative indexes are currently not supported. If an index is specfies an not existing element, <literal>null</literal> is returned.</simpara>
 </section>
-<section id="_string_properties">
+<section id="el_string_properties">
 <title>String Properties</title>
 <simpara>Besides <emphasis>natural</emphasis> properties (see discussion above) are the following properties supported:</simpara>
 <informaltable
@@ -757,9 +797,9 @@ frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>Property</simpara></entry>
@@ -800,7 +840,7 @@ rowsep="1" colsep="1"
 </tgroup>
 </informaltable>
 </section>
-<section id="_file_properties">
+<section id="el_file_properties">
 <title>File Properties</title>
 <simpara>Files and folders is Ant&#8217;s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to <emphasis>get</emphasis> a file object in the first place. This is most easily done by using string property <literal>tofile</literal>:</simpara>
 <screen>  'myfolder'.tofile.isdir</screen>
@@ -811,9 +851,9 @@ frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>Property</simpara></entry>
@@ -877,7 +917,7 @@ rowsep="1" colsep="1"
 </row>
 <row>
 <entry align="left" valign="top"><simpara><literal>list</literal></simpara></entry>
-<entry align="left" valign="top"><simpara>File[]</simpara></entry>
+<entry align="left" valign="top"><simpara>File</simpara></entry>
 <entry align="left" valign="top"><simpara>array of files in folder ; otherwise <literal>null</literal></simpara></entry>
 </row>
 <row>
@@ -911,37 +951,37 @@ rowsep="1" colsep="1"
 </section>
 <section id="_matcher_properties">
 <title>Matcher Properties</title>
-<simpara>A <emphasis>matcher object</emphasis> is created by task [Tasks#switch switch] if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).</simpara>
+<simpara>A <emphasis>matcher object</emphasis> is created by task <xref linkend="task_switch"/> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).</simpara>
 <informaltable
 frame="all"
 rowsep="1" colsep="1"
 >
-<tgroup cols="4">
-<colspec colname="col_1" colwidth="25*"/>
-<colspec colname="col_2" colwidth="25*"/>
-<colspec colname="col_3" colwidth="25*"/>
-<colspec colname="col_4" colwidth="25*"/>
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>Property</simpara></entry>
 <entry align="left" valign="top"><simpara>Type</simpara></entry>
 <entry align="left" valign="top"><simpara>Description</simpara></entry>
-<entry align="left" valign="top"><simpara></simpara></entry>
 </row>
 <row>
 <entry align="left" valign="top"><simpara><literal>start</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>The position within the input where the match starts.</simpara></entry>
-<entry align="left" valign="top"><simpara><literal>s</literal></simpara></entry>
 </row>
 <row>
+<entry align="left" valign="top"><simpara><literal>s</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>Same as <literal>start</literal></simpara></entry>
-<entry align="left" valign="top"><simpara><literal>end</literal></simpara></entry>
-<entry align="left" valign="top"><simpara>int</simpara></entry>
 </row>
 <row>
+<entry align="left" valign="top"><simpara><literal>end</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>The position within the input where the match ends (the character at <literal>end</literal> is the last matching character)</simpara></entry>
+</row>
+<row>
 <entry align="left" valign="top"><simpara><literal>e</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>Same as <literal>end</literal></simpara></entry>
@@ -950,16 +990,18 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara><literal>groups</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>The number of capturing groups in the (regular) expression.</simpara></entry>
-<entry align="left" valign="top"><simpara><literal>size</literal></simpara></entry>
 </row>
 <row>
+<entry align="left" valign="top"><simpara><literal>size</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
+</row>
+<row>
 <entry align="left" valign="top"><simpara><literal>length</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
+<entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
 </row>
 <row>
-<entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
 <entry align="left" valign="top"><simpara><literal>n</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>int</simpara></entry>
 <entry align="left" valign="top"><simpara>Same as <literal>groups</literal></simpara></entry>
@@ -968,13 +1010,16 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara><literal>pattern</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>string</simpara></entry>
 <entry align="left" valign="top"><simpara>The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions.</simpara></entry>
-<entry align="left" valign="top"><simpara><literal>p</literal></simpara></entry>
 </row>
 <row>
+<entry align="left" valign="top"><simpara><literal>p</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>string</simpara></entry>
 <entry align="left" valign="top"><simpara>Same as <literal>pattern</literal></simpara></entry>
+</row>
+<row>
 <entry align="left" valign="top"><simpara><emphasis>i</emphasis></simpara></entry>
 <entry align="left" valign="top"><simpara>matcher</simpara></entry>
+<entry align="left" valign="top"><simpara>The matcher object for <emphasis>i</emphasis>'th capturing group. See task <xref linkend="task_switch"/> for examples.</simpara></entry>
 </row>
 </tbody>
 </tgroup>
@@ -988,9 +1033,9 @@ frame="all"
 rowsep="1" colsep="1"
 >
 <tgroup cols="3">
-<colspec colname="col_1" colwidth="33*"/>
-<colspec colname="col_2" colwidth="33*"/>
-<colspec colname="col_3" colwidth="33*"/>
+<colspec colname="col_1" colwidth="15*"/>
+<colspec colname="col_2" colwidth="15*"/>
+<colspec colname="col_3" colwidth="70*"/>
 <tbody>
 <row>
 <entry align="left" valign="top"><simpara>evaluated object type</simpara></entry>
@@ -1031,7 +1076,7 @@ rowsep="1" colsep="1"
 <title>Part II</title>
 <simpara>Each of the following chapters describes a task in all it's details.</simpara>
 </section>
-<section id="task_echo">
+<section id="task_echo" xreflabel="echo">
 <title>echo</title>
 <simpara>Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example.</simpara>
 <screen>&lt;echo&gt;foobar&lt;/echo&gt;</screen>
@@ -1187,7 +1232,7 @@ rowsep="1" colsep="1"
 </itemizedlist>
 </section>
 </section>
-<section id="_let">
+<section id="task_let" xreflabel="let">
 <title>let</title>
 <simpara>XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:</simpara>
 <screen>  &lt;c:let&gt;
@@ -1222,7 +1267,7 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara>Attribute</simpara></entry>
 <entry align="left" valign="top"><simpara>Type</simpara></entry>
 <entry align="left" valign="top"><simpara>Default</simpara></entry>
-<entry align="left" valign="top"><simpara>[EL]</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
 <entry align="left" valign="top"><simpara>Meaning</simpara></entry>
 </row>
 <row>
@@ -1246,20 +1291,20 @@ rowsep="1" colsep="1"
 </section>
 <section id="_elements_2">
 <title>Elements</title>
-<simpara>This task accepts implicit text. Text may contain any amount of [EL] and property references references. Continuation and comment lines are supported.</simpara>
+<simpara>This task accepts implicit text. Text may contain any amount of <xref linkend="el"/> and property references references. Continuation and comment lines are supported.</simpara>
 </section>
 <section id="_behaviour_2">
 <title>Behaviour</title>
 <simpara>The comment character sequence is <literal>";"</literal> by default. It can be changed to an arbitrary sequence using attribute <literal>comment</literal>. Once set, it can&#8217;t be changed during the execution of this task. A comment characters are used to identify lines to be ignored from execution. Such a line is given if the first non whitespace characters of that line are identical with the sequence of comment characters. In other words, a line is being ingnored if matches the regular expression <literal>^\s*&lt;comment&gt;</literal>. The comment characters itself are not interpreted as regular expression characters. Therefore a given comment sequence like <literal>"(#|;)"</literal> does not mean that either <literal>";"</literal> or <literal>"#"</literal> start a comment. Instead it means that a comment line starts with the characters <literal>"(#|;)"</literal> which would be rather awkward (while perfectly <emphasis>legal</emphasis>).</simpara>
 <simpara>To support readability continuation lines are supported. Such a line is indicated by having <literal>\</literal> as last character. Be careful not to put any whitespace characters after <literal>\</literal>, otherwise the line will not be recognized as such. Continuation lines are also working on comments as the example above shows. If a line is a continuation line, the last character <literal>\</literal> is removed, the line is accumulated and the next line is read. If finally a non-continuation line is red (and only then), an evaluation of the accumulated line takes place: If the accumlated line is a comment it will be ignored and otherwise either treated as property or variable assignment.</simpara>
 <simpara>Leading and trailing whitespace characters ignored in every (accumulated) line. For example, the property assignment  <literal>x := 'foo bar'</literal> will assign the string <literal>foo bar</literal> to property <literal>x</literal>. Notice that whitespace before and after <literal>x</literal> and before and <emphasis>after</emphasis> <literal>'foo bar'</literal> is ignored. This is slightly different from reading Java properties where whitespace after <literal>'foo bar'</literal> would <emphasis>not</emphasis> have been ignored!</simpara>
-<simpara>When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as [EL] expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).</simpara>
+<simpara>When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as <xref linkend="el"/> expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).</simpara>
 <simpara>Notice that it is perfectly legal to use property or variable references as the following example shows:</simpara>
 <screen>&lt;c:let&gt;
  f = '${ant.file}'
  F = '#{f}'
 &lt;/c:let&gt;</screen>
-<simpara>Be aware that property references are evaluated <emphasis>before</emphasis> [EL] expressions. Consider:</simpara>
+<simpara>Be aware that property references are evaluated <emphasis>before</emphasis> <xref linkend="el"/> expressions. Consider:</simpara>
 <screen>&lt;c:let&gt;
   ;; let s hold string ant.file
   s = 'ant.file'
@@ -1365,7 +1410,7 @@ rowsep="1" colsep="1"
 </itemizedlist>
 </section>
 </section>
-<section id="_list">
+<section id="task_list" xreflabel="list">
 <title>list</title>
 <simpara>A elementary task to create a variable containing a <emphasis>list</emphasis> of objects.</simpara>
 <screen>&lt;c:list var="mylist"&gt;
@@ -1391,7 +1436,7 @@ rowsep="1" colsep="1"
 <entry align="left" valign="top"><simpara>Attribute</simpara></entry>
 <entry align="left" valign="top"><simpara>Type</simpara></entry>
 <entry align="left" valign="top"><simpara>Default</simpara></entry>
-<entry align="left" valign="top"><simpara>[EL]</simpara></entry>
+<entry align="left" valign="top"><simpara><xref linkend="el"/></simpara></entry>
 <entry align="left" valign="top"><simpara>Meaning</simpara></entry>
 </row>
 <row>
@@ -1440,7 +1485,7 @@ rowsep="1" colsep="1"
  ;; not working
  3 * 5  'hello, world'
 &lt;/c:list&gt;</screen>
-<simpara>Use attribute <literal>el</literal> to disable the interpretation of a line as [EL] expression:</simpara>
+<simpara>Use attribute <literal>el</literal> to disable the interpretation of a line as <xref linkend="el"/> expression:</simpara>
 <screen>&lt;c:list var="mystrings" el="false"&gt;
  3 * 5
  ;; assume that variable message has (string) value 'world'
@@ -1466,7 +1511,7 @@ rowsep="1" colsep="1"
 </section>
 <section id="_install_property_handler">
 <title>install-property-handler</title>
-<simpara>A task to install Flaka&#8217;s property handler. When installed, Ant <emphasis>understands</emphasis>  [EL] references like <literal>#{..}</literal> in addition to standard property references <literal>${..}</literal>.</simpara>
+<simpara>A task to install Flaka&#8217;s property handler. When installed, Ant <emphasis>understands</emphasis>  <xref linkend="el"/> references like <literal>#{..}</literal> in addition to standard property references <literal>${..}</literal>.</simpara>
 <simpara>An example will illustrate this:</simpara>
 <screen> &lt;c:let&gt;
     ;; let variable foo to string 'bar'

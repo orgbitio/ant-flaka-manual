@@ -1,7 +1,7 @@
+
+
+[[task_let,let]]
 == let ==
-
-
-
 XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
 
 --------------------------------------
@@ -29,7 +29,7 @@ Notice that the right side of `=`, `:=` and `::=` are in any cases a EL expressi
 === Attributes ===
 
 |=======================
-| Attribute | Type | Default    | [EL] | Meaning 
+| Attribute | Type | Default    | <<el>> | Meaning 
 | comment   | string | `;`      |  no  | The comment character sequence. 
 | debug     | bool   | `false`  |  no  | Turn on extra debug information.
 |=======================
@@ -38,7 +38,7 @@ All attributes follow the rule that leading and trailing whitespace is ignored. 
 
 === Elements ===
 
-This task accepts implicit text. Text may contain any amount of [EL] and property references references. Continuation and comment lines are supported. 
+This task accepts implicit text. Text may contain any amount of <<el>> and property references references. Continuation and comment lines are supported. 
 
 === Behaviour ===
 
@@ -48,7 +48,7 @@ To support readability continuation lines are supported. Such a line is indicate
 
 Leading and trailing whitespace characters ignored in every (accumulated) line. For example, the property assignment  `x := 'foo bar'` will assign the string `foo bar` to property `x`. Notice that whitespace before and after `x` and before and _after_ `'foo bar'` is ignored. This is slightly different from reading Java properties where whitespace after `'foo bar'` would _not_ have been ignored!
  
-When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as [EL] expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
+When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as <<el>> expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
 
 Notice that it is perfectly legal to use property or variable references as the following example shows:
 --------------------------------------
@@ -58,7 +58,7 @@ Notice that it is perfectly legal to use property or variable references as the 
 </c:let>
 --------------------------------------
 
-Be aware that property references are evaluated _before_ [EL] expressions. Consider:
+Be aware that property references are evaluated _before_ <<el>> expressions. Consider:
 --------------------------------------
 <c:let>
   ;; let s hold string ant.file

@@ -1,4 +1,6 @@
 
+
+[[task_list,list]]
 == list ==
 
 A elementary task to create a variable containing a _list_ of objects.
@@ -16,7 +18,7 @@ A elementary task to create a variable containing a _list_ of objects.
 === Attributes ===
 
 |=======================
-| Attribute | Type   | Default | [EL] | Meaning 
+| Attribute | Type   | Default | <<el>> | Meaning 
 | var       | string |         |  r   | The name of the variabled to be assigned.
 | comment   | string | `;`     |      | The comment character                    
 | debug     | bool   | false   |      | Turn on extra debug information.         
@@ -45,7 +47,7 @@ A single line can't have more than one EL expressions. Thus the following exampl
 -------------------------------------
 
 
-Use attribute `el` to disable the interpretation of a line as [EL] expression:
+Use attribute `el` to disable the interpretation of a line as <<el>> expression:
 
 -------------------------------------
 <c:list var="mystrings" el="false">

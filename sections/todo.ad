@@ -87,8 +87,8 @@ This task does not define attributes.
 ==== Elements ====
 
 || Name    || Cardinality || Description ||
-|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
-|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. ||
+|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as <<el>> expressions are disabled. ||
 || _task_  || arbitrary   || A (arbitrary) task or macro to be excecuted ||
 
 ==== Behaviour ===
@@ -119,7 +119,7 @@ A task implemening a `while` loop:
 ==== Attributes ====
 
 || Attribute || Type   || Default || EL    || Description ||
-|| `test`    || string || `false` || expr  || The condition for looping as [EL] expression ||
+|| `test`    || string || `false` || expr  || The condition for looping as <<el>> expression ||
 
 ==== Elements ====
 
@@ -127,7 +127,7 @@ A task implemening a `while` loop:
 
 ==== Behaviour ====
 
-All tasks listed as elements are executed as long as the [EL] expression evaluates to `true`. 
+All tasks listed as elements are executed as long as the <<el>> expression evaluates to `true`. 
 
 ==== Further Links ====
  * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
@@ -156,8 +156,8 @@ A task that implements a loop statement. Iterating over a list of _objects_:
 ==== Attributes ====
 
 || Attribute || Type   || Default || EL    || Description ||
-|| `var`     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in [EL] enabled tasks. ||
-|| `in`      || string ||         || expr  || The items to be iterated over as [EL] expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||
+|| `var`     || string ||         || #{}   || The variable holding each loop item. This variable can be referenced within the body like `#{var}` where `var` is the string used in this attribute. If not used, then no iteration takes place and no warning is issued. Notice that you can use `#{..}` only in <<el>> enabled tasks. ||
+|| `in`      || string ||         || expr  || The items to be iterated over as <<el>> expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. ||
 
 ==== Elements ====
 
@@ -215,8 +215,8 @@ Being executed, the following will be dumped on stdout:
 
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
-|| `test`    || string || -     || expr || Terminate loop when [EL] expression evaluates to `true` ||
+|| Attribute || Type || Default || <<el>> || Description ||
+|| `test`    || string || -     || expr || Terminate loop when <<el>> expression evaluates to `true` ||
 || `if`      || string || -     || #{}  || Terminate if property exists ||
 || `unless`  || string || -     || #{}  || Terminate if property does not exist ||
 
@@ -271,8 +271,8 @@ This would print:
 
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
-|| `test`    || string || -     || expr || Continue loop when [EL] expression evaluates to `true` ||
+|| Attribute || Type || Default || <<el>> || Description ||
+|| `test`    || string || -     || expr || Continue loop when <<el>> expression evaluates to `true` ||
 || `if`      || string || -     || #{}  || Continue if property exists ||
 || `unless`  || string || -     || #{}  || Continue if property does not exist ||
 
@@ -323,7 +323,7 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 
 ==== Attributes ====
 || Attribute || Type   || Default || EL    || Description ||
-|| `test`    || string || `false` || expr  || A [EL] expression that must evaluate to `true` in order to execute the body of this if statement. ||
+|| `test`    || string || `false` || expr  || A <<el>> expression that must evaluate to `true` in order to execute the body of this if statement. ||
 
 ==== Elements ====
 
@@ -452,7 +452,7 @@ Task `switch` has been designed to ease pattern matching. The idea is to try to 
 Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
 
 ==== Attributes ====
-|| Attribute || Type   || Default || [EL]  || Description ||
+|| Attribute || Type   || Default || <<el>>  || Description ||
 || `value`   || string ||       - ||   el  || The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.||
 || `var`     || string ||       - || #{..} || Save details of this match as `matching object` using the variable name given. See [EL#Matcher_Properties matcher properties] for a list of available properties; see also below for examples. ||
 || `ignorecase` || bool || false  ||    no || Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` || 
@@ -616,7 +616,7 @@ When matching against the error message, be aware that the actual error message 
 
 ==== Attributes ====
 
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `property` || string || || no || The name of the property that should hold the exception message ||
 || `reference` || string || `trycatch.object` || no || >The name of the reference to hold the exception object ||
 || `catch.type` || glob || `*.BuildException` || no || A pattern against the type (Java classname) of the exception object ||
@@ -707,7 +707,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
 
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
 || `var` || || || no || Same as reference ||
 
@@ -744,7 +744,7 @@ When being executed, Ant would receive a build exception (re-thrown within the c
 Use this task to dump a file within the Flaka package to stdout or a file.  This task's usefulness is rather limited for public use, however this task is used to implement target [Targets#export export].  
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `dst`     || string || (stdout) || no || The destination to dump the file to. If dst is `-` the file will be dumped to stdout. ||
 || `src`     || string || antlib.xml || no || The file within the package to export. By default, file antlib.xml is exported. ||
 || `tee`     || bool   || false     || no || If enabled, the file will be exported to src as well as to stdout (similar as standard UNIX command tee does). ||
@@ -861,7 +861,7 @@ The current version does not support calling macros or tasks with arguments.
 A task to invoke a target dynamically.
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `name ` || string || || no || The name of the target to invoke. ||
 || `fail ` || bool || `false` || no || Fail if target does not exist ||
 
@@ -913,7 +913,7 @@ can also be written as
 Note: The current version allows only the specification of one task or macro within the body of the target to be created (like foo-task above).
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `name` || string || || no || The name of the target to create. If override is false, an already existing target with that name is not created.||
 || `task` || string || || no || The task or macro to execute||
 || `description` || string || || no || The informal description of this target||
@@ -964,7 +964,7 @@ This example changes the default target to be called from this to foobar.
 A simple task to merge XML files. 
 
 ==== Attributes ====
-|| Attribute || Type || Default || [EL] || Description ||
+|| Attribute || Type || Default || <<el>> || Description ||
 || `dst` || string || - || no || The file to write to. Any intermediate folders are created. writes to stdout if empty string or argument - is given.||
 || `src` || string || || no || A file or folder argument. If a folder is given, then any file therein matching a given pattern is merged, otherwise the file given. A relative argument is interpreted as being relative to the current working directory.||
 || `pattern` || regex || `.*\\.xml`|| no || The pattern to apply when matching files to be merged. The pattern can be a regular expression ||
@@ -1107,7 +1107,7 @@ This task is a implicit [http://ant.apache.org/manual/CoreTypes/fileset.html fil
 
 If attribute `var` is not used, then no scanning for dependencies takes place and no warning will be issued (except when `debug` has been enabled). If a variable is used, then a list of dependencies will be assigned in any case. If no dependencies are found, the list will be empty.
 
-Attribute `dir` is evaluated as [EL] expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
+Attribute `dir` is evaluated as <<el>> expression. If the result is a file object, the object is taken as the root for scanning files. If `dir` is not used, then the current [Glossary#Base_Folder] is used as root.
 
 This task may take any elements which are applicable for a [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
 

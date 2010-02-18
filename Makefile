@@ -28,6 +28,7 @@ flaka.db4 : \
 	sections/task_properties.ad \
 	sections/todo.ad \
   sections/install-property-handler.ad \
+  sections/el.ad \
 	$(nil)
 
 #

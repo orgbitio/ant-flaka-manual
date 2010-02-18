@@ -3,7 +3,7 @@
 
 == install-property-handler ==
 
-A task to install Flaka's property handler. When installed, Ant _understands_  [EL] references like `#{..}` in addition to standard property references `${..}`. 
+A task to install Flaka's property handler. When installed, Ant _understands_  <<el>> references like `#{..}` in addition to standard property references `${..}`. 
 
 An example will illustrate this:
 

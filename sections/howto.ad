@@ -148,11 +148,11 @@ A reference to a http://ant.apache.org/manual/using.html#properties[property] is
 
 === Expression Reference ===
 
-A reference to an [EL] expression is written as `#{..}`. [EL] is not part of Ant and can thus only be handled by certain tasks. References may appear in attribute values or in text elements. Not all attributes can handled EL references and neither all text elements. If a attribute or text element can handle EL references, it is specifically mentioned.
+A reference to an <<el>> expression is written as `#{..}`. <<el>> is not part of Ant and can thus only be handled by certain tasks. References may appear in attribute values or in text elements. Not all attributes can handled EL references and neither all text elements. If a attribute or text element can handle EL references, it is specifically mentioned.
 
 === Base Folder ===
 
-Relative files are usually meant to be relative to the current working directory. Not so in Ant, where a file is relative to the folder containing the build script of the current project. This folder is called the base directory or base folder. Ant defines property `basedir` to contain the (absolute) path name of this folder. When using [EL] expressions you can use the empty string to create the base folder as file object, like in ` ''.tofile `.
+Relative files are usually meant to be relative to the current working directory. Not so in Ant, where a file is relative to the folder containing the build script of the current project. This folder is called the base directory or base folder. Ant defines property `basedir` to contain the (absolute) path name of this folder. When using <<el>> expressions you can use the empty string to create the base folder as file object, like in ` ''.tofile `.
 
 See also http://ant.apache.org/manual/using.html#built-in-props[built-in-props] for a list of standard Ant properties.
 
