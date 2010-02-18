@@ -13,8 +13,8 @@ A task implemening a `while` loop:
 
 === Attributes ===
 
-|========================
-| Attribute  || Type   || Default || EL    || Description ||
+
+|| Attribute  || Type   || Default || EL    || Description ||
 || `test`    || string || `false` || expr  || The condition for looping as <<el>> expression ||
 
 === Elements ===
