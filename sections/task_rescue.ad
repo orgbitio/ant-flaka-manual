@@ -4,7 +4,7 @@
 
 Task `rescue` is essentially a container for an arbitrary number of tasks. In addition, it allows to rescue variables and properties.
 
-{{{
+--------------------------------------
 <c:rescue>
  <vars>
    foo
@@ -16,7 +16,7 @@ Task `rescue` is essentially a container for an arbitrary number of tasks. In ad
    ..
  task_N
 <c:rescue>
-}}}
+--------------------------------------
 
 No matter what will happen with property `var` and variable `foo` within `sequential`, this will be unoticable outside of `rescue` cause the values (or better: state) will be restored after having executed all embedded tasks. This will of course also work in case an exception is thrown by one of the tasks.
 

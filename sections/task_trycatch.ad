@@ -15,7 +15,7 @@ A catch clause can be given a type and a match argument. Both arguments expect a
 
 When matching against the error message, be aware that the actual error message might be slightly different from the actual message given: usually the error message contains also information about where the exception got thrown. It is therefore wise to accepted any leading and trailing space. For example:
 
-{{{
+--------------------------------------
  <c:trycatch>
   <try><fail message="4711" /></try>
   <catch match="4711">
@@ -31,7 +31,7 @@ When matching against the error message, be aware that the actual error message 
     -- this is it!
   </catch>
  </c:trycatch>
-}}}
+--------------------------------------
   
 
 === Attributes ===
@@ -57,7 +57,7 @@ It is allowed to have more multiple try, catch or finally clauses and further do
 
 The following snippet demonstrates the usage of trycatch:
 
-{{{
+--------------------------------------
  <c:trycatch property="reason">
    <try>
      <echo>1st try ..</echo>
@@ -76,16 +76,16 @@ The following snippet demonstrates the usage of trycatch:
      <echo>..finally</echo>   
    </finally>
  </c:trycatch>
-}}}
+--------------------------------------
 
 Giving:
 
-{{{
+--------------------------------------
     [echo] 1st try ..
     [echo] 2nd try ..
     [echo] ..caught : fail within 2nd try
     [echo] ..finally
-}}}
+--------------------------------------
 
 
 === Further Links ===

@@ -3,11 +3,11 @@
 
 This task is the logical opposite of task [Tasks#when when]. It's body is only executed if the condition evaluates to false. See [Tasks#when when] for details. This example shows how to create a folder named libdir if such a folder does not already exist.
 
-{{{
+--------------------------------------
  <c:unless test=" 'libdir'.tofile.isdir ">
   <mkdir dir="libdir" />
  </c:unless>
-}}}
+--------------------------------------
 
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unless.html Javadoc] 

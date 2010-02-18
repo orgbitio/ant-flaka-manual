@@ -4,13 +4,13 @@
 
 A task that implements a loop statement. Iterating over a list of _objects_:
 
-{{{
+--------------------------------------
  <c:for var="x" in=" list('a', 2, 'src'.tofile, typeof(list())) ">
    <c:echo>
       #{x}
    </c:echo>
  </c:for>
-}}}
+--------------------------------------
 
 === Attributes ===
 
@@ -25,9 +25,9 @@ A task that implements a loop statement. Iterating over a list of _objects_:
 === Behaviour ===
 
 This is the shortest possible for statement. It's legal albeit completely useless.
-{{{
+--------------------------------------
  <c:for />
-}}}
+--------------------------------------
 
 //TODO: document behaviour
 

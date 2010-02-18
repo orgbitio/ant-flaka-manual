@@ -3,15 +3,15 @@
 == fail ==
 
 This task has been derived from [http://ant.apache.org/manual/CoreTasks/fail.html Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
-{{{
+--------------------------------------
 <c:fail message="illegal state #{whichstate} seen" />
-}}}
+--------------------------------------
 Furthermore, attribute `test` has been added. The value of `test` will be evaluated as EL expression in a boolean context. Being `true`, fail will throw a build exception. When used in this way, `<c:fail test='expr' />` behaves exactly the same as
-{{{
+--------------------------------------
 <c:when test="expr">
  <fail />
 </c:when>
-}}}
+--------------------------------------
 
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Fail.html Javadoc] 

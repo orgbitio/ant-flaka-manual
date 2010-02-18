@@ -6,7 +6,7 @@ A task to re-throw a previously thrown exception. If no exception has been throw
 
 Note that throw would re-throw the last thrown exception - regardless of the current context. The following would therefore work:
 
-{{{
+--------------------------------------
  <c:trycatch>
   <try> 
     <fail message="4711" />
@@ -19,7 +19,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
  .. -- very much later
  .. 
  <c:throw /> -- re-throws "4711" exception!!!
-}}}
+--------------------------------------
 
 === Attributes ===
 || Attribute || Type || Default || [EL] || Description ||
@@ -30,7 +30,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
 
 A typical usage example:
 
-{{{
+--------------------------------------
  <c:trycatch>
   <try> ..<fail message="4711"/> </try>
   <catch>
@@ -38,7 +38,7 @@ A typical usage example:
     <c:throw />
   </c:catch>
  </c:trycatch>
-}}}
+--------------------------------------
 
 When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
 

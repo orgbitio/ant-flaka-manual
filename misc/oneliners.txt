@@ -1,0 +1,10 @@
+
+;;
+;; convert source code delimeter Google -> AsciiDoc
+;; 
+$ perl -pi -e 's/^({{{|}}})/--------------------------------------/g' sections/*.ad
+
+;;
+;;
+;;
+perl -pi -e 's/\[Tasks#(\w+)\s+([^]]+)\]/<<tasks_$1,$2>>/g' sections/*.ad 

@@ -2,14 +2,14 @@
 [[task_while,while]]
 == while ==
 A task implemening a `while` loop:
-{{{
+--------------------------------------
 <c:let>
   i = 3
 </c:let>
 <c:while test=" countdown >= 0 ">
   <c:echo>#{countdown > 0 ? countdown : 'bang!' }</c:echo>
 <c:while>
-}}}
+--------------------------------------
 
 === Attributes ===
 

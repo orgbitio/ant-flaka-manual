@@ -355,7 +355,7 @@ Macros are a standard feature of Ant.
 // The EL chapter.
 //
 
-include::sections/el.ad[]
+//include::sections/el.ad[]
 
 //
 //include::howto.ad[]
@@ -365,10 +365,26 @@ include::sections/el.ad[]
 
 Each of the following chapters describes a task in all it\'s details.
 
+include::sections/task_break.ad[]
+include::sections/task_choose.ad[]
+include::sections/task_continue.ad[]
 include::sections/task_echo.ad[]
+include::sections/task_fail.ad[]
+include::sections/task_for.ad[]
+include::sections/task_install-property-handler.ad[]
 include::sections/task_let.ad[]
 include::sections/task_list.ad[]
-include::sections/install-property-handler.ad[]
+include::sections/task_properties.ad[]
+include::sections/task_rescue.ad[]
+include::sections/task_switch.ad[]
+include::sections/task_throw.ad[]
+include::sections/task_trycatch.ad[]
+include::sections/task_unless.ad[]
+include::sections/task_unset.ad[]
+include::sections/task_when.ad[]
+include::sections/task_while.ad[]
+
+
 //include::sections/task_properties.ad[]
 //include::sections/todo.ad[]
 //include::sections/not-yet-ready.ad[]

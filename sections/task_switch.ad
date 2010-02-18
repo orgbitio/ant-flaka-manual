@@ -4,7 +4,7 @@
 
 Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a [http://en.wikipedia.org/wiki/Regular_expression regular expression] or [http://en.wikipedia.org/wiki/Glob_(programming) glob expression] against a given string value and carry out a sequence of actions in case of a hit.
 
-{{{
+--------------------------------------
  <c:switch value=" 'a${string}#{value}' ">
   <matches glob="*.jar">          -- #1
    -- string ending in .jar
@@ -19,7 +19,7 @@ Task `switch` has been designed to ease pattern matching. The idea is to try to 
    -- no match so far ..
   </otherwise>
  <c:case>
-}}}
+--------------------------------------
 
 Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
 
@@ -61,17 +61,17 @@ Be aware that there is no need to escape the escape character. For example, peop
 
 So called _globs_ are a kind of simplified regular expressions. They lack the full power while simplifying the expression. For example, to specify whether a name input string end in `jar`, we can simply write 
 
-{{{
+--------------------------------------
  <c:switch value=" #{myfile}.name ">
   <matches glob="*.jar">
     -- do something with jar file ..
   </matches>
  </c:switch>
-}}}
+--------------------------------------
 
 The very same can also be expressed as `re="\.jar$"` using regular expressions. The biggest disadvange of globs are that capturing groups are not supported. Thus the match above just indicates that the file name ends in `.jar` while there is nothing to figure the file's basename. Compare this with 
 
-{{{
+--------------------------------------
  <c:switch value=" #{myfile}.name ">
   <matches re="^(.*)\.jar$" var="m">
     <c:echo>
@@ -79,12 +79,12 @@ The very same can also be expressed as `re="\.jar$"` using regular expressions. 
     </c:echo>       
   </matches>
  </c:switch>
-}}}
+--------------------------------------
 
 Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then be [http://code.google.com/p/flaka/wiki/EL#Matcher_Properties evaluated using properties] for matching details.
 
 Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
-{{{
+--------------------------------------
  <c:switch value=" 'v-uat_3_20_500' " var="m">
    <matches re="v-(?:([^\d][^_]*)_)?(\d.*)" >
      <c:echo>
@@ -101,7 +101,7 @@ Here is a more complicated example. It was used once to examine a CVS tag which 
      </c:echo>
    </matches>
  </c:switch>
-}}}
+--------------------------------------
 
 === Further Links ===
  * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Switch.html Javadoc] 
