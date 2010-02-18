@@ -48,9 +48,14 @@ When matching against the error message, be aware that the actual error message 
 
 === Elements ===
 
- * try<br /> A task container to hold tasks and macros to be given a try. 
- * catch<br /> A task container to be executed if an exception gets thrown
- * finally<br/> A task container to be executed in any case
+// cols=2
+[cols="15%,85%"]
+|=================================
+| try |A task container to hold tasks and macros to be given a try. 
+|catch |A task container to be executed if an exception gets thrown
+|finally | A task container to be executed in any case
+|=================================
+
 
 Note that all elements are optional. However, if there's no try element, then there's no chance to execute catch at all, so this constellation does not make too much sense. The optional finally clause will be executed regardless of whether a try clause exists or not.
 

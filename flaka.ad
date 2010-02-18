@@ -6,7 +6,7 @@ author wh@haefelinger.it
 // The introduction to Flaka
 //
 
-include::section/introduction.ad[]
+include::sections/introduction.ad[]
 
 //
 // The EL chapter.
@@ -14,309 +14,16 @@ include::section/introduction.ad[]
 
 include::sections/el.ad[]
 
-
 //
-// This should all go into Part 1 (so wee need to have a book here instead of an article)
-//
-
-== Programming Constructs ==
-
-This chapter provides an overview of programming constructs Flaka provides. This programming constructs are one of the Flaka's pillars.
-
-=== Strings ===
-Like Ant, Flaka supports currently strings and, when applicable, pointer to resources (by referencing a symbol). Ant provides no functionality manipulate a string value and neither does Flaka. However, Flaka's expression language contains string functions to create new strings.
-
-=== Symbols ===
-
-Symbols are names carrying associated data. The name of a symbol is a sequence of characters. The allowed characters are basically unlimited. It is recommended to stick with well known characters [a-zA-Z0-9._-]. Symbols can be used as variables, target, task, type or macro names. 
-
- * `<property name=sym value=expr />` Use sym as variable: assign the value of _expr_ to _sym_. *A symbol associated with a string value is called a property*. Notice that Ant and Flaka provide further ways of creating properties. 
- * `<macrodef name=sym>`  Use _sym_ as macro name
- * `<target namesym>` Use _sym_ as target name
- * `<taskdef name=sym>` Use _sym_ as task name
- * `<typedef name=sym>` Use _sym_ as type name
- * `id=sym` Use sym as reference: assign the evaluation of task (or macro) to _id_ 
-
-=== Properties === 
-
-To reference a property, enclose it's symbol name with curly braces and prefix with the dollar character like:
-
-
--------------------------------------
-
-<property name="x" value="99" />
-<echo>
-  value of property x is ${x}    -- .. is 99
-</echo>
-
--------------------------------------
-
-
-When referencing a non existing property, i.e. a symbol name not associated with a string value, the reference expression evaluates to itself, i.e. `${not-a-property}` evaluates to _${not-a-property}_. Standard Ant does not allow to change the association between a symbol name and it's string value once established:
-
-
--------------------------------------
-
-<property name="x" value="99" />
-<property name="x" value="The quick brown fox .."/>
-<echo>
-  value of property x is ${x}    -- .. is 99
-</echo>
-
--------------------------------------
-
-
-It can be done using Flaka's task <<task_let>> or <<task_unset>> as the following snippet demonstrates.
-
-
--------------------------------------
-
-<property name="x" value="99" />
-<c:let>
-   x ::= "The quick brown fox .."
-</c:let>
-<echo>
-  value of property x is ${x}    -- .. is The quick brown ..
-</echo>
-
--------------------------------------
-
-
-Properties have their own symbol table (as targets, tasks, macros and types have). This means for example that it is possible to have a property and a task _sharing_ the same symbol name:
-
-
--------------------------------------
-
-  <property name="foobar" ../>
-  <macrodef name="foobar" ../>  -- property foobar not harmed!
-
--------------------------------------
-
-
-=== Sequencing ===
-
-To evaluate a sequence of expressions (tasks or macros) where only one expression is allowed, use http://ant.apache.org/manual/CoreTasks/sequential.html[Ant's sequential task]:
-
-
--------------------------------------
-
- <sequential>
-   -- any sequence of tasks or macros
- </sequential>
-
--------------------------------------
-
-
-Note that _sequential_ returns nothing. Use properties to communicate with the caller if necessary.
-
-=== Conditionals ===
-
-With standard Ant, task http://ant.apache.org/manual/CoreTasks/condition.html[condition] is used to set a property if a condition is given. Then a macro, task or target can be conditionally executed  by checking the existence or absence of that property (using standard attributes _if_ or _unless_. Flaka defines a couple of control structures to handle conditionals in a simpler way.
-
-=== when and unless ===
-
-Task <<task_when>> evaluates an <<el>> expressio. If the evaluation gives `true`, the sequence of tasks are executed. Nothing else happens in case of `false`. 
-
-
--------------------------------------
-
-<c:when test=" expr ">
-   -- executed if expr evaluates to true
-</c:when>
-
--------------------------------------
-
-
-The logical negation of `when` is task <<task_unless>> which executes the sequence of tasks only in case the evaluation of _expr_ returns `false`.
-
-
--------------------------------------
-
- <c:unless test=" expr ">
-   -- executed if expr evaluates to false
- </c:unless>
-
--------------------------------------
-
-
-The body of `when` and `unset` may contain any sequence of tasks or macros (or a combination of both).
-
-=== choose ===
-
-Task <<task_choose>> tests each `when` condition in turn until an _expr_ evalutes to `true`. It executes then the body of that when condition. Subsequent `whens` are then not further tested (nor executed). If all expressions evaluate to `false`, an optional _catch-all_ clause gets executed.
-
-
--------------------------------------
-
- <c:choose>
-  <when test="expr_1">
-    -- body_1
-  </when>
-  ..
-  <otherwise> -- optional_
-    -- catch all body
-  </otherwise>
- <c:/choose>
-
--------------------------------------
-
-
-=== switch ===
-
-A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of _when_ statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the <<task_switch>> task:
-
-
--------------------------------------
-
- <c:switch value=" 'some string' ">
-  <matches re="regular expression or pattern" >
-    -- body_1
-  </case>
-  ..
-  <otherwise> -- optional
-    -- catch all body
-  </otherwise>
- </c:switch>
-
--------------------------------------
-
-
-Each case is tried in turn _to match_ the string value (given as <<el>> expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.
-
-=== Repetition ===
-
-Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<task_continue>> to terminate the loop or to continue the loop with the next item.
-
-
--------------------------------------
-
- <c:for var=" name " in=" ''.tofile.list ">
-    -- sequence of task or macros
-    -- used <c:continue /> to continue ; and
-    -- <c:break /> to stop looping
-    -- use #{name} to refer to current item (as shown below)
-    <c:echo>#{name}</c:echo>
- </c:for>
-
--------------------------------------
-
-
-Attribute `in` will be evaluated as <<el>> expression. In the example above, that <<el>> expression is `''.tofile.list` which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at <<el_string_properties,properties>> of a string] and <<el_file_properties,properties>> of a file.
-
-
-=== Exception Handling ===
-
-Flaka has been charged with exception handling tasks.
-
-=== trycatch ===
-
-Flaka contains a task to handle exceptions thrown by tasks, <<task_trycatch>>. This task implements the usual _try/catch/finally_ trinity found in various programming languages (like in Java for example):
-
-
--------------------------------------
-
- <c:trycatch>
-   <try>
-     -- sequence of task or macros
-   </try>
-   <catch>
-     -- sequence of task or macros
-   </catch>
-   <finally>
-     -- sequence of task or macros
-   </finally>
- </c:trycatch> 
-
--------------------------------------
-
-
-Element _try_, _catch_ and _finally_ are all optional or can appear multiple times. If _catch_ is used without any argument, then that catch clause will match any *build exception*. To differentiate between different exception types, _catch_ can additionally be used with a _type_ and _match_ argument. The former can be used to select a particular exception type (like a 'java.lang.NullPointerException), the latter can be used to select an exception based on the message carried. Both arguments are interpreted as pattern expression. For example:
-
-
--------------------------------------
-
- <c:trycatch>
-   <try>
-      ..
-      <fail message="#PANIC!" unless="ant.file"/>
-      ..
-   </try>
-   <catch match="*#PANIC!*">
-      <echo>Ant initialization problem!!</echo>
-      <fail/>
-   <catch type="java.lang.*">
-     -- handle Java runtime problems
-   </catch>
-   <catch>
-     -- handle all other build exceptions
-   </catch>
-  </c:trycatch>
-
--------------------------------------
-
-
-Property _ant.file_ is a standard Ant property that should always be set. If not, there's something seriously wrong and it does not make much sense to continue. Use attribute _type_ to catch (runtime) exceptions thrown by the underlying implementation.
-
-=== throw ===
-
-Task <<task_throw>> throws a (build) exception.
-
-
--------------------------------------
-
- <c:throw [var="sym"] />
-
--------------------------------------
-
-
-This task can also be used to rethrow an existing exception.
-
-=== Macros  ===
-
-The (almost) equivalent of a function is a macro in Ant and Flaka. For example:
-
--------------------------------------
-
- <macrodef name="hello">
-  <attribute name="msg" />
-  <element name="body" implicit="true" />
-  <sequential>
-   <body />
-  </sequential>
- </macrodef>
-
--------------------------------------
-
-
-Once defined, simply use it:
-
--------------------------------------
-
-<hello msg="Hello, world!">
- <echo>@{msg}</echo>
-</hello>
-
--------------------------------------
-
-
-This macro evaluates into 
-
--------------------------------------
-
- <echo>Hello, world!</echo>
-
--------------------------------------
-
-which eventually prints the desired greeting.
-
-Macros are a standard feature of Ant.
-
-
-//
-//include::howto.ad[]
+// Overview of elementary things Flaka provides (EL, tasks) but also about
+// properties, Macros, <sequence />. Proper chapter title? Split into two
+// chapters?
 //
 
-== Part II ==
+include::sections/overview.ad[]
+
+
+== Part II, Elementary Tasks ==
 
 Each of the following chapters describes a task in all it\'s details.
 
@@ -339,12 +46,18 @@ include::sections/task_unset.ad[]
 include::sections/task_when.ad[]
 include::sections/task_while.ad[]
 
-
+== Part III, Special Purpose Tasks ==
 //
 // A chapter about doing things with Flaka
 //
-//include::sections/todo.ad[]
+include::sections/todo.ad[]
 
+//
+include::sections/howto.ad[]
+//
+
+
+== Part IV, Installation ==
 
 //
 // How to install Flaka

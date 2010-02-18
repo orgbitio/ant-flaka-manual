@@ -1,5 +1,5 @@
 [id="installation"]
-== Installation ==
+//== Installation ==
 
 Download latest version of Flaka and _drop_ `ant-flaka.x.y.z.jar` into your local Ant installation. All that needs to be done is to put this jar into Java's classpath when running Ant. There are various techniques how to do so. Please read-on what exactly needs to be done.
 

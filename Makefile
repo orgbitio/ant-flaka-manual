@@ -21,7 +21,6 @@ flaka.db4 : \
 	sections/el.ad \
 	sections/howto.ad \
 	sections/install.ad \
-	sections/not-yet-ready.ad \
 	sections/task_break.ad \
 	sections/task_choose.ad \
 	sections/task_continue.ad \

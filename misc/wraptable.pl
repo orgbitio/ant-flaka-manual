@@ -12,10 +12,21 @@
   #
   # Make the first column 15% wide fixed. 
   $c = int($count - 2);
-  $w = int((50-15) / $c);
-  $r = int(100 - ($c * $w) - 15);
-  print "// cols=$count\n";
-  print "[cols=\"15%,$c*$w%,$r%\"]\n"; 
+  if ($c > 0) {
+      $w = int((50-15) / $c);
+      $r = int(100 - ($c * $w) - 15);
+      print "// cols=$count\n";
+      print "[cols=\"15%,$c*$w%,$r%\"]\n"; 
+    }
+  elsif ($count == 2) {
+    print "// cols=2\n";
+    print "[cols=\"20%,80%\"]\n"; 
+  }
+  else {
+    print "// cols=1\n";
+    print "[cols=\"100%\"]\n"; 
+  }
+  
   print "|===========================\n";
 };
 
