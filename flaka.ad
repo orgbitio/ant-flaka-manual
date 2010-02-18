@@ -8,6 +8,9 @@ author wh@haefelinger.it
 
 include::sections/introduction.ad[]
 
+[[overview]]
+== Part I, Overview ==
+
 //
 // The EL chapter.
 //
@@ -21,6 +24,12 @@ include::sections/el.ad[]
 //
 
 include::sections/overview.ad[]
+
+//
+// The glossary
+//
+
+include::sections/glossary.ad[]
 
 
 == Part II, Elementary Tasks ==
@@ -53,13 +62,8 @@ include::sections/task_while.ad[]
 include::sections/todo.ad[]
 
 //
-include::sections/howto.ad[]
+// include::sections/howto.ad[]
 //
-
-//
-// The glossary
-//
-include::sections/glossary.ad[]
 
 == Part IV, Installation ==
 
