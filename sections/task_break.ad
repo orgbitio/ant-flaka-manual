@@ -1,0 +1,42 @@
+[[task_break,break]]
+== break == 
+
+A task mirroring a break statement. When used within a [Tasks#for for]-loop, the loop will be terminated. If this task is used outside of a [Tasks#for for]-loop, a build exception will be thrown.
+
+{{{
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+     <c:when test=" i == 3 ">
+       <c:break />
+     </c:when>
+  </c:for>
+}}}
+Being executed, the following will be dumped on stdout:
+{{{
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Terminate loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Terminate if property exists ||
+|| `unless`  || string || -     || #{}  || Terminate if property does not exist ||
+
+=== Behaviour ===
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
+
+The example given above can thus be shortened to 
+{{{
+  <c:for var="i" in=" list(1,2,3,4,5,6) ">
+    <c:echo>i = #{i}</echo>
+    <c:break test=" i == 3 " />
+  </c:for>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Break.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Break.java Source]
+

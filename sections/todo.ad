@@ -132,8 +132,8 @@ All tasks listed as elements are executed as long as the <<el>> expression evalu
 ==== Further Links ====
  * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java Source]
- * [Tasks#break break] to stop the iteration
- * [Tasks#continue continue] to hide tasks from being executed during a iteration step.
+ * <<tasks_break,break>> to stop the iteration
+ * <<tasks_continue,continue>> to hide tasks from being executed during a iteration step.
  * See also [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
 
 <hr/>
@@ -181,15 +181,15 @@ TODO: document behaviour
 ==== Further Links ====
  * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java Source]
- * Task [Tasks#for for] 
- * Task [Tasks#break break]
- * Task [Tasks#continue continue]
+ * Task <<tasks_for,for>> 
+ * Task <<tasks_break,break>>
+ * Task <<tasks_continue,continue>>
  * Quickref [BasicScriptingConstructs#Looping Looping] for an introduction to looping in Flaka
 
 <hr/>
 === break === 
 
-A task mirroring a break statement. When used within a [Tasks#for for]-loop, the loop will be terminated. If this task is used outside of a [Tasks#for for]-loop, a build exception will be thrown.
+A task mirroring a break statement. When used within a <<tasks_for,for>>-loop, the loop will be terminated. If this task is used outside of a <<tasks_for,for>>-loop, a build exception will be thrown.
 
 
 -------------------------------------
@@ -222,7 +222,7 @@ Being executed, the following will be dumped on stdout:
 
 ==== Behaviour ====
 
-When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
+When used without any attributes, the surrounding <<tasks_for,for>> or <<tasks_while,while>> loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
 
 The example given above can thus be shortened to 
 
@@ -243,7 +243,7 @@ The example given above can thus be shortened to
 <hr/>
 === continue === 
 
-A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
+A task mirroring a continue statement. When used within a <<tasks_for,for>>-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
 
 
 -------------------------------------
@@ -278,7 +278,7 @@ This would print:
 
 ==== Behaviour ====
 
-When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
+When used without any attributes, the surrounding <<tasks_for,for>> or <<tasks_while,while>> be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
 
 The example given above can thus be shortened to 
 
@@ -295,8 +295,8 @@ The example given above can thus be shortened to
 ==== Further Links ====
  * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
- * Task [Tasks#for for] 
- * Task [Tasks#break break]
+ * Task <<tasks_for,for>> 
+ * Task <<tasks_break,break>>
 
 <hr/>
 
@@ -336,7 +336,7 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 <hr/>
 === unless ===
 
-This task is the logical opposite of task [Tasks#when when]. It's body is only executed if the condition evaluates to false. See [Tasks#when when] for details. This example shows how to create a folder named libdir if such a folder does not already exist.
+This task is the logical opposite of task <<tasks_when,when>>. It's body is only executed if the condition evaluates to false. See <<tasks_when,when>> for details. This example shows how to create a folder named libdir if such a folder does not already exist.
 
 
 -------------------------------------
@@ -734,7 +734,7 @@ When being executed, Ant would receive a build exception (re-thrown within the c
 ==== Further Links ====
  * [http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
  * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
- * Task [Tasks#trycatch trycatch]
+ * Task <<tasks_trycatch,trycatch>>
 
 
 <hr/>
@@ -757,7 +757,7 @@ Use this task to dump a file within the Flaka package to stdout or a file.  This
 === find === 
 <wiki:comment>todo:references</wiki:comment>
 
-Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] into a list of `file`s. Used in conjunction with [Tasks#for task for] enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
+Ant lacks a simple task to report all or certain files in a folder. This task lets you evaluate an arbitrary [http://ant.apache.org/manual/CoreTypes/fileset.html fileset] into a list of `file`s. Used in conjunction with <<tasks_for,task for>> enables you to print easily all files and properties of them. Of course, that generated list can also be used for other purposes.
 
 
 -------------------------------------

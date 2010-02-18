@@ -1,9 +1,3 @@
-<wiki:comment>
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                                         UNDER DEVELOPMENT
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-</wiki:comment>
-
 == Under Development - not yet ready ==
 === component-handler === 
 
@@ -345,7 +339,7 @@ When using more than one entry, then each entry must match. This condition can b
 
 == test ==
 
-A general test condition suporting the *Flaka* test expression language. This type can be used like any other condition type in a [Tasks#condition condition].
+A general test condition suporting the *Flaka* test expression language. This type can be used like any other condition type in a <<tasks_condition,condition>>.
 
 === Attribute ===
  * test<br/> The test condition
@@ -372,7 +366,7 @@ A condition setting property dir.exists if a relative folder named src exists.
 
 Implements a {{AntRefType|1=selectors.html|2=Ant selector type}} to be used to restrict a fileset. The selection is done in relation to a set of dependencies. A file is selected if and only if the file's basename matches the basename of a dependency. The content, date, modification time and other attributes are not taken into account - only the name of the file matters.
 
-In order to use this selector, a reference holding a set of dependency objects must exist. Such a set is best created within the project by using task [Tasks#getdeps getdeps] which uses the string deps.object for a later referencing. To use a different reference, use attribute refid or ref (notice that the current implementation expects to locate an object of type net.haefelingerit.flaka.dep.Dependency[]). If the reference being used does not hold a set of dependencies or if the set is empty, then no file is selected (cause no file name can match the name of a non existing dependency).
+In order to use this selector, a reference holding a set of dependency objects must exist. Such a set is best created within the project by using task <<tasks_getdeps,getdeps>> which uses the string deps.object for a later referencing. To use a different reference, use attribute refid or ref (notice that the current implementation expects to locate an object of type net.haefelingerit.flaka.dep.Dependency[]). If the reference being used does not hold a set of dependencies or if the set is empty, then no file is selected (cause no file name can match the name of a non existing dependency).
 
 To invert the sense of matching use boolean attribute invert. When enabled, this attribute will select any file in the fileset for which no matching dependency basename could be found.
 
@@ -430,7 +424,7 @@ this kind of alternative selection. If a expression is under no circumstances to
 set either attribute glob to true or start and end the match pattern with character `%`. 
 
 === Attribute ===
- * ref, refid [deps.object]<br/> Use this attribute to use a different reference holding all known dependencies. See task [Tasks#getdeps getdeps] for dependency retrieval.
+ * ref, refid [deps.object]<br/> Use this attribute to use a different reference holding all known dependencies. See task <<tasks_getdeps,getdeps>> for dependency retrieval.
  * invert [false]<br/> (boolean) Inverts the sense of matching, selects any file not matching a dependency's basename.
  * scope <br/>Matches the scope of a dependency as shown above
  * alias, name <br/>Matches the alias name of a dependency
@@ -823,8 +817,8 @@ The macro is empty by default.
 A customizable macro used to drive RMI code compilation. Used within [Macros#compile compile]. This macro is customizable.
 
 A sketch of the current implementation:
- # If property _rmi.class.name_ is not empty, then every name classname therein is translated into a file matching pattern used to locate class files within object directory ${obj.dir}. For example, if the classname is "p.C" then ${obj.dir} is being looked up using pattern _**/p/C.class_. All located classes are passed on to be compiled by [Tasks#rmic rmic]. If no matching class in found, then an exception is thrown.
- * If property _rmi.class.name_ does not exist or is empty, then patternset _rmi.class.patternset_ is used to lookup class files in ${obj.dir} and eventually to be passed to [Tasks#rmic rmic]. An exception is thrown if the patternset exists but does not match any files.
+ # If property _rmi.class.name_ is not empty, then every name classname therein is translated into a file matching pattern used to locate class files within object directory ${obj.dir}. For example, if the classname is "p.C" then ${obj.dir} is being looked up using pattern _**/p/C.class_. All located classes are passed on to be compiled by <<tasks_rmic,rmic>>. If no matching class in found, then an exception is thrown.
+ * If property _rmi.class.name_ does not exist or is empty, then patternset _rmi.class.patternset_ is used to lookup class files in ${obj.dir} and eventually to be passed to <<tasks_rmic,rmic>>. An exception is thrown if the patternset exists but does not match any files.
 
 == compile-test ==
 
@@ -857,7 +851,7 @@ A customizable macro responsible for post-processing of the unit case compilatio
 
 == copy-and-replace ==
 
-A useful macro copying all files from a source into a destination folder. This macro is similar to [Tasks#copy copy task]. In addition however, files with extension _.in_ are interpreted as templates and handled in a special way:
+A useful macro copying all files from a source into a destination folder. This macro is similar to <<tasks_copy,copy task>>. In addition however, files with extension _.in_ are interpreted as templates and handled in a special way:
  * Templates files are instantiated in the destination folder by removing _.in_ from the file's name
  * The template's content is copied as is except that any word starting and ending in character _@_ is interpreted as token
  * If a token (after having stripped the leading and trailing character _@_) matches the name of a property defined in the current project, then every occurrence of that token in the template's instance is replace with the value of that property. See examples below on how this works. 
@@ -984,7 +978,7 @@ This macro is responsible for scanning and fetching dependencies. Dependencies (
 
 Each dependency will then be resolved against a [[Baseline]] if a Baseline is given. Eventually each dependency will be retrieved from a depot into a local folder.
 
-For details on the scanning, resolving and retrieval of dependencies have a look at [Tasks#getdeps getdeps].
+For details on the scanning, resolving and retrieval of dependencies have a look at <<tasks_getdeps,getdeps>>.
     
 The following properties are influential:
  * depot.csv<br/> A comma separated list of depot urls
@@ -1033,7 +1027,7 @@ A macro to emulate a [http://maven.apache.org/guides/introduction/introduction-t
 Note that [http://ant.apache.org/ivy/history/latest-milestone/ivyfile/dependency.html _Ivy_ attributes branch, force, conf, transitive] and changing are currently not supported.
 
 === Element ===
-The following elements have been pioneered by [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven]]. All of this elements have synonym attributes. If the same element and attribute is given, the element will eventually override. See also task [Tasks#getdeps getdeps] for dependency handling:
+The following elements have been pioneered by [http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html Maven]]. All of this elements have synonym attributes. If the same element and attribute is given, the element will eventually override. See also task <<tasks_getdeps,getdeps>> for dependency handling:
 
  * groupId 
  * artifactId 
@@ -1083,7 +1077,7 @@ If a _log4j_ is defined in a Baseline, then the declaration can be shortened fur
 
 == depends ==
 
-This customizable macro implements target [Targets#depends depends]. The implementation ensures that dependencies are loaded, then all dependencies are written to file ${depends.out} in format ${depends.fmt}. See task [Tasks#writedeps writedeps] on how dependencies are formatted.
+This customizable macro implements target [Targets#depends depends]. The implementation ensures that dependencies are loaded, then all dependencies are written to file ${depends.out} in format ${depends.fmt}. See task <<tasks_writedeps,writedeps>> on how dependencies are formatted.
 
 == deploy ==
 
@@ -1619,9 +1613,9 @@ Set a property if a folder exists. A short hand notation for
 
 -------------------------------------
 
- <c:[Tasks#when when] test="-d '@{dir}'>
-  <c:[Tasks#set set]="@{property}" value="" />
- </c:[Tasks#when when]>
+ <c:<<tasks_when,when>> test="-d '@{dir}'>
+  <c:<<tasks_set,set>>="@{property}" value="" />
+ </c:<<tasks_when,when>>>
 
 -------------------------------------
 
@@ -1832,7 +1826,7 @@ A convenience macro to write
 
 == upload-artefacts ==
 
-A macro providing a unique interface for uploading artefacts on a depot. This macro relies on task [Tasks#uploadtask uploadtask].
+A macro providing a unique interface for uploading artefacts on a depot. This macro relies on task <<tasks_uploadtask,uploadtask>>.
         
 === Attributes ===
  * category <br/>The upload category [<code>${uploadtask.category}</code>]

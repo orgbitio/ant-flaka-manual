@@ -1,0 +1,49 @@
+
+
+[[task_continue,continue]]
+== continue == 
+
+A task mirroring a continue statement. When used within a [Tasks#for for]-loop, the loop will be continued with the next loop item (i.e. any statements after task continue are ignored). If this task is used outside of a for-loop, a build exception will be thrown.
+
+{{{
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:when test=" i > 3 ">
+     <c:continue />
+   </c:when>
+   <c:echo>i = #{i}</echo>
+  </c:for>
+}}}
+
+This would print:
+
+{{{
+[c:echo] i = 1
+[c:echo] i = 2
+[c:echo] i = 3
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `test`    || string || -     || expr || Continue loop when [EL] expression evaluates to `true` ||
+|| `if`      || string || -     || #{}  || Continue if property exists ||
+|| `unless`  || string || -     || #{}  || Continue if property does not exist ||
+
+=== Behaviour ===
+
+When used without any attributes, the surrounding [Tasks#for for] or [Tasks#while while] be continued while following tasks or macros are ignored in the current iteration step. When used with attributes, then the loop will be continued if at least one attribute evaluates to `true`. Otherwise, the subsequent tasks or macros are executed.
+
+The example given above can thus be shortened to 
+{{{
+ <c:for var="i" in=" list(1,2,3,4,5,6) ">
+   <c:continue test=" i > 3 " />
+   <c:echo>i = #{i}</echo>
+</c:for>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Continue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Continue.java Source]
+ * Task [Tasks#for for] 
+ * Task [Tasks#break break]
+
+

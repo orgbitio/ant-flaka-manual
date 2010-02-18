@@ -1,0 +1,42 @@
+
+[[task_rescue,rescue]]
+== rescue ==
+
+Task `rescue` is essentially a container for an arbitrary number of tasks. In addition, it allows to rescue variables and properties.
+
+{{{
+<c:rescue>
+ <vars>
+   foo
+ </vars>
+ <properties>
+   bar
+ </properties>
+ task_1
+   ..
+ task_N
+<c:rescue>
+}}}
+
+No matter what will happen with property `var` and variable `foo` within `sequential`, this will be unoticable outside of `rescue` cause the values (or better: state) will be restored after having executed all embedded tasks. This will of course also work in case an exception is thrown by one of the tasks.
+
+=== Attributes ===
+
+This task does not define attributes.
+
+=== Elements ===
+
+|| Name    || Cardinality || Description ||
+|| `vars`  || 0..1        || Defines a [#list list] of variable names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| `properties` || 0..1   || Defines a [#list list] of property names. Attributes and behaviour is that of task [#list list] except that interpretation of lines as [EL] expressions are disabled. ||
+|| _task_  || arbitrary   || A (arbitrary) task or macro to be excecuted ||
+
+=== Behaviour ==
+
+Executes all embedded tasks. Variables and properties listed in `vars` and `properties` are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Rescue.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java Source]
+
+<hr/>

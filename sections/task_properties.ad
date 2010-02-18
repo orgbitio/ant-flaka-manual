@@ -36,7 +36,7 @@ This task accepts a implicit text element.
 
 === Behaviour ===
 
-This task is similar to [Tasks#let let]. The difference is that this task only allows to define properties while  [Tasks#let let] also supports the creation of variables. Furthermore, the right side of `=` will be literally taken as string value. This is different from [Tasks#let let] where the right side will be additionally evaluted as <<el>> expression. The following example defines each property foobar, once done with task  [Tasks#let let] and once with this _properties_ task:
+This task is similar to <<tasks_let,let>>. The difference is that this task only allows to define properties while  <<tasks_let,let>> also supports the creation of variables. Furthermore, the right side of `=` will be literally taken as string value. This is different from <<tasks_let,let>> where the right side will be additionally evaluted as <<el>> expression. The following example defines each property foobar, once done with task  <<tasks_let,let>> and once with this _properties_ task:
 
 -------------------------------------
 
@@ -51,7 +51,7 @@ This task is similar to [Tasks#let let]. The difference is that this task only a
 
 Notice the usage of the quote character `'` in the former example and the absence of it in the latter.
 
-Task _properties_ supports, like task [Tasks#let let] does, continuation lines and comments. Furthermore, variable references `#{..}` and property references `${..}` are resolved on both sides of `=`.
+Task _properties_ supports, like task <<tasks_let,let>> does, continuation lines and comments. Furthermore, variable references `#{..}` and property references `${..}` are resolved on both sides of `=`.
 
 If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is `null`, a property with string value `null` will be assigned if the property does not already exist (this is very much different than when using task [#let let] to create properties.
 

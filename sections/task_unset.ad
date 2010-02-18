@@ -1,0 +1,49 @@
+[[task_unset,unet]]
+== unset ==
+
+The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project. 
+
+{{{
+ <c:unset>
+   p1
+   ;; use embedded EL references for dynamic names
+   p#{ index }
+ </c:unset>
+}}}
+
+This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
+
+=== Attributes ===
+|| Attribute || Type    || Default || EL || Description ||
+|| debug     || boolean || `false` || no || Turn extra debug information on || 
+|| comment   || String  || `;`     || no || The character that starts a comment line || 
+
+=== Elements ===
+
+This element accepts implicit text.
+
+=== Behaviour ===
+
+Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. `ant.file`) are also removed.
+
+Comment lines and empty lines are ignored. Continuation lines, i.e. lines ending in `\` but not in `\\`, are accumulated before being processed.
+
+References to properties `${..}` and expressions `#{..}` are resolved.
+
+The content of a line defines the property name, for example:
+{{{
+<c:unset>
+ ;; property 'foo bar', not 'foo' and 'bar'
+ foo bar
+
+ ;; a line is *not* a EL expression (this will be property '3 * 5')
+ 3 * 5
+
+ ;; use #{..} references for dynamic content (this will be 'p15')
+ p#{3*5}
+</c:unset>
+}}}
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Unset.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Unset.java Source]

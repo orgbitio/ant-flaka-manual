@@ -1,0 +1,94 @@
+
+[[task_trycatch,trycatch]]
+== trycatch == 
+
+A task mirroring try-catch-finally exception handling found in various languages.
+
+All tasks inside try are executed in order. If an exception is thrown by one of tehm, then several things may happen:
+
+ * If there is a matching catch clause, then all tasks in that clause are executed. If there isn't a catch clause, the exception will be passed to the enclosing environment (except if an exception is also thrown in the finally clause - see below).
+ * An optional finally clause is always executed, regardless of whether an exception gets thrown or or whether a try or catch clause exists.
+ * If a property is set, then that property will hold the message of the exception thrown in a try clause. If a reference is given, then that reference will hold the exception object thrown in the try clause. If an exception is also thrown in a catch or finally clause, then neither will the property or reference update nor set.
+ * If a exception is thrown in a matching catch clause and in a finally clause, then the latter will be passed to the enclosing environment and the former will be discarded.
+
+A catch clause can be given a type and a match argument. Both arguments expect a regular or pattern expression. A catch clauses matches if the type and match matches. The type argument is matched against the classname of the thrown exception. The match argument is matched against the exception message (if any). Both default values ensure that a build exception thrown by Ant is caught while an implementation dependent exception passes.
+
+When matching against the error message, be aware that the actual error message might be slightly different from the actual message given: usually the error message contains also information about where the exception got thrown. It is therefore wise to accepted any leading and trailing space. For example:
+
+{{{
+ <c:trycatch>
+  <try><fail message="4711" /></try>
+  <catch match="4711">
+    -- does (very likely) not match
+  </catch>
+  <catch match="4711*">
+    -- neither this one ..
+  </catch>
+  <catch match="*4711">
+    -- bon chance
+  </catch>
+  <catch match="*4711*">
+    -- this is it!
+  </catch>
+ </c:trycatch>
+}}}
+  
+
+=== Attributes ===
+
+|| Attribute || Type || Default || [EL] || Description ||
+|| `property` || string || || no || The name of the property that should hold the exception message ||
+|| `reference` || string || `trycatch.object` || no || >The name of the reference to hold the exception object ||
+|| `catch.type` || glob || `*.BuildException` || no || A pattern against the type (Java classname) of the exception object ||
+|| `catch.match` || glob || `*`  || no || A pattern to be applied against the exception message ||
+
+=== Elements ===
+
+ * try<br /> A task container to hold tasks and macros to be given a try. 
+ * catch<br /> A task container to be executed if an exception gets thrown
+ * finally<br/> A task container to be executed in any case
+
+Note that all elements are optional. However, if there's no try element, then there's no chance to execute catch at all, so this constellation does not make too much sense. The optional finally clause will be executed regardless of whether a try clause exists or not.
+
+It is allowed to have more multiple try, catch or finally clauses and further does the oder in which they appear not matter. Be aware though that eventually all try and finally clauses are merged into one try resp. finally clause.
+
+
+=== Behaviour ===
+
+The following snippet demonstrates the usage of trycatch:
+
+{{{
+ <c:trycatch property="reason">
+   <try>
+     <echo>1st try ..</echo>
+   </try>
+   <try>
+     <echo>2nd try ..</echo>
+     <fail message="fail within 2nd try" />
+   </try>
+   <try>
+     <fail message="fail within 3rd try" />
+   </try>
+   <catch type="*.BuildException" match="*">
+     <echo>..caught : ${reason}</echo>
+   </catch>
+   <finally>
+     <echo>..finally</echo>   
+   </finally>
+ </c:trycatch>
+}}}
+
+Giving:
+
+{{{
+    [echo] 1st try ..
+    [echo] 2nd try ..
+    [echo] ..caught : fail within 2nd try
+    [echo] ..finally
+}}}
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Trycatch.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Trycatch.java Source]
+

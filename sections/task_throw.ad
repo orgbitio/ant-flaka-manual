@@ -1,0 +1,49 @@
+
+[[task_throw,throw]]
+== throw ==
+
+A task to re-throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
+
+Note that throw would re-throw the last thrown exception - regardless of the current context. The following would therefore work:
+
+{{{
+ <c:trycatch>
+  <try> 
+    <fail message="4711" />
+  </try>
+  <catch>
+    -- handle the exception ..
+  <catch>
+ </c:trycatch>
+ ..
+ .. -- very much later
+ .. 
+ <c:throw /> -- re-throws "4711" exception!!!
+}}}
+
+=== Attributes ===
+|| Attribute || Type || Default || [EL] || Description ||
+|| `reference` || string || `trycatch.object` || no || The name of the reference holding the previously thrown exception ||
+|| `var` || || || no || Same as reference ||
+
+=== Behaviour ===
+
+A typical usage example:
+
+{{{
+ <c:trycatch>
+  <try> ..<fail message="4711"/> </try>
+  <catch>
+    <echo>caught exception ..</echo>
+    <c:throw />
+  </c:catch>
+ </c:trycatch>
+}}}
+
+When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Throw.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Throw.java Source]
+ * Task [Tasks#trycatch trycatch]
+

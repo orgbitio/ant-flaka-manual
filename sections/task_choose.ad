@@ -1,0 +1,62 @@
+
+
+[[task_choose,choose]]
+== choose == 
+
+A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then-else_ statement.
+
+=== Attributes ===
+|| Attribute   || Type     || Default || EL || Description ||
+|| _when_.test || string   || `false` ||  = || A EL condition. When `true` corresponding clause will be executed. ||
+|| _unless_.text || string || `true`  ||  = || A EL condition. When `false` corresponding clause will be executed. ||
+|| debug       || boolean  || `false` ||  = || Turn on extra debug information. ||
+
+=== Elements ===
+|| Element   || Cardinality || Description ||
+|| when      || infinite    || To be executed if condition evaluates to `true` ||
+|| unless    || infinite    || To be executed if condition evaluates to `false` ||
+|| otherwise || [0,1]       || To be executed if no `when` or `unless` clause got executed ||
+|| default   || [0,1]       || Synonym for `otherwise` ||
+
+=== Behaviour===
+
+Each `when` and `unless` clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
+
+The shortest possible `choose` statement is
+{{{
+ <c:choose />
+}}}
+
+It's useless and does nothing, it's completely harmless.
+
+The following example would execute all macros or tasks listed in the `otherwise` clause cause no `when` or `unless` clause got executed.
+{{{
+ <c:choose>
+  <otherwise>
+    <!-- macros/tasks -->
+  </otherwise>
+ </c:choose>
+}}}
+
+This would execute all macros and tasks listed in the otherwise clause since no when clause got executed.
+{{{
+ <c:choose>
+   <when test=" true == false" >
+     <echo>new boolean logic detected ..</echo>
+   </when>
+   <unless test=" 'mydir'.tofile.isdir ">
+     <echo> directory mydir exists already </echo>
+   </when>
+   <otherwise>
+     <echo> Hello,</echo>
+     <echo>World</echo>
+   </otherwise>
+ </c:choose>
+}}}
+
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/Choose.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Choose.java Source]
+
+

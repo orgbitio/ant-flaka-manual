@@ -1,0 +1,30 @@
+
+
+[[task_when,when]]
+== when == 
+
+Task when represents a else-less if statement. The following example dumps the content of a file to stdout via Ant's echo task if the file exists.
+
+{{{
+ <c:when test=" 'path/to/file'.tofile.isfile" >
+   <c:let var="fname" property="true" value=" f " />
+    <loadfile property="__z__" srcFile="${fname}"/>
+    <echo message="${__z__}" />
+ </c:when>
+}}}
+
+Note that the example is bit artificial cause Ant's loadfile task is sufficient. 
+
+
+=== Attributes ===
+|| Attribute || Type   || Default || EL    || Description ||
+|| `test`    || string || `false` || expr  || A [EL] expression that must evaluate to `true` in order to execute the body of this if statement. ||
+
+=== Elements ===
+
+ * Any tasks or macro instances.
+
+=== Further Links ===
+ * [http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/When.html Javadoc] 
+ * [http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/When.java Source]
+
