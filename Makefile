@@ -20,7 +20,6 @@ flaka.db4 : \
  	xsl/flaka.xsl \
 	sections/el.ad \
 	sections/howto.ad \
-	sections/install-property-handler.ad \
 	sections/install.ad \
 	sections/not-yet-ready.ad \
 	sections/task_break.ad \
@@ -29,6 +28,7 @@ flaka.db4 : \
 	sections/task_echo.ad \
 	sections/task_fail.ad \
 	sections/task_for.ad \
+	sections/task_install-property-handler.ad \
 	sections/task_let.ad \
 	sections/task_list.ad \
 	sections/task_properties.ad \
