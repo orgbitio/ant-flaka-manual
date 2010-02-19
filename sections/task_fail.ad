@@ -15,5 +15,5 @@ Furthermore, attribute `test` has been added. The value of `test` will be evalua
 
 === Further Links ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Fail.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Fail.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Fail.java[Source]
 

@@ -37,7 +37,7 @@ This is the shortest possible for statement. It's legal albeit completely useles
 
 === Further Links ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/For.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/For.java[Source]
  * Task <<tasks_for,for>> 
  * Task <<tasks_break,break>>
  * Task <<tasks_continue,continue>>

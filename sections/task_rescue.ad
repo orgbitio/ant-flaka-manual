@@ -41,5 +41,5 @@ Executes all embedded tasks. Variables and properties listed in `vars` and `prop
 
 === Further Links ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Rescue.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Rescue.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Rescue.java[Source]
 

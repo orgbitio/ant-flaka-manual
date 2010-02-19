@@ -13,7 +13,7 @@ Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Export.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Export.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Export.java[Source]
 
 == find ==
 
@@ -89,7 +89,7 @@ Check whether a sub folder ending in '.jar' exists which is not a file but a dir
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Find.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Find.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Find.java[Source]
 
 == run-macro ==
 
@@ -123,7 +123,7 @@ The current version does not support calling macros or tasks with arguments.
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Run-macro.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-macro.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Run-macro.java[Source]
 
 
 == run-target ==
@@ -156,7 +156,7 @@ A task to invoke a target dynamically.
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Run-target.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Run-target.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Run-target.java[Source]
 
 
 
@@ -201,7 +201,7 @@ Note: The current version allows only the specification of one task or macro wit
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Create-target.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Create-target.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Create-target.java[Source]
 
 
 == set-default-target ==
@@ -236,7 +236,7 @@ This example changes the default target to be called from this to foobar.
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Set-default-target.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Set-default-target.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Set-default-target.java[Source]
 
 
 == xmlmerge ==
@@ -306,7 +306,7 @@ The same setup as before gives, when no root element is applied, the following:
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/XmlMerger.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/XmlMerer.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/XmlMerer.java[Source]
 
 == property-by-regex ==
 
@@ -358,7 +358,7 @@ creates property
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Property-by-regex.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Property-by-regex.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Property-by-regex.java[Source]
 
 == scandeps ==
 
@@ -413,6 +413,6 @@ will be accepted as dependency when scanning.
 
 === Further ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/ScanDeps.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/ScanDeps.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/ScanDeps.java[Source]
 
 

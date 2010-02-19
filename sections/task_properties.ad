@@ -63,4 +63,4 @@ Leading and trailing (!) whitespace characters are ignored. This is different fr
 
 === Further Links ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Properties.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/Properties.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Properties.java[Source]

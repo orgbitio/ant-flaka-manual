@@ -31,7 +31,7 @@ All tasks listed as elements are executed as long as the <<el>> expression evalu
 
 === Further Links ===
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/While.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java[Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/While.java[Source]
  * <<tasks_break,break>> to stop the iteration
  * <<tasks_continue,continue>> to hide tasks from being executed during a iteration step.
  * See also section <<looping,Repetition>> for an introduction to looping in Flaka.
