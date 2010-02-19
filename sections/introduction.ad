@@ -44,9 +44,15 @@ The author just lists the dependencies required to build the project. Flaka woul
 
 Not all targets have been reached in the current version of Flaka (Release candidate 1). Programming tasks and EL are working fine and can be used. The other two pillars work partially but generally not recommended (yet) to be used.
 
+
 === Where to go from here? ===
 
  * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the <<installation,installation page>>.
  * Have a look at the <<scripting,basic scripting elements>> to get an overview of tasks, types and macros provided by Flaka. Have a closer look in the reference part of this manual for all the gory details of those tasks, types and macros. 
  * Make sure to look into the chapter about the <<el,expression language>>, it contains a lot of information on this enormous useful extension.
  * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
+
+
+=== About this manual ===
+
+This manual corresponds with Flaka 1.01.
