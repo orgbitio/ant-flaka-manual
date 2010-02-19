@@ -36,7 +36,7 @@ This is the shortest possible for statement. It's legal albeit completely useles
 //TODO: document behaviour
 
 === Further Links ===
- * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/For.html[Javadoc] 
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/For.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/For.java[Source]
  * Task <<tasks_for,for>> 
  * Task <<tasks_break,break>>

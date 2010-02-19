@@ -42,6 +42,6 @@ This is the output of above's snippet:
 If `type` is `elonly` (exactly as written), then the new handler will only handle `#{..}` in addition. If `type` is `remove`, then unresolved property references are discarded.
 
 === Further Links ===
- * http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/PropertyHelper.html[Javadoc] 
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/PropertyHelper.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/PropertyHelper.java[Source]
 

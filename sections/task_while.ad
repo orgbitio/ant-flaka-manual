@@ -30,7 +30,7 @@ A task implemening a `while` loop:
 All tasks listed as elements are executed as long as the <<el>> expression evaluates to `true`. 
 
 === Further Links ===
- * http://javadoc.haefelingerit.net/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/While.html[Javadoc] 
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/While.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/trunk/src/net/haefelingerit/flaka/While.java[Source]
  * <<tasks_break,break>> to stop the iteration
  * <<tasks_continue,continue>> to hide tasks from being executed during a iteration step.

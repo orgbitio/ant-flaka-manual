@@ -61,5 +61,5 @@ This creates a list variable `mystrings` containing two elements. The first elem
 
 === Further Links ===
 
-* http://javadoc.haefelinger.it/net.haefelingerit.flaka/1.00/net/haefelingerit/flaka/List.html[Javadoc] 
+* http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/List.html[Javadoc] 
 * http://code.google.com/p/flaka/source/browse/trunk/src/it/haefelinger/flaka/List.java[Source]
