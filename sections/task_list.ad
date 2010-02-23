@@ -1,7 +1,7 @@
 
 
 [[task_list,list]]
-== list ==
+=== list ===
 
 A elementary task to create a variable containing a _list_ of objects.
 
@@ -15,7 +15,7 @@ A elementary task to create a variable containing a _list_ of objects.
 -------------------------------------
 
 
-=== Attributes ===
+==== Attributes ====
 
 |=======================
 | Attribute | Type   | Default | <<el>> | Meaning 
@@ -25,11 +25,11 @@ A elementary task to create a variable containing a _list_ of objects.
 | el        | bool   | true    |   no | Enable evaluation as EL expression       
 |=======================
 
-=== Elements ===
+==== Elements ====
 
 This task may contain a implicit text element.
 
-=== Behaviour ===
+==== Behaviour ====
 
 This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable's name is given by attribute `var`. This attribute may contain references to EL expressions.
 
@@ -59,7 +59,7 @@ Use attribute `el` to disable the interpretation of a line as <<el>> expression:
 
 This creates a list variable `mystrings` containing two elements. The first element will be string `3 * 5` and the second element will be string `hello, world`. Notice thateven if EL evaluation has been turned off, EL references can still be used.
 
-=== Further Links ===
+==== Further Links ====
 
 * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/List.html[Javadoc] 
 * http://code.google.com/p/flaka/source/browse/trunk/src/it/haefelinger/flaka/List.java[Source]

@@ -1,6 +1,6 @@
 
 [[task_throw,throw]]
-== throw ==
+=== throw ===
 
 A task to re-throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
 
@@ -21,7 +21,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
  <c:throw /> -- re-throws "4711" exception!!!
 --------------------------------------
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -30,7 +30,7 @@ Note that throw would re-throw the last thrown exception - regardless of the cur
 | `var` | | | no | Same as reference 
 |===========================
 
-=== Behaviour ===
+==== Behaviour ====
 
 A typical usage example:
 
@@ -46,7 +46,7 @@ A typical usage example:
 
 When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Throw.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Throw.java[Source]
  * Task <<tasks_trycatch,trycatch>>

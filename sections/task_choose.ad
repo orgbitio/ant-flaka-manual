@@ -1,11 +1,11 @@
 
 
 [[task_choose,choose]]
-== choose == 
+=== choose ===
 
 A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then-else_ statement.
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -15,7 +15,7 @@ A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then
 | debug       | boolean  | `false` |  = | Turn on extra debug information. 
 |===========================
 
-=== Elements ===
+==== Elements ====
 // cols=3
 [cols="15%,1*35%,50%"]
 |===========================
@@ -26,7 +26,7 @@ A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then
 | default   | [0,1]       | Synonym for `otherwise` 
 |===========================
 
-=== Behaviour ===
+==== Behaviour ====
 
 Each `when` and `unless` clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
 
@@ -63,7 +63,7 @@ This would execute all macros and tasks listed in the otherwise clause since no 
 --------------------------------------
 
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Choose.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Choose.java[Source]
 

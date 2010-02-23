@@ -1,6 +1,6 @@
 
 [[task_echo,echo]]
-== echo ==
+=== echo ===
 
 Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example. 
 
@@ -53,7 +53,7 @@ This would output
 
 which I believe is just what you had in mind.
 
-=== Attributes ===
+==== Attributes ====
 
 This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
 [cols="3*15%,55%"]
@@ -68,12 +68,12 @@ Notice that *debug* output will be written on stream `stderr` regardless whether
 
 The trimmed *`comment`* attribute value is used to construct a regular expression like `^\s*\Q<<comment>>\E`. Every line matching this regular expression will not show up in the output. Notice that the comment value given does not allow for regular expression meta characters. Thus something like `(;|#)` does _not_ mean either `;` or `#`. Instead it means that a line starting with `(;#)` is ignored from output. By default, lines starting with character `;` - like in Lisp - are ignored.
 
-=== Elements ===
+==== Elements ====
 
 This task optionally accepts implicit text. That text may contain Ant property `${..}` or <<el>> `#{..}` references. 
 
 
-=== Behaviour ===
+==== Behaviour ====
 
 *Continuation Lines* are lines where the last character before the line termination character is the backslash character. Such a line is continued, i.e. the line will be merged with the next one (which could also be a continuation line).   
 
@@ -200,7 +200,7 @@ Those line of 40 per cent character `%` got created simply by using
 <c:echo shift="40%"/>
 -------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Echo.html[Javadoc]
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Echo.java[Source]
 

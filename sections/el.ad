@@ -1,7 +1,7 @@
 
 
 [[el,EL]]
-== EL ==
+=== EL ===
 
 The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here. In short however, _EL_ lets you formulate http://en.wikipedia.org/wiki/Expression_(programming)[programming expressions] like 
 
@@ -31,7 +31,7 @@ The rest of this chapter introduces relevant details of EL in order to use it wi
 
 
 [[el_enabling_el]]
-=== Globally Enabling EL ===
+==== Globally Enabling EL ====
 By default can EL expressions can only be used in tasks which are EL aware. This are all tasks provided by Flaka but not those provided by Ant or any contribution to Ant. It is possible though to *enable* <<el>> on a global level - i.e. for all tasks. To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <<task_install_property_handler,install-property-handler>>:
 
 ---------------------------
@@ -39,7 +39,7 @@ By default can EL expressions can only be used in tasks which are EL aware. This
 ---------------------------
 
 [[el_references]]
-=== EL References ===
+==== EL References ====
 
 Those _not_ familiar with the specification of http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[EL], http://en.wikipedia.org/wiki/JavaServer_Pages[JSP] or http://en.wikipedia.org/wiki/JavaServer_Faces[JSF] may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed footnote:[EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content].
 
@@ -94,7 +94,7 @@ to dynamically check for the existence of property _name_. And of course you may
 -------------------------------------
 
 
-=== Nested References ===
+==== Nested References ====
 
 Nested references are not supported. The following reference is therefore illegal
 
@@ -102,8 +102,7 @@ Nested references are not supported. The following reference is therefore illega
  #{ item[ #{ index } ] }
 -------------------------------------
 
-=== Handling of `#{..}` and `${..}`
-
+==== Handling of `#{..}` and `${..}` ====
 In general, Ant property references `${..}` are resolved before EL references. Thus the folling works fine:
 
 -------------------------------------
@@ -112,7 +111,7 @@ In general, Ant property references `${..}` are resolved before EL references. T
 
 
 
-=== The Great Escape ===
+==== The Great Escape ====
 
 This section is about how to stop a EL reference from being evaluated and treated as text instead:
 
@@ -122,10 +121,10 @@ This section is about how to stop a EL reference from being evaluated and treate
 Both variants have the same result, the string `#{abc}`.
 
 
-=== Data Types ===
+==== Data Types ====
 _EL_'s data types are integral and floating point numbers, strings, boolean and type `null`. Example data values of each type, except type `null`, are given above (1-3). Type `null` has once instance value also named `null`. While `null` can\'t be used to formulate an expression, it is important to understand that the result of evaluating an expression can be `null`. For example, the evaluation of a variable named `x` is the data object associated with that name. If no data is associcated however (i.e. if `x` is undefined), then `x` evaluates to `null`.
 
-=== Strings ===
+==== Strings ====
 A EL string starts and ends with the same quotation character. Possible quotation characters are single the quote `'` and double quote `"` character. If string uses `'` as quotation character, then there is no need to _escape_ quoation character `"` within that string. Thus the following strings are valid:
 
 -------------------------------------
@@ -191,7 +190,7 @@ Here are same further examples strings:
 
 
 [[el_operators]]
-=== Operators ===
+==== Operators ====
 
 This are the most important operators defined in EL:
 
@@ -204,7 +203,7 @@ This are the most important operators defined in EL:
 
 
 [[el_properties]]
-=== Properties ===
+==== Properties ====
 
 Every data object in _EL_ may have properties associated. Which properties are available has not been standardized in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[specification]. In fact, this depends heavily on the underlying implementation and usage domain. What _EL_ specifies however, is how to query a property:
 
@@ -255,7 +254,7 @@ The last example demonstrates that there might also be http://en.wikipedia.org/w
 See further down which properties are available on various data types.
 
 [[el_implicit_objects]]
-=== Implicit Objects ===
+==== Implicit Objects ====
 
 Properties are good to query the state of data objects. The question is however, how do we get a data object to query in the first place? To start with _something_, <<el>> allows the implementation to provide _implicit_ objects and <<el_functions,top level functions (see below)>>. 
 
@@ -301,7 +300,7 @@ project.references.foo  -- (4)
 
 
 [[el_functions]]
-=== Functions ===
+==== Functions ====
 
 _EL_ also allows the implementation to provide top level functions. The following sections describe functions provided by Flaka. Some functions take an arbitrary number of arguments (inclusive no argument at all). This is denoted by two dots (`..`). An example of such a function is `list(object..)` which takes an arbitrary number of object to create a list.
 
@@ -335,7 +334,7 @@ Some mathematical functions are defined as well:
 | rand()      | double | Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. 
 |=================================
 
-=== Available Properties ===
+==== Available Properties ====
 
 In general properties are mapped as _attribute_ on the underlying data object. In Java, every _getX_ method taking no arguments identifies property _x_. As an example, assume that we have 
 
@@ -347,11 +346,11 @@ public class Foo {
 
 then an data object of type _Foo_ will have property _bar_ and thus the following expression `x.bar` would eventually call `Foo.getBar()` assuming that `x` evaluates to an object of type `Foo`. Such properties are the *natural* properties of a type.
 
-=== Primitve Types ===
+==== Primitve Types ====
 
 Primite data types (int, double, bool, null) have no properties.
 
-=== List and Arrays ===
+==== List and Arrays ====
 
 Besides their _natural_ properties (see discussion above) are _index_ properties available:
 
@@ -362,7 +361,7 @@ list('a','b')[1]  => 'b'
 Negative indexes are currently not supported. If an index is specfies an not existing element, `null` is returned.
 
 [[el_string_properties]]
-=== String Properties ===
+==== String Properties ====
 
 Besides _natural_ properties (see discussion above) are the following properties supported:
 
@@ -378,7 +377,7 @@ Besides _natural_ properties (see discussion above) are the following properties
 |=================================
 
 [[el_file_properties]]
-=== File Properties ===
+==== File Properties ====
 
 Files and folders is Ant's bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to _get_ a file object in the first place. This is most easily done by using string property `tofile`:
 
@@ -419,7 +418,7 @@ In this example of an EL expression, string `myfolder` is converted in a File ob
 |=================================
 
 [[el_matcher_properties]]
-=== Matcher Properties ===
+==== Matcher Properties ====
 
 A _matcher object_ is created by task <<task_switch>> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).
 
@@ -440,7 +439,7 @@ A _matcher object_ is created by task <<task_switch>> if a regular expression ma
 |=================================
 
 
-=== Evaluating in a boolean context ===
+==== Evaluating in a boolean context ====
 
 When evaluation a expr in a string context, a string representation of the final object is created. Similar, when a evaluation in a boolean context takes place, a conversion into a boolean value of the evaluated object takes place. The following table describes this boolean conversion:
 

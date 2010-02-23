@@ -1,6 +1,6 @@
 
 [[task_fail,fail]]
-== fail ==
+=== fail ===
 
 This task has been derived from http://ant.apache.org/manual/CoreTasks/fail.html[Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
 --------------------------------------
@@ -13,7 +13,7 @@ Furthermore, attribute `test` has been added. The value of `test` will be evalua
 </c:when>
 --------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Fail.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Fail.java[Source]
 

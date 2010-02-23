@@ -1,5 +1,5 @@
 [[task_unset,unet]]
-== unset ==
+=== unset ===
 
 The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project. 
 
@@ -13,7 +13,7 @@ The unset statement allows the removal of properties. Use this task with care as
 
 This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -22,11 +22,11 @@ This example demonstrates how to remove properties `p1` and a property whose nam
 | comment   | String  | `;`     | no | The character that starts a comment line 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
 This element accepts implicit text.
 
-=== Behaviour ===
+==== Behaviour ====
 
 Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. `ant.file`) are also removed.
 
@@ -48,6 +48,6 @@ The content of a line defines the property name, for example:
 </c:unset>
 --------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Unset.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Unset.java[Source]

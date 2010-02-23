@@ -1,5 +1,5 @@
 [[task_unless,unless]]
-== unless ==
+=== unless ===
 
 This task is the logical opposite of task <<tasks_when,when>>. It's body is only executed if the condition evaluates to false. See <<tasks_when,when>> for details. This example shows how to create a folder named libdir if such a folder does not already exist.
 
@@ -9,7 +9,7 @@ This task is the logical opposite of task <<tasks_when,when>>. It's body is only
  </c:unless>
 --------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Unless.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Unless.java[Source]
 

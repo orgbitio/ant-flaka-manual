@@ -1,6 +1,6 @@
 
 [[task_while,while]]
-== while ==
+=== while ===
 A task implemening a `while` loop:
 --------------------------------------
 <c:let>
@@ -11,7 +11,7 @@ A task implemening a `while` loop:
 <c:while>
 --------------------------------------
 
-=== Attributes ===
+==== Attributes ====
 
 
 // cols=5
@@ -21,15 +21,15 @@ A task implemening a `while` loop:
 | `test`    | string | `false` | expr  | The condition for looping as <<el>> expression 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
  The body of this task may contain an arbitrary number of tasks or macros.
 
-=== Behaviour ===
+==== Behaviour ====
 
 All tasks listed as elements are executed as long as the <<el>> expression evaluates to `true`. 
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/While.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/While.java[Source]
  * <<tasks_break,break>> to stop the iteration

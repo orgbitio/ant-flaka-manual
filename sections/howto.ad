@@ -1,8 +1,8 @@
-== Howto Flaka ==
+=== Howto Flaka ===
 
 A chapter with questions and answers about how to do things with Flaka.
 
-=== How to check whether a property is defined? ===
+==== How to check whether a property is defined? ====
 
 
 -------------------------------------
@@ -14,7 +14,7 @@ A chapter with questions and answers about how to do things with Flaka.
 -------------------------------------
 
 
-=== How to check whether a variable is defined? ===
+==== How to check whether a variable is defined? ====
 
 
 -------------------------------------
@@ -26,7 +26,7 @@ A chapter with questions and answers about how to do things with Flaka.
 -------------------------------------
 
 
-=== How to check whether a reference is defined? ===
+==== How to check whether a reference is defined? ====
 
 
 -------------------------------------
@@ -38,7 +38,7 @@ A chapter with questions and answers about how to do things with Flaka.
 -------------------------------------
 
 
-=== How to check whether a target is defined? ===
+==== How to check whether a target is defined? ====
 
 
 -------------------------------------
@@ -51,7 +51,7 @@ A chapter with questions and answers about how to do things with Flaka.
 
 
 
-=== How to check whether a Macro or Task is defined? ===
+==== How to check whether a Macro or Task is defined? ====
 
 To check whether a macro or task exists use test -M as shown below:
 
@@ -68,7 +68,7 @@ To check whether a macro or task exists use test -M as shown below:
 To check for a specific taskdef or macrodef, use `has.taskdef` or `has.macrodef`. 
 
 
-=== How to check whether a property is empty? ===
+==== How to check whether a property is empty? ====
 
 A property is considered _empty_ if either not defined or consists only of whitespace characters.
 
@@ -83,7 +83,7 @@ A property is considered _empty_ if either not defined or consists only of white
 
 
 
-=== How can I dynamically execute a target? ===
+==== How can I dynamically execute a target? ====
 Use task run-target to run any target. For example
 
 
@@ -96,7 +96,7 @@ Use task run-target to run any target. For example
 
 This would execute the target hello if this target exists. Otherwise this task will simply be ignored in case attribute fail is set to false (which is the default). If fail is true, then calling a non-existing target throws an exception. Note that targets and macros are in a different namespace.
 
-=== How do I dynamically execute a macro or task? ===
+==== How do I dynamically execute a macro or task? ====
 Use task run-macro for this task.
 
 

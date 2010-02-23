@@ -140,14 +140,19 @@
   {1.3ex \@plus.2ex}% 
   {\color{red}\normalfont\Huge}} 
 
+\renewcommand\subsection{\pagebreak%
+\@startsection {subsection}{1}{\z@}% 
+  {-2.5ex \@plus -1ex \@minus -.2ex}% 
+  {1.3ex \@plus.2ex}% 
+  {\color{red}\normalfont\Huge}} 
 
 %
-% Redefine \subsection command.
+% Redefine \subsubsection command.
 %
 
-\renewcommand\subsection{%
-    \@startsection{subsection}{2}{\z@}{1pt}{1pt} {%
-         \Large\bfseries\selectfont
+\renewcommand\subsubsection{%
+    \@startsection{subsubsection}{2}{\z@}{1pt}{1pt} {%
+         \Large
     }%
 }%
 

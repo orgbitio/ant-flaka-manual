@@ -1,12 +1,12 @@
 
 
 [[glossary]]
-== Flaka Glossary ==
+=== Flaka Glossary ===
 
 A compilation of words and their meaning in Flaka.
 
 [[glossary_continuation_lines]]
-=== Continuation Lines ===
+==== Continuation Lines ====
 
 A continuation line is a sequence of characters ending in `\NL` and not in `\\NL` (where NL is the line ending characters `CR LF` or `LF`. Tasks supporting continuation lines will accumulate the content of such a line with the (accumulated) content of the following line. The continuation character and the line ending characters are not accumulated.
 
@@ -21,16 +21,16 @@ c\
 Defines two accumulated lines: (1) `a b\` and (2) `c`.
 
 [[glossary_property_reference]]
-=== Property Reference ===
+==== Property Reference ====
 A reference to a http://ant.apache.org/manual/using.html#properties[property] is written as `${..}`. Property references are handled by the Ant property handler. If not changed, then `${x}` will be replaced by the value of property `x` if such a property exists. Otherwise, the reference will be left as is.
 
 [[glossary_expression_reference]]
-=== Expression Reference ===
+==== Expression Reference ====
 
 A reference to an <<el>> expression is written as `#{..}`. <<el>> is not part of Ant and can thus only be handled by certain tasks. References may appear in attribute values or in text elements. Not all attributes can handled EL references and neither all text elements. If a attribute or text element can handle EL references, it is specifically mentioned.
 
 [[glossary_base_folder]]
-=== Base Folder ===
+==== Base Folder ====
 
 Relative files are usually meant to be relative to the current working directory. Not so in Ant, where a file is relative to the folder containing the build script of the current project. This folder is called the base directory or base folder. Ant defines property `basedir` to contain the (absolute) path name of this folder. When using <<el>> expressions you can use the empty string to create the base folder as file object, like in ` ''.tofile `.
 

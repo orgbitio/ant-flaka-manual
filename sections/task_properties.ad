@@ -1,7 +1,7 @@
 
 
 [[task_properties,properties]]
-== properties ==
+=== properties ===
 
 
 A task to set multiple properties in one go. It is typically used to _inline_ properties otherwise written in an additional properties file. Thus using this task reduces the clutter on your top level directory:
@@ -24,7 +24,7 @@ A task to set multiple properties in one go. It is typically used to _inline_ pr
 
 
 
-=== Attributes ===
+==== Attributes ====
 
 // cols=5
 [cols="15%,3*11%,52%"]
@@ -34,11 +34,11 @@ A task to set multiple properties in one go. It is typically used to _inline_ pr
 | comment   | String  | `;`     | no | The character that starts a comment line 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
 This task accepts a implicit text element.
 
-=== Behaviour ===
+==== Behaviour ====
 
 This task is similar to <<tasks_let,let>>. The difference is that this task only allows to define properties while  <<tasks_let,let>> also supports the creation of variables. Furthermore, the right side of `=` will be literally taken as string value. This is different from <<tasks_let,let>> where the right side will be additionally evaluted as <<el>> expression. The following example defines each property foobar, once done with task  <<tasks_let,let>> and once with this _properties_ task:
 
@@ -61,6 +61,6 @@ If the right side is empty, then no property will be created and an existing pro
 
 Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant (and responsible for unexpected and hard to track script behaviour).
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Properties.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Properties.java[Source]

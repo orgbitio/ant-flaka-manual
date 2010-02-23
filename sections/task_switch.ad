@@ -1,6 +1,6 @@
 
 [[task_switch,switch]]
-== switch ==
+=== switch ===
 
 Task `switch` has been designed to provide for simple pattern matching. The idea is to match a series of patterns - either http://en.wikipedia.org/wiki/Regular_expression[regular] or a http://en.wikipedia.org/wiki/Glob_(programming)[glob] expressions -  against a _string value_ and carry out a sequence of actions in case of a hit. Here is an illustrative example:
 
@@ -23,7 +23,7 @@ Task `switch` has been designed to provide for simple pattern matching. The idea
 
 Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,2*11%,63%"]
 |===========================
@@ -56,7 +56,7 @@ By default do `^` and `$` only match at the beginning and the end of the entire 
 
 Note that each of the above `switch` attributes can also be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
 
-=== Elements ===
+==== Elements ====
 
 // cols=3
 [cols="15%,1*35%,50%"]
@@ -71,7 +71,7 @@ Element *matches* supports all the attributes of the enclosing `switch` with the
 
 The *default* element is carried out if no pattern matched. This element is optional and can only be specified once. A build exception will be raised if used more than once. It does not accept any attributes.  It may contain any number of tasks or macros as sub elements. 
 
-=== Behaviour ===
+==== Behaviour ====
 
 Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,property >> or <<glossary_expression_reference,EL>> references. 
 
@@ -127,7 +127,7 @@ Here is a more complicated example. It was used once to examine a CVS tag which 
  </c:switch>
 --------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Switch.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Switch.java[Source]
 

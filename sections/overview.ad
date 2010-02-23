@@ -1,6 +1,6 @@
 
 
-== An Expression Language ==
+=== An Expression Language ===
 
 The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP itself. To the contrary, the language can be made available in a variety of contexts.
 
@@ -71,11 +71,11 @@ Have a look at <<el>> for further EL examples and details.
 
 
 [[conditionals]]
-== Conditionals ==
+=== Conditionals ===
 
 With standard Ant, task http://ant.apache.org/manual/CoreTasks/condition.html[condition] is used to set a property if a condition is given. Then a macro, task or target can be conditionally executed  by checking the existence or absence of that property (using standard attributes _if_ or _unless_. Flaka defines a couple of control structures to handle conditionals in a simpler way.
 
-=== when and unless ===
+==== when and unless ====
 
 Task <<task_when>> evaluates an <<el>> expressio. If the evaluation gives `true`, the sequence of tasks are executed. Nothing else happens in case of `false`. 
 
@@ -103,7 +103,7 @@ The logical negation of `when` is task <<task_unless>> which executes the sequen
 
 The body of `when` and `unset` may contain any sequence of tasks or macros (or a combination of both).
 
-=== choose ===
+==== choose ====
 
 Task <<task_choose>> tests each `when` condition in turn until an _expr_ evalutes to `true`. It executes then the body of that when condition. Subsequent `whens` are then not further tested (nor executed). If all expressions evaluate to `false`, an optional _catch-all_ clause gets executed.
 
@@ -123,7 +123,7 @@ Task <<task_choose>> tests each `when` condition in turn until an _expr_ evalute
 -------------------------------------
 
 
-=== switch ===
+==== switch ====
 
 A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of _when_ statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the <<task_switch>> task:
 
@@ -146,7 +146,7 @@ A programming task often seen is to check whether a (string) value matches a giv
 Each case is tried in turn _to match_ the string value (given as <<el>> expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.
 
 [[looping]]
-== Repetition ==
+=== Repetition ===
 
 Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<task_continue>> to terminate the loop or to continue the loop with the next item.
 
@@ -167,11 +167,11 @@ Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of
 Attribute `in` will be evaluated as <<el>> expression. In the example above, that <<el>> expression is `''.tofile.list` which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at <<el_string_properties,properties>> of a string] and <<el_file_properties,properties>> of a file.
 
 [[exception_handling]]
-== Exception Handling ==
+=== Exception Handling ===
 
 Flaka has been charged with exception handling tasks.
 
-=== trycatch ===
+==== trycatch ====
 
 Flaka contains a task to handle exceptions thrown by tasks, <<task_trycatch>>. This task implements the usual _try/catch/finally_ trinity found in various programming languages (like in Java for example):
 
@@ -220,7 +220,7 @@ Element _try_, _catch_ and _finally_ are all optional or can appear multiple tim
 
 Property _ant.file_ is a standard Ant property that should always be set. If not, there's something seriously wrong and it does not make much sense to continue. Use attribute _type_ to catch (runtime) exceptions thrown by the underlying implementation.
 
-=== throw ===
+==== throw ====
 
 Task <<task_throw>> throws a (build) exception.
 
@@ -237,9 +237,9 @@ This task can also be used to rethrow an existing exception.
 
 
 [[macros]]
-== Procedures ==
+=== Procedures ===
 
-=== Ant Macros ===
+==== Ant Macros ====
 The (almost) equivalent of a procedure is a macro in Ant and Flaka. For example:
 
 -------------------------------------
@@ -279,7 +279,7 @@ which eventually prints the desired greeting.
 Macros are a standard feature of Ant.
 
 [[sequencing]]
-=== Sequencing ===
+==== Sequencing ====
 
 To evaluate a sequence of expressions (tasks or macros) where only one expression is allowed, use http://ant.apache.org/manual/CoreTasks/sequential.html[Ant's sequential task]:
 

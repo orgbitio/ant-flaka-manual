@@ -1,5 +1,5 @@
 [[task_break,break]]
-== break == 
+=== break ===
 
 A task mirroring a break statement. When used within a <<tasks_for,for>>-loop, the loop will be terminated. If this task is used outside of a <<tasks_for,for>>-loop, a build exception will be thrown.
 
@@ -18,7 +18,7 @@ Being executed, the following will be dumped on stdout:
 [c:echo] i = 3
 --------------------------------------
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -28,7 +28,7 @@ Being executed, the following will be dumped on stdout:
 | `unless`  | string | -     | #{}  | Terminate if property does not exist 
 |===========================
 
-=== Behaviour ===
+==== Behaviour ====
 
 When used without any attributes, the surrounding <<tasks_for,for>> or <<tasks_while,while>> loop will terminate at once. When used with attributes, then the loop will terminate if at least one attribute evaluates to `true`. Otherwise, the loop will not be terminated and continues as usual.
 
@@ -40,7 +40,7 @@ The example given above can thus be shortened to
   </c:for>
 --------------------------------------
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Break.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Break.java[Source]
 

@@ -1,7 +1,7 @@
 
 
 [[task_when,when]]
-== when == 
+=== when ===
 
 Task when represents a else-less if statement. The following example dumps the content of a file to stdout via Ant's echo task if the file exists.
 
@@ -16,7 +16,7 @@ Task when represents a else-less if statement. The following example dumps the c
 Note that the example is bit artificial cause Ant's loadfile task is sufficient. 
 
 
-=== Attributes ===
+==== Attributes ====
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
@@ -24,11 +24,11 @@ Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 | `test`    | string | `false` | expr  | A <<el>> expression that must evaluate to `true` in order to execute the body of this if statement. 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
  * Any tasks or macro instances.
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/When.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/When.java[Source]
 

@@ -1,6 +1,6 @@
 
 [[task_for,for]]
-== for == 
+=== for ===
 
 A task that implements a loop statement. Iterating over a list of _objects_:
 
@@ -12,7 +12,7 @@ A task that implements a loop statement. Iterating over a list of _objects_:
  </c:for>
 --------------------------------------
 
-=== Attributes ===
+==== Attributes ====
 
 // cols=5
 [cols="15%,3*11%,52%"]
@@ -22,11 +22,11 @@ A task that implements a loop statement. Iterating over a list of _objects_:
 | `in`      | string |         | expr  | The items to be iterated over as <<el>> expression. A iteration takes place except if `null` is the evaluation result. Otherwise, if the evaluation result is _not iterable object_, a temporary list containg that object is created on the fly. Iteration takes then place over that list and otherwise over the iterable collection. 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
  The body of this task may contain an arbitrary number of tasks or macros.
 
-=== Behaviour ===
+==== Behaviour ====
 
 This is the shortest possible for statement. It's legal albeit completely useless.
 --------------------------------------
@@ -35,7 +35,7 @@ This is the shortest possible for statement. It's legal albeit completely useles
 
 //TODO: document behaviour
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/For.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/For.java[Source]
  * Task <<tasks_for,for>> 

@@ -1,6 +1,6 @@
 
 [[task_trycatch,trycatch]]
-== trycatch == 
+=== trycatch ===
 
 A task mirroring try-catch-finally exception handling found in various languages.
 
@@ -34,7 +34,7 @@ When matching against the error message, be aware that the actual error message 
 --------------------------------------
   
 
-=== Attributes ===
+==== Attributes ====
 
 // cols=5
 [cols="15%,3*11%,52%"]
@@ -46,7 +46,7 @@ When matching against the error message, be aware that the actual error message 
 | `catch.match` | glob | `*`  | no | A pattern to be applied against the exception message 
 |===========================
 
-=== Elements ===
+==== Elements ====
 
 // cols=2
 [cols="15%,85%"]
@@ -62,7 +62,7 @@ Note that all elements are optional. However, if there's no try element, then th
 It is allowed to have more multiple try, catch or finally clauses and further does the oder in which they appear not matter. Be aware though that eventually all try and finally clauses are merged into one try resp. finally clause.
 
 
-=== Behaviour ===
+==== Behaviour ====
 
 The following snippet demonstrates the usage of trycatch:
 
@@ -97,7 +97,7 @@ Giving:
 --------------------------------------
 
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Trycatch.html[Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Trycatch.java[Source]
 

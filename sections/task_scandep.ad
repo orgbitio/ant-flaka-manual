@@ -1,7 +1,7 @@
 
 
 [[task_scandep,scandep]]
-== scandep ==
+=== scandep ===
 
 A task for scanning dependencies in arbitrary XML files. Each dependency is converted into a dependency object which can then be accessed via EL properties. Here is an example:
 
@@ -64,7 +64,7 @@ This would download the `junit` artefact from `http://repo1.maven.org` into fold
 
 Here we set the destination folder where we would like to store downloaded dependencies. Notice that `<:scandeps />` does not download any dependencies. It mererly creates dependency data objects. Most information carried with such a data object is retrieved from the dependency itself. Other information, like where to store locally, is not part of a dependency\'s declaration. It's subject to the build file. This is what the `decorate` element is good for. It can be used to `set` properties on objects. Notice that EL does not provide a way of changing object properties. Basically, EL is for reading only.
 
-=== Attributes ===
+==== Attributes ====
 
 [cols="15%,15%,15%,55%"]
 |==========================
@@ -73,7 +73,7 @@ Here we set the destination folder where we would like to store downloaded depen
 | dir        | string  | `${basedir}` | The base folder for scanning XML files
 |==========================
       
-=== Elements ===
+==== Elements ====
 
 This task is an implicit fileset task and supports all those elements, especially `<include/>` and `<exclude />` elements. By default _files_ are scanned for dependencies.
 
@@ -87,7 +87,7 @@ The following additional elements are supported:
 
 The decorate element allows to set properties on each scanned dependency data object. Properties must be set in a `property-name = el-expr` fashion. Comments are allowed. The only property supported is property `dest`. 
 
-=== Data Objects ===
+==== Data Objects ====
 
 Task `<c:scandep />` creates a data object having the following properties:
 [cols="20%,15%,65%"]
@@ -128,14 +128,14 @@ If no *type* attribute is given, then `jar` will be assumed. The reguluar *basen
 A dependency can be in various *scopes*. Scopes can be used to classify dependencies, for example to create different classpath objects for compilation or testing. Property `scope` is extracted from attribute or element `scope`. The content is expected to be a whitespace speparated list of scope names.
 
 
-=== Recognition ===
+==== Recognition ====
 
 Task `<c:scandeps />` uses a http://en.wikipedia.org/wiki/Duck_typing[duck typing] approach when looking for a dependency. Everthing having dependency like elements or attributes is considered a dependency - regardless of other elements and attributes and _regardless of any namespace_.
 
 The list of scanned dependencies is unique. The unique value of a dependency is calculated by property `m2path` - the Maven 2 like path. 
 
 
-=== Further Links ===
+==== Further Links ====
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/ScanDeps.html[ScanDeps Javadoc] 
  * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/dep/Dependency.html[Dependency Javadoc] 
  * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/ScanDeps.java[ScanDeps Source]
