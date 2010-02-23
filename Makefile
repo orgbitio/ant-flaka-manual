@@ -43,6 +43,8 @@ flaka.db4 : \
  	sections/task_when.ad \
  	sections/task_while.ad \
  	sections/todo.ad \
+  sections/task_scandep.ad \
+  sections/task_logo.ad \
 	$(nil)
 
 #

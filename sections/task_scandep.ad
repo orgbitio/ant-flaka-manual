@@ -1,0 +1,142 @@
+
+
+[[task_scandep,scandep]]
+== scandep ==
+
+A task for scanning dependencies in arbitrary XML files. Each dependency is converted into a dependency object which can then be accessed via EL properties. Here is an example:
+
+-------------------------------------
+ <c:scandep var=" dependencies ">
+   <decorate>
+     ;; local storage
+     dest = 'build/lib'
+   </decorate>
+   <include name="build.xml" />
+ </c:scandep>
+-------------------------------------
+
+
+Then, assume that you have a _dependency_ like 
+
+-------------------------------------
+ <c:dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>3.8.1</version>
+ </c:dependency>
+-------------------------------------
+
+in `build.xml`. Construct `<c:dependency /> is provided by Flaka. It is implemented as macro and does nothing. It's only purpose is to allow an author to express an artifact via a Maven like dependency structure. 
+
+After `<c:scandeps /> has been executed, variable `dependencies` exists in any case and can be used in EL expressions like
+
+-------------------------------------
+<c:echo>
+ ;; dependencies.each contains just all 
+ ;; dependencies found.
+ There are \
+ #{ size(dependencies.each) } \
+ in total.
+
+ ;; contains all dependencies in
+ ;; scope compile
+ Listing dependencies in scope compile:
+ #{ dependencies.scope.compile } 
+</c:echo>
+-------------------------------------
+
+How about fetching a dependency from a remote repository like `http://repo1.maven.org`? No problem at all using Ant\'s get task along with properties provided by a dependency object footnote::[The following example assumes that EL has been globally enabled, see task <<task_install_property_handler>> for details.]:
+
+-------------------------------------
+<c:for var=" d " in=" dependencies.each ">
+ <get url=" ${repo}#{ d.m2path } " dest="#{ d.file }" />
+</c:for>
+-------------------------------------
+
+This would download the `junit` artefact from `http://repo1.maven.org` into folder `build/lib` assuming that property `repo` would contain the URL of the Maven repository. The artefact ends up in folder `build/lib` because of the decoration argument given:
+
+-------------------------------------
+<decorate>
+  dest = 'build/lib'
+</decorate>
+
+-------------------------------------
+
+Here we set the destination folder where we would like to store downloaded dependencies. Notice that `<:scandeps />` does not download any dependencies. It mererly creates dependency data objects. Most information carried with such a data object is retrieved from the dependency itself. Other information, like where to store locally, is not part of a dependency\'s declaration. It's subject to the build file. This is what the `decorate` element is good for. It can be used to `set` properties on objects. Notice that EL does not provide a way of changing object properties. Basically, EL is for reading only.
+
+=== Attributes ===
+
+[cols="15%,15%,15%,55%"]
+|==========================
+| Attributes | Type    | Default  | Description 
+| var        | string  | `dependencies` | Create a `dependencies` object containing dependency objects in a certain structure.
+| dir        | string  | `${basedir}` | The base folder for scanning XML files
+|==========================
+      
+=== Elements ===
+
+This task is an implicit fileset task and supports all those elements, especially `<include/>` and `<exclude />` elements. By default _files_ are scanned for dependencies.
+
+The following additional elements are supported:
+
+[cols="15%,85%"]
+|==========================
+| Element   | Description 
+| decorate  | `name = value` text field.
+|==========================
+
+The decorate element allows to set properties on each scanned dependency data object. Properties must be set in a `property-name = el-expr` fashion. Comments are allowed. The only property supported is property `dest`. 
+
+=== Data Objects ===
+
+Task `<c:scandep />` creates a data object having the following properties:
+[cols="20%,15%,65%"]
+|==========================
+| Property      | Type   | Description
+| each          | List   | A list of dependency objects
+| scope         | Object | A dictionary for scopes
+| scope.compile | List   | A list of dependency objects in scope `compile`
+| scope._scope_ | List   | A list of dependency objects in scope _scope_
+| alias         | Object     | A dictionary of aliased dependencies
+| alias._alias_ | Dependency | Dependency with alias _alias_
+|==========================
+
+Each dependency object supports the following properties:
+[cols="15%,15%,70%"]
+|==========================
+| Property      | Type   | Description
+| alias         | String  | the unique name of a dependency (if any)
+| alt           | String  | alternative download location
+| basename      | String  | `#{name}-#{rev}.#{type}
+| file          | File    | _expected_ local storage of artifact 
+| group         | String  | _groupId_ in Maven parlance
+| location      | File    | Location where dependency got scanned from
+| m1path        | String  | Maven 1 path 
+| m2path        | String  | Maven 2 path
+| name          | String  | _artifactId in Maven parlance
+| rev           | String  | _version_ in Maven parlance
+| scope         | List    | list of scopes (each being a string)
+| type          | String  | artifact\'s extension
+|==========================
+
+When looking for element or attribute names, names are compared in a case-insensitive manner. Elements take precedence over attributes.
+
+Property *group* is extracted from attributes `groupid` or `group` or element `groupid`. Similar, property *name* is extracted from attibutes `artifactid` or `name` or element `artifactid`. Eventually, property *rev* is taken from attribute or element `version` or attribute `rev`. Those rules ensure that regular *Maven* or *Ivy* dependencies are recognized as such. In case a dependency is a mix of Maven and Ivy attributes, then those from Ivy, i.e. group, name and rev win. However, please be aware that elements are considered stronger than elements.
+
+If no *type* attribute is given, then `jar` will be assumed. The reguluar *basename* is a composition of `name`, `rev` and `type`. If attribute or element `jar` is given, then property *basename* returns that value instead footnote::[To support irregular base names.]
+
+A dependency can be in various *scopes*. Scopes can be used to classify dependencies, for example to create different classpath objects for compilation or testing. Property `scope` is extracted from attribute or element `scope`. The content is expected to be a whitespace speparated list of scope names.
+
+
+=== Recognition ===
+
+Task `<c:scandeps />` uses a http://en.wikipedia.org/wiki/Duck_typing[duck typing] approach when looking for a dependency. Everthing having dependency like elements or attributes is considered a dependency - regardless of other elements and attributes and _regardless of any namespace_.
+
+The list of scanned dependencies is unique. The unique value of a dependency is calculated by property `m2path` - the Maven 2 like path. 
+
+
+=== Further Links ===
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/ScanDeps.html[ScanDeps Javadoc] 
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/dep/Dependency.html[Dependency Javadoc] 
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/ScanDeps.java[ScanDeps Source]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/dep/Dependency.java[Dependency Source]

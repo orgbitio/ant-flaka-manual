@@ -1,7 +1,7 @@
 [id="installation"]
 //== Installation ==
 
-Download latest version of Flaka and _drop_ `ant-flaka.x.y.z.jar` into your local Ant installation. All that needs to be done is to put this jar into Java's classpath when running Ant. There are various techniques how to do so. Please read-on what exactly needs to be done.
+Download footnote::[see either http://download.haefelinger.it/flaka or use http://code.google.com/p/flaka/downloads] latest version of Flaka and _drop_ `ant-flaka.x.y.z.jar` into your local Ant installation. All that needs to be done is to put this jar into Java's classpath when running Ant. There are various techniques how to do so. Please read-on what exactly needs to be done.
 
 === Ready, .. ===
 
@@ -58,37 +58,26 @@ The drawback with this technique is that you need to make sure that this variabl
 
 
 === Fire! ===
-To check whether your setup of `Flaka` works, create a local Java project and try to build it. For example, 
+
+To check whether your setup is proper, create a small build script and try to execute it. For example,try this  
 
 -------------------------------------
- $ mkdir -p hello/src/demo && cd hello 
- $ cat > src/demo/Hello.java << EOF
-   public class Hello {}
- ^D
- $ cat > build.xml << EOF
- <project xmlns:c="antlib:it.haefelinger.flaka">
-   <c:build />
- </project>
- ^D
- $ # let ant build this project
- $ ant
- :::::::::::::::::::::::::::::::::::::::::::::::::::
- ::               HELLO, FLAKA 1.0                ::
- ::  use `ant -p' to get a list of useful targets ::
- :::::::::::::::::::::::::::::::::::::::::::::::::::
- [..]
- BUILD SUCCESSFUL
- Total time: 2 seconds
-
+$ cat > build.xml << EOF
+<project xmlns:c="antlib:it.haefelinger.flaka">
+ <c:logo>
+  Hello, #{property['ant.file'].tofile.name}
+ </c:logo>
+</project>
+^D
+--------------------------------------
+Then, when created, try to execute it with your Flaka equipped Ant. You should
+see something like
 -------------------------------------
-
-The call to `ant` builds the package. The result will be file `hello-SNAPSHOT.jar` found in folder `build/dist`:
-
+$ ant
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+::               Hello, build.xml                ::
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+BUILD SUCCESSFUL
+[..]
 -------------------------------------
-
- $ jar tvf dist/hello-SNAPSHOT.jar
-     0 Thu Jan 17 17:04:08 CET 2009 META-INF/
-   667 Thu Jan 17 17:04:06 CET 2009 META-INF/MANIFEST.MF
-   120 Thu Jan 17 17:04:08 CET 2009 Hello.class
-
--------------------------------------
+if everything is well setup.

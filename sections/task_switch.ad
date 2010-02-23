@@ -2,10 +2,10 @@
 [[task_switch,switch]]
 == switch ==
 
-Task `switch` has been designed to ease pattern matching. The idea is to try to match a pattern, a http://en.wikipedia.org/wiki/Regular_expression[regular expression] or http://en.wikipedia.org/wiki/Glob_(programming)[glob expression] against a given string value and carry out a sequence of actions in case of a hit.
+Task `switch` has been designed to provide for simple pattern matching. The idea is to match a series of patterns - either http://en.wikipedia.org/wiki/Regular_expression[regular] or a http://en.wikipedia.org/wiki/Glob_(programming)[glob] expressions -  against a _string value_ and carry out a sequence of actions in case of a hit. Here is an illustrative example:
 
 --------------------------------------
- <c:switch value=" 'a${string}#{value}' ">
+ <c:switch value=" a${string}#{value} ">
   <matches glob="*.jar">          -- #1
    -- string ending in .jar
   </matches>
@@ -25,22 +25,36 @@ Notice the usage of a glob expression in the first and the usage of regular expr
 
 === Attributes ===
 // cols=5
-[cols="15%,3*11%,52%"]
+[cols="15%,2*11%,63%"]
 |===========================
-| Attribute | Type   | Default | <<el>>  | Description 
-| `value`   | string |       - |   el  | The (string) value that needs to be matched against. Note that the value given is _normalized_, i.e. leading and trailing whitespace is removed. Whitespace characters are controlled by the underlying implementation which is Java in this case.
-| `var`     | string |       - | #{..} | Save details of this match as `matching object` using the variable name given. See <<el_matcher_properties,matcher properties>> for a list of available properties; see also below for examples. 
-| `ignorecase` | bool | false  |    no | Enables case-insensitive matching. By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)` 
-| `comments`   | bool | false  |    no | Permits whitespace and comments in pattern. In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)` 
-| `dotall`     | bool | false |     no | In dotall mode, the literal `.` matches any character, including a line terminator. By default this expression does not match line terminators. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. 
-| `unixlines`  | bool | false  |    no | In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. Unix lines mode can also be enabled via the embedded flag expression (?d). 
-| `multiline`  | bool | false | no | In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence. By default these expressions only match at the beginning and the end of the entire input sequence. Multiline mode can also be enabled via the embedded flag expression (?m). 
-| `debug`      | bool  | false |   no | Turn on extra debug information 
-| _matches_.`re` | string |    | #{..} | Element `matches`: Specify a matching pattern as regular expression. 
-| _matches_.`pat` | string |   | #{..} | Element `matches`: Specify a matching pattern as glob expression 
+| Attribute | Type   | Default | Description 
+| `value`   | string |    ""   | The string value that needs to be matched against.
+| `var`     | string |       - | Save details of this match as `matching object` using the variable name given. 
+| `ignorecase` | bool | false  | Enables case-insensitive matching. 
+| `comments`   | bool | false  | Permits whitespace and comments in pattern. 
+| `dotall`     | bool | false  | In dotall mode, the literal `.` matches any character, including a line terminator. 
+| `unixlines`  | bool | false  | In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. 
+| `multiline`  | bool | false | In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence.
+| `debug`      | bool  | false | Turn on extra debug information 
+| _matches_.`re`  | string |    | Element `matches`: Specify a matching pattern as regular expression. 
+| _matches_.`pat` | string |   | Element `matches`: Specify a matching pattern as glob expression 
 |===========================
 
-Note that each `switch` attribute (but `value`) can be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
+Note that switch\'s *value( given is _normalized_. Leading and trailing whitespace is removed. This attribute is <<el>> enabled but notice that you have to use EL references like `a#{ expr }b`.
+
+A matcher object is saved in variable *var*. This matcher object allows to access matching details like the number of capturing groups and the like. See <<el_matcher_properties,matcher properties>> for a list of available properties; see also below for examples. The variable name must be a string which may contain EL references.
+
+By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)`.
+
+In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)`.
+
+By default does `.` (the dot) match any character but line terminators. This can be changed by setting the *dotall* attribute to `true`. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. 
+
+Unix lines mode can also be enabled via the embedded flag expression (?d). 
+
+By default do `^` and `$` only match at the beginning and the end of the entire input sequence. By setting *multiline* to `true` do they match just after and just before a line termination character. Multiline mode can also be enabled via the embedded flag expression (?m). 
+
+Note that each of the above `switch` attributes can also be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
 
 === Elements ===
 
@@ -48,18 +62,20 @@ Note that each `switch` attribute (but `value`) can be applied to a `matches` el
 [cols="15%,1*35%,50%"]
 |===========================
 | Element   | Cardinality | Description 
-| `matches` | 0..infinity | An element to specify a single regular or a glob expression. This element supports all the attributes of the enclosing `switch` (but `value`). It may contain any number of tasks or macros as sub elements. They are carried out if the expression matches. 
-| `default` | 0..1        | The default statement will be executed if no `matches` element matched the input value. This element is optional. This element can only be specified once. A build exception will be raised if used more than once. This element does not accept any attributes.  It may contain any number of tasks or macros as sub elements. They are carried out if no expression matched. 
+| `matches` | 0..infinity | An element to specify pattern. 
+| `default` | 0..1        | The default statement will be executed if no `matches` element matched the input value.
 | `otherwise` | 0..1     | This element is a synonym for element `default` 
 |===========================
 
+Element *matches* supports all the attributes of the enclosing `switch` with the exception of `value`. It may contain any number of tasks or macros as sub elements. They are carried out if the pattern matches the given switch value.
+
+The *default* element is carried out if no pattern matched. This element is optional and can only be specified once. A build exception will be raised if used more than once. It does not accept any attributes.  It may contain any number of tasks or macros as sub elements. 
+
 === Behaviour ===
 
-Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,references to properties>> or <<glossary_expression_reference,EL expressions>>. Leading and trailing whitespace will be discarded after having resolved all references. 
+Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,property >> or <<glossary_expression_reference,EL>> references. 
 
-All other attributes (see above) are default values for subsequent `matches` elements. For example, setting attribute `debug` to `true` will turn on debug on all `matches` elements.
-
-Any number of `matches` elements are allowed and at most one `otherwise` (resp. `default`) element. Whether the `otherwise` element is at the end, in the middle or at the begin does not matter. The order of the `matches` elements are relevant however. Each `matches` element will be tried in the order given until no more untried elements are left. Then, if no element matched, a given `otherwise` element is carried out. Otherwise the matching elment will.
+Any number of `matches` elements are allowed and at most one `otherwise` or `default` element. Whether the `otherwise` element is at the end, in the middle or at the begin does not matter. The order of `matches`  is relevant however. Each `matches` element is tried against the value in the order given. Then, if no element matched, a given `otherwise` or `default` element is carried out. Otherwise the winning matching elment will while remaining elements are ignored.
 
 Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
 

@@ -8,21 +8,12 @@ author wh@haefelinger.it
 
 include::sections/introduction.ad[]
 
-[[overview]]
+[[part1]]
 == Part I, Overview ==
 
 //
-// The EL chapter.
-//
-
-include::sections/el.ad[]
-
-//
-// Overview of elementary things Flaka provides (EL, tasks) but also about
-// properties, Macros, <sequence />. Proper chapter title? Split into two
-// chapters?
-//
-
+// Overview 
+// 
 include::sections/overview.ad[]
 
 //
@@ -31,18 +22,16 @@ include::sections/overview.ad[]
 
 include::sections/glossary.ad[]
 
+[[part2]]
+== Part II, Elementary ==
 
-== Part II, Elementary Tasks ==
-
-Each of the following chapters describes a task in all it\'s details.
-
+include::sections/el.ad[]
 include::sections/task_break.ad[]
 include::sections/task_choose.ad[]
 include::sections/task_continue.ad[]
 include::sections/task_echo.ad[]
 include::sections/task_fail.ad[]
 include::sections/task_for.ad[]
-include::sections/task_install-property-handler.ad[]
 include::sections/task_let.ad[]
 include::sections/task_list.ad[]
 include::sections/task_properties.ad[]
@@ -55,16 +44,20 @@ include::sections/task_unset.ad[]
 include::sections/task_when.ad[]
 include::sections/task_while.ad[]
 
-== Part III, Special Purpose Tasks ==
+[[part3]]
+== Part III, Special Purpose ==
 //
 // A chapter about doing things with Flaka
 //
 include::sections/todo.ad[]
+include::sections/task_install-property-handler.ad[]
+include::sections/task_logo.ad[]
+include::sections/task_scandep.ad[]
 
 //
 // include::sections/howto.ad[]
 //
-
+[[part4]]
 == Part IV, Installation ==
 
 //

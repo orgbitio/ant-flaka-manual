@@ -194,12 +194,10 @@ This feature also allows to create some horizontal lines which might be useful t
 [c:echo] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 -------------------------------------
 
-Those line of 40 per cent character `%` got created using 
+Those line of 40 per cent character `%` got created simply by using 
 
 ------------------------------------
-<c:echo shift="39%">
-..%
-</c:echo>
+<c:echo shift="40%"/>
 -------------------------------------
 
 === Further Links ===

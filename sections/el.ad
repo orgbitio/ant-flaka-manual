@@ -1,90 +1,38 @@
 
 
 [[el,EL]]
-== EL, The Expression Language ==
+== EL ==
 
-The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP specification. To the contrary, the language can be made available in a variety of contexts.
-
-One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as _string_ object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for _Unified Expression Language_) this becomes an easy task:
-
+The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here. In short however, _EL_ lets you formulate http://en.wikipedia.org/wiki/Expression_(programming)[programming expressions] like 
 
 -------------------------------------
-<c:echo>
-  ;; basedir is a standard Ant property 
-  basedir is ${basedir}
 
-  ;; report last modification time (as Date object)
-  was last modified at #{ '${basedir}'.tofile.mtime }
-
-  ;; dump the full name of this build file 
-  ;; where 'ant.file' is a standard property
-  this is #{property['ant.file'] } reporting!
-</c:echo>
--------------------------------------
-
-Being executed, this snippet produces something like 
+  7 * (5.0+x) >= 0        ;; 1
+  a and not (b || false)  ;; 2
+  empty x ? 'foo' : x[0]  ;; 3
 
 -------------------------------------
-[c:echo] basedir is /projects/flaka/test
-[c:echo] 
-[c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
-[c:echo] 
-[c:echo] this is /projects/flaka/test/tryme.xml reporting!
--------------------------------------
 
-as output. Notice that Flaka\'s <<task_echo>> task has been used for this illustration because <<el>> is by default only available on Flaka tasks. If http://ant.apache.org/manual/CoreTasks/echo.html[Ant\'s standard echo] task is used, all `#{..}` constructs are left as they are. It is however possible and recommended to turn <<el>> on for _all_ tasks. See <<el_enable_el,how to enable EL>> for details.
+The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable `x` and similar does (2) on `a` and `b`. Line (3) shows the usage of two built-in <<el_operators,operators (see below for details)>>.
 
-The next code example shows another _EL in action_ sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the _root_ folder:
+Such expressions can hardly expressed in pure Ant. However, a even more useful concept of EL is 
 
--------------------------------------
-<c:let>
-  ; the root folder as file object
-  root = '/'.tofile
-  ; create empty list
-  list = list()
-</c:let>
+[quote, JSR 245 specification, Page 22]
+____________________________________________________________________
+[..] the evaluation of a model object name into an object, and the resolution of properties applied too objects in an expression (operators . and[ ]). 
+____________________________________________________________________
 
-<c:for var="file" in=" root.list ">
-  <c:when test=" file.isdir and not file.isread ">
-    <c:let>
-      list = append(file,list)
-    </c:let>
-  </c:when>
-</c:for>
+EL provides a nice way of accessing underlying data objects. Assume that we have a EL variable named `d` and it is (somehow) associated with a Java object. Then we can query object properties in an expression like `d.`_name_ or `d[` _name_ `]`. Two examples:
 
-<c:echo>
-  ;; how many unreadable directories ??
-  There are #{size(list)} unreadable directories in #{root}.
-  And here they are #{list}.
-</c:echo>
--------------------------------------
+* Assume that object `d` is a Java File object. Then `d.mtime` would return the last modification time of that file as object of type Date.
+* Assume that object `d` is a Java Map object. Then `d.foobar` would query a value in that map object using `foobar` as key.
 
-Executed on MacOS 10.5.6 (aka "Leopard") gives:
+The rest of this chapter introduces relevant details of EL in order to use it within Flaka.
 
--------------------------------------
-[c:echo] There are 2 unreadable directories in /.
-[c:echo] And here they are [/.Trashes, /.Spotlight-V100].
--------------------------------------
-
-
-[[el_ready_tasks]]
-=== EL Ready Tasks ===
-
-By default can EL expressions can only be used in tasks which are EL aware. This tasks are:
-
- * <<task_echo>>
- * <<task_for>>
- * <<task_let>>
- * <<task_properties>>
- * <<task_unless>>
- * <<task_when>>
-
-It is possible though to enable <<el>> on a global level, i.e. for all tasks.
 
 [[el_enabling_el]]
 === Globally Enabling EL ===
-
-To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <<task_install_property_handler>>:
+By default can EL expressions can only be used in tasks which are EL aware. This are all tasks provided by Flaka but not those provided by Ant or any contribution to Ant. It is possible though to *enable* <<el>> on a global level - i.e. for all tasks. To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <<task_install_property_handler,install-property-handler>>:
 
 ---------------------------
 <c:install-property-handler />
@@ -95,9 +43,11 @@ To enable handling of EL references on a global level on all tasks, types or  ma
 
 Those _not_ familiar with the specification of http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[EL], http://en.wikipedia.org/wiki/JavaServer_Pages[JSP] or http://en.wikipedia.org/wiki/JavaServer_Faces[JSF] may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed footnote:[EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content].
 
-For those familiar, the _term EL expression_ is used in a slightly different way in this documentation than in the specification. According to the specification, `#{..}` is an EL expression. 
+For those familiar, the _term EL expression_ is used in a slightly different way in this documentation than in the specification. According to the specification, `#{` _expr_ `}` is an EL expression. 
 
-Not so in this documentation. Here only the inner part, denoted by `..` is a _EL expression_ while `#{ ..}` is considered a _reference to an EL expression_. A reference to an expression is used in contexts which are partially evaluated. Take task <<task_echo>> as example. Clearly, when writing 
+Not so in this documentation. Here only _expr_ - the inner part - is considered a _EL expression_ while `#{` _expr_ `}` is considered a EL expression _reference_. 
+
+A reference is used in contexts which should be partially evaluated. Take task <<task_echo>> as example. Clearly, when writing 
 
 -------------------------------------
 <c:echo>
@@ -105,75 +55,61 @@ Not so in this documentation. Here only the inner part, denoted by `..` is a _EL
 </c:echo>
 -------------------------------------
 
-we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what `#{..}` is good for:
+we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what `#{` _expr_ `}` is good for:
 
 -------------------------------------
 <c:let>
- what = 'Hello world'
+ hello = 'Hello world'
 </c:let>
 
 <c:echo>
- I said '#{ what }'!
+ I said '#{ hello }'!
 </c:echo>
 -------------------------------------
 
+In other contexts, like in `<c:when test="` _condition_ `" />`, partial evaluation of _condition_ does not make sense. Instead the whole _condition_ is expected to be a EL expression. Wrapping _condition_ with `#{` and '}` is just an unnecessary overhead which makes reading difficult. 
 
-In other contexts, like in `<c:when test=" condition " />`, a EL expression is expected anyway and it does not make the slightest sense to require the expression to be referenced. As an example, assume that we want to check whether a property named 'foobar' exists. Instead of writing
-
--------------------------------------
-<c:when test=" #{has.property['foobar']} " />   -- don't!
--------------------------------------
-
-as seen in popular JSP tag libraries, just write
+As an example, assume that we want to check whether property `foobar` exists. This can be expressed using `has.property.foobar`. Nevertheless, in JSP you would have to write
 
 -------------------------------------
-<c:when test=" has.property['foobar'] " />   -- yes!!!
+<c:when test=" #{ has.property.foobar } " /> 
 -------------------------------------
 
-And forget about that unnecessary clutter.
-
-Notice however, that in all contexts where a expression is expected, a expression reference can be used. This allows for advanced meta programming like shown in the following example:
+In Flaka you can ommit `#{` and '}` and go ahead with 
 
 -------------------------------------
-<c:when test=" has.property['#{propertyname}'] " />   -- sic!
+<c:when test=" has.property.foobar " /> 
 -------------------------------------
 
-
-=== Handling of `${..}` ===
-
-_EL_ defines two types of references:
- 
-* *deferred*, indicated by `#{..}` ; and
-* *dynamic*, indicated by `${..}`
-
-Dynamic references `${..}` are handled by Ant to resolve properties. There are two execptions to this however. Ant will leave a dynamic reference as is if the reference value does not denote a (existing) property. Secondly, Ant allows to escape a reference by by doubling character `$` as in `$${a}`. In any case, `${..}` does not denote a legal EL reference and will be left as is. Be aware that you can install a property handler to get rit of unresolved `${..}` property references. 
-
-=== Handling of `#{..}` ===
-Deferred references `#{..}` are evaluated according to regular EL rules. Each reference is evaluated independently. Thus 
+However, the EL expression itself is subject to partial evaluation. So you may want to write
 
 -------------------------------------
-
- The #{ 'Good' }, the Bad and the #{ 'Ug' 'ly' }, a well known #{ 'movie' }.
-
+<c:when test=" has.property.#{ name } " /> 
 -------------------------------------
 
-Would print
+to dynamically check for the existence of property _name_. And of course you may also use a combination of Ant property and EL references like in
 
 -------------------------------------
- The Good, the Bad and the , a well known movie.
+<c:when test=" has.${category}.#{ name } " /> 
 -------------------------------------
 
-cause the second reference is illegal. Notice however that all valid references are evaluated.
 
 === Nested References ===
 
 Nested references are not supported. The following reference is therefore illegal
 
 -------------------------------------
+ #{ item[ #{ index } ] }
+-------------------------------------
 
- #{ item[ #{index} ] }
+=== Handling of `#{..}` and `${..}`
+
+In general, Ant property references `${..}` are resolved before EL references. Thus the folling works fine:
 
 -------------------------------------
+ has.property[ '${somename}' ]
+-------------------------------------
+
 
 
 === The Great Escape ===
@@ -186,24 +122,8 @@ This section is about how to stop a EL reference from being evaluated and treate
 Both variants have the same result, the string `#{abc}`.
 
 
-=== Gory EL Details  ===
-
-The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here. In short however, _EL_ let's you formulate http://en.wikipedia.org/wiki/Expression_(programming)[programming expressions] like 
-
--------------------------------------
-
-  7 * (5.0+x) >= 0        ;; 1
-  a and not (b || false)  ;; 2
-  empty x ? 'foo' : x[0]  ;; 3
-
--------------------------------------
-
-The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable `x` and similar does (2) on `a` and `b`. Line (3) shows the usage of two built-in <<el_operators,operators (see below for details)>>.
-
-The rest of this chapter introduces relevant details of EL in order to use it within Flaka.
-
 === Data Types ===
-_EL_'s data types are integral and floating point numbers, strings, boolean and type `null`. Example data values of each type, except type `null`, are given above (1-3). Type `null` has once instance value also named `null`. While `null` can't be used to formulate an expression, it is important to understand that the result of evaluating an expression can be `null`. For example, the evaluation of a variable named `x` is the data object associated with that name. If no data is associcated however (i.e. if `x` is undefined), then `x` evaluates to `null`.
+_EL_'s data types are integral and floating point numbers, strings, boolean and type `null`. Example data values of each type, except type `null`, are given above (1-3). Type `null` has once instance value also named `null`. While `null` can\'t be used to formulate an expression, it is important to understand that the result of evaluating an expression can be `null`. For example, the evaluation of a variable named `x` is the data object associated with that name. If no data is associcated however (i.e. if `x` is undefined), then `x` evaluates to `null`.
 
 === Strings ===
 A EL string starts and ends with the same quotation character. Possible quotation characters are single the quote `'` and double quote `"` character. If string uses `'` as quotation character, then there is no need to _escape_ quoation character `"` within that string. Thus the following strings are valid:
@@ -215,7 +135,7 @@ A EL string starts and ends with the same quotation character. Possible quotatio
 
 -------------------------------------
 
-If however the string's quotation character is to be used within the string, then the quoation character needs to be escaped from it's usual meaning. This is done by prepending character backslash:
+If however the string's quotation character is to be used within the string, then the quoation character needs to be escaped from its usual meaning. This is done by prepending character backslash:
 
 -------------------------------------
 
@@ -224,7 +144,7 @@ If however the string's quotation character is to be used within the string, the
 
 -------------------------------------
 
-To escape the backslash character from it's usual meaning (escaping that is), escape the backslash character with a backslash:
+To escape the backslash character from its usual meaning (escaping that is), escape the backslash character with a backslash:
 
 -------------------------------------
 
@@ -233,7 +153,7 @@ To escape the backslash character from it's usual meaning (escaping that is), es
 
 -------------------------------------
 
-Other characters than the quotation and backslash character can't be escaped. Thus 
+Other characters than the quotation and backslash character can\'t be escaped. Thus 
 
 -------------------------------------
 
@@ -272,12 +192,16 @@ Here are same further examples strings:
 
 [[el_operators]]
 === Operators ===
-Four _operators_ are defined in _EL_:
 
-. `empty` checks whether a variable is empty or not and returns either `true` or `false`. It is important to understand that `null` is considered empty.
-.  condition operator `c ? a : b` evaluates `c` in a boolean context and returns the evaluation of expression `a` if `c` evaluates to `true`; otherwise `eval(b)` will be the result of this operator.
-. `.` and ;
-. `[]` are property operators described in <<el_properties,section _Properties_>> below.
+This are the most important operators defined in EL:
+
+* `empty` checks whether a variable is empty or not and returns either `true` or `false`. It is important to understand that `null` is considered empty.
+*  condition operator `c ? a : b` evaluates `c` in a boolean context and returns the evaluation of expression `a` if `c` evaluates to `true`; otherwise `eval(b)` will be the result of this operator.
+* `.` and  `[]` are property operators described in <<el_properties,section _Properties_>> below.
+* logical operators `not`, `and` and `or`
+* relational operators `==`, '!=`, `<`, `>`, `<=` and `>=` (resp. `eq`, `ne`, `lt`, `gt`, `le` and `ge`).
+* usual arithmetic operators like `+`, `-`, `*`, `/`, `mod` and `div` etc.
+
 
 [[el_properties]]
 === Properties ===
@@ -350,8 +274,8 @@ The following implicit objects are defined by Flaka:
 | macrodefs| | Macros 
 | tasks| |  Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. 
 | filter| |  A object containing all filters defined in this project. 
-| e | double | The mathematical http://en.wikipedia.org/wiki/E_(mathematical_constant)[constant e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number.
-| pi | double | The  mathematical http://en.wikipedia.org/wiki/P[constant pi] 
+| e | double | The mathematical number http://en.wikipedia.org/wiki/E_(mathematical_constant)[e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number.
+| pi | double | The number http://en.wikipedia.org/wiki/PI[PI] 
 |==================================
 
 An example for an EL expression fetching property `foo` is:
@@ -385,9 +309,9 @@ _EL_ also allows the implementation to provide top level functions. The followin
 |=================================
 | Function | Type | Meaning 
 | `typeof(object)` | string | The type of `object`, `int`, `string`, `file` etc 
-| `size(object)`   | int  | Returns the object's size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying `size()` method or `size` or `length` attribute of the object in question. 
+| `size(object)`   | int  | Returns the object\'s size. The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types. Otherwise the size is determined by an underlying `size()` method or `size` or `length` attribute of the object in question. 
 | `sizeof(object)` | int  | same as `size(object)`, see above 
-| `null(object)`    | bool | Evaluates to `true` if object is the `nil` entity; otherwise `false`. This function can be used to check whether a reference (var) or property exists. Operator `empty` can't be used for this task, cause `empty` returns `true` if either not existing or if literatly _empty_ (for example the empty string). 
+| `null(object)`    | bool | Evaluates to `true` if object is the `nil` entity; otherwise `false`. This function can be used to check whether a reference (var) or property exists. Operator `empty` can\'t be used for this task, cause `empty` returns `true` if either not existing or if literatly _empty_ (for example the empty string). 
 | `file(object)`   | File | Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise, the object is streamed into a string and that string is taken as the file's path name. 
 | concat(object..) | string | Creates a string by concatenating all stringized objects. If no object is provided, the empty string is returned. 
 | list(object..) | list | Returns a list where the list's elements consists of the objects provided. If no objects are provided, the empty list is returned. 
@@ -460,34 +384,38 @@ Files and folders is Ant's bread and butter. A couple of properties are defined 
 
 -------------------------------------
 
-  'myfolder'.tofile.isdir 
+  'myfolder'.tofile
 
 -------------------------------------
 
-In this example of an EL expression, string `myfolder` is converted in a File object using property `tofile`. In addition, the so created object is checked whether it is a folder or not.
-
-The following _properties_ are defined on File objects:
+In this example of an EL expression, string `myfolder` is converted in a File object using property `tofile`. Then, having a file object at your finger tips, the following properties are available:
 
 [cols="2*15%,70%"]
 |=================================
 | Property | Type | Description 
-| `parent` | File | parent of file or folder as file object 
-| `toabs`| File | file or folder as absolute file object 
+| `absoluteFile` | File | The absolute form of this abstract pathname
+| `absolutePath` | String | The absolute form of this abstract pathname
+| `canonicalFile` | File | The canonical form of this abstract pathname
+| `canonicalPath` | String | The canonical form of this abstract pathname
+| `delete` | bool | deletes the file or folder (true); false otherwise 
 | `exists` | bool | check whether file or folder exists 
-| `isfile` | bool | check whether a file 
 | `isdir`  | bool | check whether a folder (directory) 
+| `isfile` | bool | check whether a file 
 | `ishidden` | bool | check whether a hidden file or folder 
 | `isread` | bool | check whether a file or folder is readable 
 | `iswrite` | bool | check whether a file or folder is writable 
-| `size`   | int  | number of bytes in a (existing) file; 0 otherwise
 | `length` | int  | same as `size` 
+| `list`   | File | array of files in folder  
+| `mkdir`  | bool | creates the folder (and intermediate) folders (true); false otherwise 
 | `mtime`  | Date | last modification date  
-| `list`   | File | array of files in folder ; otherwise `null` 
+| `name`   | String | The basename 
+| `parent` | File | parent of file or folder as file object 
+| `path`   | String |abstract pathname into a pathname string.
+| `size`   | int  | number of bytes in a (existing) file; 0 otherwise
+| `toabs`| File | file or folder as absolute file object 
 | `tostr` | String | file name as string object 
 | `touri`    | URI  | file as URI object 
 | `tourl`    | URL  | file as URL object 
-| `delete` | bool | deletes the file or folder (true); false otherwise 
-| `mkdir`  | bool | creates the folder (and intermediate) folders (true); false otherwise 
 |=================================
 
 [[el_matcher_properties]]

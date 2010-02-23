@@ -1,77 +1,74 @@
 
 
-== Data Types ==
+== An Expression Language ==
 
-[[strings]]
-=== Strings ===
-Like Ant, Flaka supports currently strings and, when applicable, pointer to resources (by referencing a symbol). Ant provides no functionality manipulate a string value and neither does Flaka. However, Flaka's expression language contains string functions to create new strings.
+The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP itself. To the contrary, the language can be made available in a variety of contexts.
 
-[[symbols]]
-=== Symbols ===
-
-Symbols are names carrying associated data. The name of a symbol is a sequence of characters. The allowed characters are basically unlimited. It is recommended to stick with well known characters [a-zA-Z0-9._-]. Symbols can be used as variables, target, task, type or macro names. 
-
- * `<property name=sym value=expr />` Use sym as variable: assign the value of _expr_ to _sym_. *A symbol associated with a string value is called a property*. Notice that Ant and Flaka provide further ways of creating properties. 
- * `<macrodef name=sym>`  Use _sym_ as macro name
- * `<target namesym>` Use _sym_ as target name
- * `<taskdef name=sym>` Use _sym_ as task name
- * `<typedef name=sym>` Use _sym_ as type name
- * `id=sym` Use sym as reference: assign the evaluation of task (or macro) to _id_ 
-
-[[properties]]
-=== Properties === 
-
-To reference a property, enclose it's symbol name with curly braces and prefix with the dollar character like:
+One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as _string_ object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for _Expression Language_) this becomes an easy task:
 
 -------------------------------------
+<c:echo>
+  ;; basedir is a standard Ant property 
+  basedir is ${basedir}
 
-<property name="x" value="99" />
-<echo>
-  value of property x is ${x}    -- .. is 99
-</echo>
+  ;; report last modification time (as Date object)
+  was last modified at #{ '${basedir}'.tofile.mtime }
 
+  ;; dump the full name of this build file 
+  ;; where 'ant.file' is a standard property
+  this is #{property['ant.file'] } reporting!
+</c:echo>
 -------------------------------------
 
-
-When referencing a non existing property, i.e. a symbol name not associated with a string value, the reference expression evaluates to itself, i.e. `${not-a-property}` evaluates to _${not-a-property}_. Standard Ant does not allow to change the association between a symbol name and it's string value once established:
-
+Being executed, this snippet produces something like 
 
 -------------------------------------
-
-<property name="x" value="99" />
-<property name="x" value="The quick brown fox .."/>
-<echo>
-  value of property x is ${x}    -- .. is 99
-</echo>
-
+[c:echo] basedir is /projects/flaka/test
+[c:echo] 
+[c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
+[c:echo] 
+[c:echo] this is /projects/flaka/test/tryme.xml reporting!
 -------------------------------------
 
+Notice that Flaka\'s <<task_echo>> task has been used for this illustration because <<el>> is by default only available on Flaka tasks. If http://ant.apache.org/manual/CoreTasks/echo.html[Ant\'s standard echo] task is used, all `#{..}` constructs are left as they are. It is however possible and recommended to turn <<el>> on for _all_ tasks footnote::[[See <<el_enable_el,how to enable EL>> for details]].
 
-It can be done using Flaka's task <<task_let>> or <<task_unset>> as the following snippet demonstrates.
-
+The next code example shows another _EL in action_ sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the _root_ folder:
 
 -------------------------------------
-
-<property name="x" value="99" />
 <c:let>
-   x ::= "The quick brown fox .."
+  ; The root folder as file object. Notice that the right side of each
+  ; assignment is an EL expression.
+  root = '/'.tofile
+  ; This creates an empty list
+  list = list()
 </c:let>
-<echo>
-  value of property x is ${x}    -- .. is The quick brown ..
-</echo>
 
+<c:for var="file" in=" root.list ">
+  <c:when test=" file.isdir and not file.isread ">
+    <c:let>
+      ;; The condition above is a EL expression and so is this
+      ;; `append` function.
+      list = append(file,list)
+    </c:let>
+  </c:when>
+</c:for>
+
+<c:echo>
+  ;; how many unreadable directories ??
+  There are #{size(list)} unreadable directories in #{root}.
+  And here they are #{list}.
+</c:echo>
 -------------------------------------
 
-
-Properties have their own symbol table (as targets, tasks, macros and types have). This means for example that it is possible to have a property and a task _sharing_ the same symbol name:
-
+Executed on MacOS 10.5.6 (aka "Leopard") gives:
 
 -------------------------------------
-
-  <property name="foobar" ../>
-  <macrodef name="foobar" ../>  -- property foobar not harmed!
-
+[c:echo] There are 2 unreadable directories in /.
+[c:echo] And here they are [/.Trashes, /.Spotlight-V100].
 -------------------------------------
+
+Have a look at <<el>> for further EL examples and details.
+
 
 [[conditionals]]
 == Conditionals ==

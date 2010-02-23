@@ -1,0 +1,48 @@
+
+[[task_logo,logo]]
+== logo ==
+
+A small handy task to create a kind of _framed_ text like
+
+-------------------------------------
+:::::::::::::::::::::::::::::::::::::
+::             Text                ::
+::          more text              ::
+:::::::::::::::::::::::::::::::::::::
+-------------------------------------
+
+This kind of _logo_ is easily created and dumped on standard output stream like
+
+-------------------------------------
+<c:logo chr="::" width="20">
+  ;; here is my text
+  Text
+  more text
+</c:logo>
+-------------------------------------
+
+where `chr` defines the _wrap character_ - here `::` and `width` defines the overall length of one line - here 20 characters.
+
+=== Attributes === 
+
+[cols="15%,15%,15%,55%"]
+|==========================
+| Attributes | Type    | Default  | Description 
+| chr        | string  | `:`      | The wrapping character ..
+| width      | integer | `80`     | Width of one line in terms of regular characters.
+|==========================
+
+=== Elements ===
+
+This task accepts an implicit text field. This text field may contain comments (`;`) and leading whitespace is ignored. Thus the same rules as for task <<task_echo>> are applying here.
+
+=== Behaviour ===
+
+Contents of text element is read line by line. Comment lines are ignored. Leading whitespace is ignored. Leading whitespace is determined by the first non-whitespace character. See also task <<task_echo>> for details.
+
+The contents of each line is centered. Leading and trailing space is filled up with _blanks__ in order to reach the given line width. If a line is longer than `width`, then all contents after `width` characters is silently skipped.
+
+=== Further Links ===
+ * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Logo.html[Javadoc]
+ * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Logo.java[Source]
+
