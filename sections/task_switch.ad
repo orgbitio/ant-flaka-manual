@@ -2,59 +2,126 @@
 [[task_switch,switch]]
 === switch ===
 
-Task `switch` has been designed to provide for simple pattern matching. The idea is to match a series of patterns - either http://en.wikipedia.org/wiki/Regular_expression[regular] or a http://en.wikipedia.org/wiki/Glob_(programming)[glob] expressions -  against a _string value_ and carry out a sequence of actions in case of a hit. Here is an illustrative example:
+Task `switch` provides text based pattern matching. An illustrative example:
 
 --------------------------------------
- <c:switch value=" a${string}#{value} ">
-  <matches glob="*.jar">          -- #1
-   -- string ending in .jar
-  </matches>
-  <matches re="1|2|3">            -- #2
-    -- one or two or three
-  </matches>
-  <matches re="-\d+">             -- #3
-    -- negative integral number
-  </matches>
+ <c:switch value="${value}">
+  <re expr="(+|-)?(0|[1-9]\d*)" var="g">        (1)    
+    <c:echo>
+      integer with absolute value: #{g[2]}
+    </c:echo>
+  </re>
+  <glob expr"*.jar">                            (2)
+   <echo>It's a -- jar!</echo>
+  </glob>
+  <cmp eq="foo" lt="foo">                       (3)
+    <!-- less or equals "foo" -->
+  </cmp>
   <otherwise>
-   -- no match so far ..
+    <! none of the above clauses matched -->
   </otherwise>
- <c:case>
+ </c:switch>
 --------------------------------------
 
-Notice the usage of a glob expression in the first and the usage of regular expressions in the second and third `matches` element. Utilization of glob and regular expressions make `switch` a very flexible and powerful conditional statement.
+This example demonstrates, that a given value can be compared using a regular expression (1), using a glob expression (2) or compared for equality, less or greater sort order (3). Why providing alternatives for regular expressions? Cause the biggest drawback of regular expressions is their complexity. Compare this two variations to check whether a string value ends in `.jar`:
 
+--------------------------------------
+<re="(.*)\.jar" var="g">
+  <c:echo>
+    basename is #{g[1]}.
+  </c:echo>
+</re>
+
+<glob="*.jar" var="g">
+  <c:echo>
+    filename is #{g[0]}.
+  </c:echo>
+</glob>
+--------------------------------------
+
+The latter, the glob expression, allows for basic pattern matching only. In a glob expression, meta-character `*` just stands for an arbitrary long sequence of arbitrary characters footnote::[other meta-characters are `?` and `[]` - for details continue to read section Behaviour].
+
+Glob expression do have on big disadvange besides their lack of power. That is that capturing groups are not supported. This is als o illustrated in the example given above. By using a caputuring group `(.*)`, we are able to break the input apart in well defined pieces - the _basename_ and the _extension_ (.jar). Match details are saved in a (EL) object and can the be used in EL ready tasks like shown in the echo task above.
+
+Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string..
+
+// and `?` for a single character. Glob expressions do also support character sets, i.e. `[ab]` expresses either character `a` or `b` while `[!ab]` means neither of them. Glob expressions can easily be translated into regular expressions and it's common to make them use the same underlying regular expression engine.
+//Using a regular expression is the most powerfull alternative. The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of informatio. Gory details are described in http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
 ==== Attributes ====
 // cols=5
-[cols="15%,2*11%,63%"]
+[cols="20%,2*11%,58%"]
 |===========================
 | Attribute | Type   | Default | Description 
 | `value`   | string |    ""   | The string value that needs to be matched against.
-| `var`     | string |       - | Save details of this match as `matching object` using the variable name given. 
-| `ignorecase` | bool | false  | Enables case-insensitive matching. 
-| `comments`   | bool | false  | Permits whitespace and comments in pattern. 
-| `dotall`     | bool | false  | In dotall mode, the literal `.` matches any character, including a line terminator. 
-| `unixlines`  | bool | false  | In this mode, only character `LF` is accepted as line terminator character when using `.`, `^`, and `$`. 
-| `multiline`  | bool | false | In multiline mode, the literals `^` and `$` match just after or just before, respectively, a line terminator or the end of the input sequence.
-| `debug`      | bool  | false | Turn on extra debug information 
-| _matches_.`re`  | string |    | Element `matches`: Specify a matching pattern as regular expression. 
-| _matches_.`pat` | string |   | Element `matches`: Specify a matching pattern as glob expression 
+| `var`     | string |       - | Save details of this match as `matching object`. 
+| `not`     | bool | false | Whether to invert the test result or not.
+| `find`    | bool | false | Whether to match the input value partially (true) or as a whole (false) 
+| `debug`      | bool  | false | Whether to turn on extra debug information 
+| `literally` | bool | false | Whether to take an invalid expression literally or not.
+| `ignorecase` | bool | false  | Whether to enable case-insensitive matching. 
+| `comments`   | bool | false  | Whether to allow whitespace and comments in an _regex_. 
+| `dotall`     | bool | false  | Whether literal `.` matches _any_ character.
+| `unixlines`  | bool | false  | Whether _only_ `nl` is accepted as line terminator 
+| `multiline`  | bool | false | Whether `^` and `$` shall _only_ match begin and end of input
+| _re_.`expr`  | string |    | Element `matches`: Specify a matching pattern as regular expression. 
+| _glob_.`expr` | string |   | Element `matches`: Specify a matching pattern as glob expression 
+| _cmp_.`lt` | string | -  | `<cmp/>`: Specify a matching pattern as glob expression 
+| _cmp_.`eq` | string | -  | `<cmp/>`: Specify a matching pattern as glob expression 
+| _cmp_.`gt` | string | -  | `<cmp/>`: Specify a matching pattern as glob expression 
 |===========================
 
-Note that switch\'s *value( given is _normalized_. Leading and trailing whitespace is removed. This attribute is <<el>> enabled but notice that you have to use EL references like `a#{ expr }b`.
+Attribute *value* defines the test (string) value. EL <<el>> references can be used. Leading and trailing whitespace is always removed. A test of a clause will always evaluate to `false` if this attribute is not set. It is legal however to have a switch without this attribute.
 
-A matcher object is saved in variable *var*. This matcher object allows to access matching details like the number of capturing groups and the like. See <<el_matcher_properties,matcher properties>> for a list of available properties; see also below for examples. The variable name must be a string which may contain EL references.
+The default settings of attributes *var*, .., *debug* have been shown in table above. A default setting can be changed by using the attribute on switch element level. Those default settings are inherited by each clause-element - `<re/>`, `<glob/>` or `<cmp/>`. Each attribute *var*,.., *debug* can be applied on clause-elements where they override their inherited setting:
 
-By default, case-insensitive matching assumes that only characters in the US-ASCII charset are being matched. Unicode-aware case-insensitive matching can be enabled by specifying the UNICODE_CASE flag in conjunction with this flag. Case-insensitive matching can also be enabled via the embedded flag expression `(?i)`.
+--------------------------------------
+ <c:switch .. not="true">
+  ..
+  <cmp eq="foo" lt="foo" not="false">    
+    <!-- still less then "foo" or equal "foo" -->
+  </cmp>
+ </c:switch>
+--------------------------------------
 
-In this mode, whitespace is ignored, and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)`.
+Use attribute *var* to specify the name of an EL variable to hold match details like the number of capturing groups, the value of the first capturing group and the like. See <<el_matcher_properties,matcher properties>> for a list of available properties; see also below for examples. The attribute value may contain EL references.
 
-By default does `.` (the dot) match any character but line terminators. This can be changed by setting the *dotall* attribute to `true`. Dotall mode can also be enabled via the embedded flag expression `(?s)`, where `s` is a mnemonic for _single-line_ mode, which is what this mode is called in http://en.wikipedia.org/wiki/Perl[Perl]. 
+Attribute *not* can be used to invert the result of a test match.
+--------------------------------------
+ <c:switch ..>
+  <cmp eq="foo" lt="foo" not="true">    
+    <!-- greater then "foo"  -->
+  </cmp>
+ </c:switch>
+--------------------------------------
 
-Unix lines mode can also be enabled via the embedded flag expression (?d). 
+When applying a regular or glob expression on a test value, then by default, the expression must describe the whole test value for a sucessful match. Attribute *find* can be used to change this behaviour. Set to `true`, then a sucessful match is given if the expression describes a part of the input string:
 
-By default do `^` and `$` only match at the beginning and the end of the entire input sequence. By setting *multiline* to `true` do they match just after and just before a line termination character. Multiline mode can also be enabled via the embedded flag expression (?m). 
+--------------------------------------
+ <c:switch value="foobar">
+  <glob find="true" expr="foo">    
+    <!-- matches foobar -->
+  </glob>
+ </c:switch>
+--------------------------------------
 
-Note that each of the above `switch` attributes can also be applied to a `matches` element. Applied on `switch` has the effect of providing the default value for subsequenct `matches` elements.
+Attribute *find* does not apply on clause `cmp`.
+
+Use attribute *debug* to enable extra output of debug information on your attached standard error stream, bypassing Ant's logging mechanics.
+
+The semantics of attribute *literally* varies depending on it's context. A build failure is thrown if an illegal regular expression pattern - like `*` - is seen. If literally is enabled, the regular expression string is taken literally instead, no exception is thrown while a warning message is reported. If attribute *literally* is enabled in context of a glob expression, then any meta characters are taken as regular characters. Attribute *literally* has no meaning in the context of clause `cmp`. 
+
+The remaining part of this section describes attributes *ignorecase*, .., *multiline*. This attributes can be used to change the characteristics of the underlying regular expression engine. Modern regular expression engines also allow to their characteristics on the fly by using embedded flags. Embedded flag alternatives are also listed.
+
+Attribute *ignorecase* can be used to enable case-insensitive matching. This attribute also applies to clause `cmp`. Case-insensitive matching is enabled on the US-ASCII charset only. Unicode-aware matching can not be enabled. The embedded flag expression equivalent flag of this attribute is `(?i)`.
+
+Use attribute *comment* to enrich regular expressions by comments. When set, whitespace is ignored and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)`.
+
+Attribute *dotall* can be used to change the characteristics of metacharacter `.`, the dot. By default all characters but line terminators are matched by this meta-character. When set, all characters are matched. The embedded equivalent is `(?s)` . 
+
+Use attribute *unixlines* to let the regular expression engine accept `\n` as line termination character. The embedded flag expression is `(?d)`. 
+
+Attribute *multiline* changes the characteristics of meta-character `^` and `$`. By default they match at the beginning and the end of the entire input sequence. When set, they match just after and just before a line termination character. Multiline mode can also be enabled via the embedded flag expression (?m). 
+
 
 ==== Elements ====
 
@@ -72,6 +139,36 @@ Element *matches* supports all the attributes of the enclosing `switch` with the
 The *default* element is carried out if no pattern matched. This element is optional and can only be specified once. A build exception will be raised if used more than once. It does not accept any attributes.  It may contain any number of tasks or macros as sub elements. 
 
 ==== Behaviour ====
+
+Attribute `value` is applied against a series of _case_-clauses. A _case_-clause can be a 
+* glob expression `<glob />` (simplified regular expression), 
+* regular expression `<re />` or 
+* simple textual comparison <cmp />. 
+Case-clauses are applied in syntactial order from to to bottowm until a match is available. If a clause matches, then tasks associated with that clause are carried out and no further clauses are applied.
+
+If no case-clause matches, then all optional available <otherwise />-clauses are carried out.
+
+A case- and otherwise-clause are Ant-task containers and may contain an arbitrary number of tasks. There can be more than one otherwise-clause in a <switch /> and they do not need to occur after all cases-clauses. Therefore the follwing <switch /> is perfectly legal.
+
+--------------------------------------
+ <c:switch value=" bar ">
+  <otherwise>
+    <echo>Hello, </echo>
+  </otherwise>
+  <glob expr"baz" />         
+  <otherwise>
+    <echo>World</echo>
+  </otherwise>
+ <c:case>
+--------------------------------------
+
+Being executed, it would print 
+--------------------------------------
+[echo] Hello, 
+[echo] World
+--------------------------------------
+
+
 
 Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,property >> or <<glossary_expression_reference,EL>> references. 
 

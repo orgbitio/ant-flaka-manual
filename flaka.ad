@@ -1,9 +1,14 @@
 = The flaka manual =
 author wh@haefelinger.it
-1.0, February 2010
+1.1, October 2010
+
+// ChangeLog
+// 1.1
+// Rewriting <switch />
+//
 
 //
-// The introduction to Flaka
+// Introduction to Flaka
 //
 
 include::sections/introduction.ad[]
@@ -26,34 +31,34 @@ include::sections/glossary.ad[]
 [[part2]]
 == Part II, Elementary ==
 
-include::sections/el.ad[]
-include::sections/task_break.ad[]
-include::sections/task_choose.ad[]
-include::sections/task_continue.ad[]
-include::sections/task_echo.ad[]
-include::sections/task_fail.ad[]
-include::sections/task_for.ad[]
-include::sections/task_let.ad[]
-include::sections/task_list.ad[]
-include::sections/task_properties.ad[]
-include::sections/task_rescue.ad[]
+//include::sections/el.ad[]
+//include::sections/task_break.ad[]
+//include::sections/task_choose.ad[]
+//include::sections/task_continue.ad[]
+//include::sections/task_echo.ad[]
+//include::sections/task_fail.ad[]
+//include::sections/task_for.ad[]
+//include::sections/task_let.ad[]
+//include::sections/task_list.ad[]
+//include::sections/task_properties.ad[]
+//include::sections/task_rescue.ad[]
 include::sections/task_switch.ad[]
-include::sections/task_throw.ad[]
-include::sections/task_trycatch.ad[]
-include::sections/task_unless.ad[]
-include::sections/task_unset.ad[]
-include::sections/task_when.ad[]
-include::sections/task_while.ad[]
+//include::sections/task_throw.ad[]
+//include::sections/task_trycatch.ad[]
+//include::sections/task_unless.ad[]
+//include::sections/task_unset.ad[]
+//include::sections/task_when.ad[]
+//include::sections/task_while.ad[]
 
 [[part3]]
 == Part III, Special Purpose ==
 //
 // A chapter about doing things with Flaka
 //
-include::sections/todo.ad[]
-include::sections/task_install-property-handler.ad[]
-include::sections/task_logo.ad[]
-include::sections/task_scandep.ad[]
+//include::sections/todo.ad[]
+//include::sections/task_install-property-handler.ad[]
+//include::sections/task_logo.ad[]
+//include::sections/task_scandep.ad[]
 
 //
 // include::sections/howto.ad[]
