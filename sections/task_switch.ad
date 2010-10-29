@@ -39,14 +39,17 @@ This example demonstrates, that a given value can be compared using a regular ex
 </glob>
 --------------------------------------
 
-The latter, the glob expression, allows for basic pattern matching only. In a glob expression, meta-character `*` just stands for an arbitrary long sequence of arbitrary characters footnote::[other meta-characters are `?` and `[]` - for details continue to read section Behaviour].
+The latter one, the glob expression, is much easier to grasp. There, a `*` just stands for a sequence of arbitrary characters. In most pattern recognitzion tasks, this is all what is needed to get going. If more power is required, then regular expressions are the tool to be applied.
 
-Glob expression do have on big disadvange besides their lack of power. That is that capturing groups are not supported. This is als o illustrated in the example given above. By using a caputuring group `(.*)`, we are able to break the input apart in well defined pieces - the _basename_ and the _extension_ (.jar). Match details are saved in a (EL) object and can the be used in EL ready tasks like shown in the echo task above.
+// allows for basic pattern matching only. In a glob expression, meta-character `*` just stands for an arbitrary long sequence of arbitrary characters footnote::[other meta-characters are `?` and `[]` - for details continue to read section Behaviour].
 
-Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string..
+// Glob expression do have on big disadvange besides their lack of power. That is that capturing groups are not supported. This is als o illustrated in the example given above. By using a caputuring group `(.*)`, we are able to break the input apart in well defined pieces - the _basename_ and the _extension_ (.jar). Match details are saved in a (EL) object and can the be used in EL ready tasks like shown in the echo task above.
+
+Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string.
 
 // and `?` for a single character. Glob expressions do also support character sets, i.e. `[ab]` expresses either character `a` or `b` while `[!ab]` means neither of them. Glob expressions can easily be translated into regular expressions and it's common to make them use the same underlying regular expression engine.
 //Using a regular expression is the most powerfull alternative. The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of informatio. Gory details are described in http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+
 ==== Attributes ====
 // cols=5
 [cols="20%,2*11%,58%"]
@@ -128,15 +131,30 @@ Attribute *multiline* changes the characteristics of meta-character `^` and `$`.
 // cols=3
 [cols="15%,1*35%,50%"]
 |===========================
-| Element   | Cardinality | Description 
-| `matches` | 0..infinity | An element to specify pattern. 
-| `default` | 0..1        | The default statement will be executed if no `matches` element matched the input value.
-| `otherwise` | 0..1     | This element is a synonym for element `default` 
+| Element     | Cardinality | Description 
+| `re`        | arbitrary  | Regular expression based test clause.
+| `glob`      | arbitrary  | Glob expression based test clause.
+| `cmp`       | arbitrary  | Clause for basic equality and ordering.
+| `otherwise` | arbitrary  | Task container, executed if all tests failed.
+| `matches`   | arbitrary  | Legacy test clause (deprecated).
 |===========================
 
-Element *matches* supports all the attributes of the enclosing `switch` with the exception of `value`. It may contain any number of tasks or macros as sub elements. They are carried out if the pattern matches the given switch value.
+Element *re* is a task container. Embedded tasks are conditionally carried out. The condition is satisfied if the regular expression expressed in attribute *expr* matches the given input value _switch_.`value`. If attribute *expr* is not used, then the condition is satisfied. Use attribute *not* to negate the condition. Be aware of the following pathological case:
+--------------------------------------
+ <c:switch value=..>
+  <re>
+    <!-- always carried out -->
+  </re>
+ <c:case>
+--------------------------------------
 
-The *default* element is carried out if no pattern matched. This element is optional and can only be specified once. A build exception will be raised if used more than once. It does not accept any attributes.  It may contain any number of tasks or macros as sub elements. 
+Element *glob* is a task container similar to element *re*. The only difference is, that attribute *expr* is interpreted as glob expression instead of a regular expression as in *re*.
+
+Element *cmp* is a task container similar to element *re* and *glob*. This element supports attributes *lt*, *eq* and *gt* in addition to inherited attributes. Embedded tasks are carried out if each comparison in each used attribute evaluates to true. If none of the attributes is used, then the condition is also satisfied.
+
+Element *otherwise* does not express a test clause and does not support any attributes. This element is a task container. Embedded tasks are carried out if attribute _switch_.`value` has been set and if none of the test-clauses matched. This element can be present more than once. Elements are carried out in syntatical order.
+
+Element *default* is an alias name for element `otherwise`.
 
 ==== Behaviour ====
 

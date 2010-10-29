@@ -88,7 +88,7 @@
 
     <!-- Parameters to pass to python parser -->
     <xsl:call-template name="py.params.set"/>
-    <xsl:text>\documentclass[11pt]{article}&#10;</xsl:text>
+    <xsl:text>\documentclass[10pt]{article}&#10;</xsl:text>
     
     <!-- Load babel before the style (bug #babel/3875) -->
     <xsl:call-template name="babel.setup"/>

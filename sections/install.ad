@@ -7,7 +7,7 @@ Download footnote::[see either http://download.haefelinger.it/flaka or use http:
 
 The following *requirements* must be satisfied before you start:
 
-* Flaka requires http://java.sun.com/javase/downloads/index.jsp[Java 1.5] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look at http://ant.apache.org/manual/index.html[Ant's Manual] for other environment variables to be used.
+* Flaka requires http://java.sun.com/javase/downloads/index.jsp[Java 1.5] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look into http://ant.apache.org/manual/index.html[the manual provided by Ant] for other environment variables to utilize.
 * http://ant.apache.org[Ant] version 1.7.0 or newer. 
 
 
@@ -21,26 +21,23 @@ The most primitive technique is to save `ant-flaka-x.y.z.jar` into Ant's library
 
 -------------------------------------
 
-Saving something in Ant's library folder may not work if you lack required permissions. There is also the disadvantage that when switching to another installation of Ant, you need to reinstall Flaka again. Therefore consider to use Ant's standard option `-lib`: 
+Saving something in Ant's library folder may not work if you lack required permissions. There is also the disadvantage that when switching to another installation of Ant, you need to reinstall Flaka again. Therefore consider to use option `-lib`:
 
 -------------------------------------
  $ ant -lib ant-flaka-x.y.z.jar
 -------------------------------------
 
-
-A pretty nice feature of option `-lib` is that if the argument is a folder, that folder is scanned for `jar` files. Therefore you may want to do something like this:
+A pretty nice feature of option `-lib` is, that if the argument is a folder, that folder is scanned for `jar` files. Therefore you may want to do something like this:
 
 -------------------------------------
-
  $ mkdir $HOME/lib/ant
  $ cp ant-flaka-x.y.z.jar $HOME/lib/ant
  $ ant -lib $HOME/lib/ant
-
 -------------------------------------
 
-This approach has the nice advantage that you simply can drop other jar files into folder `$HOME/lib/ant` to make them reachable  without touching the original Ant installation. As already mentioned, this will get handy when you have either multiple Ant installations. Btw, notice that option `-lib` can be applied more than once if the jars reside in various folders. Finally notice that folders are not recursively searched.
+This approach has the nice advantage that you simply can drop other jar files into folder `$HOME/lib/ant` to make them reachable  without touching the original Ant installation. As already mentioned, this will get handy when you have multiple Ant installations. Notice that option `-lib` can be applied more than once if your jars reside in various folders. Finally notice, that folders are _not_ recursively scanned.
 
-When working from the command line it is rather annoying to provide option `-lib` for each and every call. Fortunatley, Ant recognizes environment variable `ANT_ARGS` which can be used to let `-lib` disappear:
+When working from the command line, it is rather annoying to provide option `-lib` for each and every call. Fortunatley, Ant recognizes environment variable `ANT_ARGS` which can be used to let `-lib` disappear:
 
 -------------------------------------
  $ ANT_ARGS="-lib $HOME/lib/ant"
@@ -52,10 +49,13 @@ The drawback with this technique is that you need to make sure that this variabl
 -------------------------------------
  $ cat $HOME/.antrc
  ANT_ARGS="-lib $HOME/lib/ant"
- $ ls $HOME/lib/ant
- ant-flaka-x.y.z.jar
 -------------------------------------
 
+Finally it should be mentioned, that Ant scannes for additional jars in folder `$HOME/.ant/lib`. Thus the following two invocations of Ant are identical
+-------------------------------------
+ $ ant
+ $ ant -lib $HOME/.ant/lib
+-------------------------------------
 
 === Fire! ===
 

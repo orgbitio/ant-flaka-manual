@@ -32,12 +32,10 @@ This pillars are Flakas approach to simplify the process of writing a build scri
  * Have a closer look in the reference part of this manual for all the gory details.
  * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
 
-=== About This Manual ===
+=== Which Flaka version? ===
+This manual corresponds with *Flaka 1.02*.
 
-==== Which Flaka version? ====
-This manual corresponds with *Flaka 1.01*.
-
-==== Overall Structure ====
+=== Overall Structure ===
 There are four parts:
 
 . An overview over Flaka\'s concepts are presented in <<part1,Part I>>.
@@ -45,7 +43,7 @@ There are four parts:
 . In <<part3,Part III>>, special purpose tasks are presented. Most of this tasks are implemented with the help of tasks and concept shown in Part I.
 . The last part, <<part4,Part IV>>, is about the installation of Flaka.
 
-==== Conventions ====
+=== Conventions ===
 
 Ant build file examples show a mix of tasks provided by Flaka and by Ant. Ant task do not require a namespace while those provided by Flaka do. Flaka\'s namespace is 
 

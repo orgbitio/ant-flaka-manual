@@ -12,28 +12,27 @@ author wh@haefelinger.it
 //
 
 include::sections/introduction.ad[]
-
-[[part1]]
-== Part I, Overview ==
-
-//
-// Overview 
-// 
-include::sections/overview.ad[]
-
 //
 // The glossary
 //
-
-
 include::sections/glossary.ad[]
 
-[[part2]]
-== Part II, Elementary ==
+[[part1]]
+== Part I, Installation ==
+//
+// How to install Flaka
+//
+include::sections/install.ad[]
 
-//include::sections/el.ad[]
-//include::sections/task_break.ad[]
-//include::sections/task_choose.ad[]
+[[part2]]
+== Part II, EL ==
+include::sections/el.ad[]
+
+[[part3]]
+== Part III, Tasks ==
+include::sections/overview.ad[]
+include::sections/task_break.ad[]
+include::sections/task_choose.ad[]
 //include::sections/task_continue.ad[]
 //include::sections/task_echo.ad[]
 //include::sections/task_fail.ad[]
@@ -48,10 +47,10 @@ include::sections/task_switch.ad[]
 //include::sections/task_unless.ad[]
 //include::sections/task_unset.ad[]
 //include::sections/task_when.ad[]
-//include::sections/task_while.ad[]
+include::sections/task_while.ad[]
 
-[[part3]]
-== Part III, Special Purpose ==
+[[part4]]
+== Part IV, Special Purpose ==
 //
 // A chapter about doing things with Flaka
 //
@@ -63,15 +62,6 @@ include::sections/task_switch.ad[]
 //
 // include::sections/howto.ad[]
 //
-[[part4]]
-== Part IV, Installation ==
-
-//
-// How to install Flaka
-//
-
-include::sections/install.ad[]
-
 
 //
 // More stuff 
