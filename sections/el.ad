@@ -1,253 +1,174 @@
 
-The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] is a special purpose programming language offering a simple way of accessing data objects. The language has its roots in Java web applications for embedding expressions into web pages. While the expression language is part of the JSP specification, it does in no way depend on the JSP itself. To the contrary, the language can be made available in a variety of contexts.
-
-One such context is Ant scripting. Ant makes it difficult to access data objects. For example, there is no way of querying the underlying data object for the base folder (the folder containing the build script). All that Ant offers is the path name of this folder as _string_ object. This makes it for example rather cumbersome to report the last modification time of this folder. With the help of EL (short for _Expression Language_) this becomes an easy task:
+<<part1>> <<el>> The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] (EL) footnote::[The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here.] offers a simple way of accessing data objects. While the expression language is part of the JSP specification, it does in no way depend on the JSP itself. To the contrary, the language can be made available in a variety of contexts. One such context is Ant:
 
 -------------------------------------
 <c:echo>
-  ;; basedir is a standard Ant property 
-  basedir is ${basedir}
-
-  ;; report last modification time (as Date object)
-  was last modified at #{ '${basedir}'.tofile.mtime }
-
-  ;; dump the full name of this build file 
-  ;; where 'ant.file' is a standard property
-  this is #{property['ant.file'] } reporting!
+  Modified #{ format('%tA, %1$tD', file(project).mtime) }
 </c:echo>
 -------------------------------------
 
-Being executed, this snippet produces something like 
-
+The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` takes an arbitrary name of arguments. The first argument - the format string - contains embedded formatting expressions like `%1$tA`. This particular format expression interprets second argument a date object and evaluates to the particular day in the week. The argument of `file()` -- `project` -- is an implict object, namely an object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time which can be queried using property `mtime`. The whole expression is embedded in a textual context footnote::[The reason Flaka\'s echo task is used here is due to the fact, that EL is by default _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by  `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
+ 
 -------------------------------------
-[c:echo] basedir is /projects/flaka/test
-[c:echo] 
-[c:echo] was last modified at Mon Mar 09 13:52:29 CET 2009
-[c:echo] 
-[c:echo] this is /projects/flaka/test/tryme.xml reporting!
+[c:echo] Modified Friday, 10/29/10
 -------------------------------------
 
-Notice that Flaka\'s <<task_echo>> task has been used for this illustration because <<el>> is by default only available on Flaka tasks. If http://ant.apache.org/manual/CoreTasks/echo.html[Ant\'s standard echo] task is used, all `#{..}` constructs are left as they are. It is however possible and recommended to turn <<el>> on for _all_ tasks footnote::[[See <<el_enable_el,how to enable EL>> for details]].
-
-The next code example shows another _EL in action_ sample. The programming problem is to list all unreadable (sub)folders in a certain folder - here being the _root_ folder:
+Here are some further examples, demonstrating the power EL offers:
 
 -------------------------------------
-<c:let>
-  ; The root folder as file object. Notice that the right side of each
-  ; assignment is an EL expression.
-  root = '/'.tofile
-  ; This creates an empty list
-  list = list()
-</c:let>
-
-<c:for var="file" in=" root.list ">
-  <c:when test=" file.isdir and not file.isread ">
-    <c:let>
-      ;; The condition above is a EL expression and so is this
-      ;; `append` function.
-      list = append(file,list)
-    </c:let>
-  </c:when>
-</c:for>
-
-<c:echo>
-  ;; how many unreadable directories ??
-  There are #{size(list)} unreadable directories in #{root}.
-  And here they are #{list}.
-</c:echo>
+7 * (5.0+x) >= 0             ; (1)
+a and not (b || false)       ; (2)
+empty L ? null : L[0]        ; (3)
+list('a','b')                ; (4)
+split('a,b',',')             ; (5)
+project.name                 ; (6)
+size(file('.').list)         ; (7)
 -------------------------------------
 
-Executed on MacOS 10.5.6 (aka "Leopard") gives:
 
--------------------------------------
-[c:echo] There are 2 unreadable directories in /.
-[c:echo] And here they are [/.Trashes, /.Spotlight-V100].
--------------------------------------
+The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as untyped variable. A boolean expression is shown in the second example. Notice the usage of operator `and`, operator `not` and of operator `||`. The expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and the conditional operator `c ? t : e`. The expression could be read like: check whether a (list) object is empty. If empty return object `null`m, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
 
-The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here. In short however, _EL_ lets you formulate http://en.wikipedia.org/wiki/Expression_(programming)[programming expressions] like 
+[[el_enabling_el,Deploying EL]]
+=== Deploying EL ===
 
--------------------------------------
+Assume that you already know how to formulate a proper EL expression, i.e. you are aware of the EL syntax and you are aware of implicit objects and EL functions. Still, how can you use them in your Ant build file? Thus the probably most important question to be answered is 
 
-  7 * (5.0+x) >= 0        ;; 1
-  a and not (b || false)  ;; 2
-  empty x ? 'foo' : x[0]  ;; 3
+* _Where can I use EL expressions?_
 
--------------------------------------
+This chapter answers this question and other, more advanced questions. 
 
-The expression in line (1) is a algebraic while (2) contains a boolean expression. The result of (1) depends on the resolution of variable `x` and similar does (2) on `a` and `b`. Line (3) shows the usage of two built-in <<el_operators,operators (see below for details)>>.
-
-Such expressions can hardly expressed in pure Ant. However, a even more useful concept of EL is 
-
-[quote, JSR 245 specification, Page 22]
-____________________________________________________________________
-[..] the evaluation of a model object name into an object, and the resolution of properties applied too objects in an expression (operators . and[ ]). 
-____________________________________________________________________
-
-EL provides a nice way of accessing underlying data objects. Assume that we have a EL variable named `d` and it is (somehow) associated with a Java object. Then we can query object properties in an expression like `d.`_name_` or `d[ _name_ ]`. Two examples:
-
-* Assume that object `d` is a Java File object. Then `d.mtime` would return the last modification time of that file as object of type Date.
-* Assume that object `d` is a Java Map object. Then `d.foobar` would query a value in that map object using `foobar` as key.
-
-The rest of this chapter introduces relevant details of EL in order to use it within Flaka.
-
-
-[[el_enabling_el]]
-=== Enabling EL ===
-By default can EL expressions can only be used in tasks which are EL aware. This are all tasks provided by Flaka but not those provided by Ant or any contribution to Ant. It is possible though to *enable* <<el>> on a global level - i.e. for all tasks. To enable handling of EL references on a global level on all tasks, types or  macros and vector independent, use task <<task_install_property_handler,install-property-handler>>:
+==== Globally Enabling EL References ====
+Ant does by default not understand EL expressions cause EL is not one of Ant\'s standard features. What Ant understands by default are property references `${..}` in textuel contexts like attribute values and textuel tasks, like the well known `echo` task. A standard Ant feature is however, that an extension is able to let Ant understand in addition other reference entities. This is exactly what Flaka\'s `install-property-handler` task does, it makes Ant EL aware. Consider:
 
 ---------------------------
+<echo message="before: #{ 3 * 4 }" />    ; before: #{ 3 * 4}
 <c:install-property-handler />
+<echo message="after:  #{ 3 * 4 }" />    ; after:  12
 ---------------------------
 
-[[el_syntax]]
-=== EL Syntax ===
+In other words: Having used task `install-property-handler` once, one can make use of EL references `#{..}` everywhere where Ant property references `${..}` can be used. For example when setting up a property:
 
-Those _not_ familiar with the specification of http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[EL], http://en.wikipedia.org/wiki/JavaServer_Pages[JSP] or http://en.wikipedia.org/wiki/JavaServer_Faces[JSF] may safely skip this section. All other please read on, cause the implementation of EL has slightly be changed footnote:[EL has its roots in the context of Java Web Development and some specification details do not make sense when EL is used in a different domain content].
+---------------------------
+<property name="twelve" value="#{ 3 * 4 }" />
+---------------------------
 
-For those familiar, the _term EL expression_ is used in a slightly different way in this documentation than in the specification. According to the specification, `#{` _expr_ `}` is an EL expression. 
+As mentioned before, EL references can be used in any context one can apply Ant property references. Ant properties are strings, thus Ant properties are used in string contexts and consequently the same applies for EL references. When a EL reference is seen, then the expression is evaluated according to EL rules into an object of some type. Then, in a second step, that object value is coerced footnote::[implicitly type converted] into a string.
 
-Not so in this documentation. Here only _expr_ - the inner part - is considered a EL _expression_ while `#{` _expr_ `}` is considered a EL _reference_. 
+==== Typed Attributes ====
 
-A reference is used in contexts which should be partially evaluated. Take task <<task_echo>> as example. Clearly, when writing 
+Flaka on the other hand is EL aware by default which means, that EL can be used in all tasks provided by Flaka without having used  task `install-property-handler`. Take task `when` as an example:
+
+-------------------------------------
+<c:when test=" file(path).isdir ">..</c:when>
+-------------------------------------
+
+Here, attribute `test` is used to express a condition. Evaluating this condition will either execute tasks embedded in `when` or not. The standard Ant way would be to evaluate this condition into a string and then parse the string whether it matches `true`, `false`, `yes`, `no` and so on. Not so in this Flaka task. Task `when` expects for attribute `test` a pure EL expression. This expression is then evaluated in the context of a boolean data type. In other words: attribute `test` of task `when` is a _typed_ attribute. Be aware that most - while not all - of Flaka\'s attributes are typed!
+
+Notice however, that all attributes are handled by the currently installed property handler. Thus even for attribute `test` the normal attribute rules apply. Consider this kind of meta-programming
+
+-------------------------------------
+<c:when test=" file('${mypath}').#{ empty fprop ? 'isdir' : fprop} ">..</c:when>
+-------------------------------------
+
+which combines a Ant property and a EL reference to express a EL expression.
+
+==== Nested EL References? ====
+
+Nested references are _not_ supported. The following example, which tries to do some sort of meta-programming on implicit object `project`, is therefore illegal
 
 -------------------------------------
 <c:echo>
- I said 'Hello world'!
+     #{ project.#{ property } }   ; illegal
 </c:echo>
 -------------------------------------
 
-we expect an output exactly as written. It would be nice to indicate however, that we want to have a part of the input evaluated as EL expression. This and only this is what `#{` _expr_ `}` is good for:
+==== Evaluation Order ====
+
+All Ant property references `${..}` are resolved before any EL reference is resolved:
 
 -------------------------------------
-<c:let>
- hello = 'Hello world'
-</c:let>
-
 <c:echo>
- I said '#{ hello }'!
+     #{ project.${ property } }   ; good
+     ${ project.#{ 'basedir' }}   ; no
 </c:echo>
 -------------------------------------
-
-In other contexts, like in `<c:when test="` _condition_ `" />`, partial evaluation of _condition_ does not make sense. Instead the whole _condition_ is expected to be a EL expression. Wrapping _condition_ with `#{` and '}` is just an unnecessary overhead which makes reading difficult. 
-
-As an example, assume that we want to check whether property `foobar` exists. This can be expressed using `has.property.foobar`. Nevertheless, in JSP you would have to write
-
--------------------------------------
-<c:when test=" #{ has.property.foobar } " /> 
--------------------------------------
-
-In Flaka you can ommit `#{` and '}` and go ahead with 
-
--------------------------------------
-<c:when test=" has.property.foobar " /> 
--------------------------------------
-
-However, the EL expression itself is subject to partial evaluation. So you may want to write
-
--------------------------------------
-<c:when test=" has.property.#{ name } " /> 
--------------------------------------
-
-to dynamically check for the existence of property _name_. And of course you may also use a combination of Ant property and EL references like in
-
--------------------------------------
-<c:when test=" has.${category}.#{ name } " /> 
--------------------------------------
-
-
-==== Nested References ====
-
-Nested references are not supported. The following reference is therefore illegal
-
--------------------------------------
- #{ item[ #{ index } ] }
--------------------------------------
-
-==== Handling of `#{..}` and `${..}` ====
-In general, Ant property references `${..}` are resolved before EL references. Thus the folling works fine:
-
--------------------------------------
- has.property[ '${somename}' ]
--------------------------------------
-
-
 
 ==== The Great Escape ====
 
-This section is about how to stop a EL reference from being evaluated and treated as text instead:
+Assume that EL references have been globally enabled and your task is to echo a text sequence like `#{ 3 * 4}`. How can you disable EL references from being evaluated? The following example snippet provides the answer:
+-------------------------------------
+<c:echo>
+     #{ 3 * 4 }        ; 12
+    \#{ 3 * 4 }        ; #{ 3 * 4 }
+  #{'{'}3 * 4 }        ; #{ 3 * 4 }
+</c:echo>
+-------------------------------------
 
-* Use character backslash like in `\#{abc}` ; or use this rather awkward
-* `#{'#{'}abc}` construct.
-
-Both variants have the same result, the string `#{abc}`.
-
-
+[[el_data_types,EL Data Types]]
 === Data Types ===
-_EL_'s data types are integral and floating point numbers, strings, boolean and type `null`. Example data values of each type, except type `null`, are given above (1-3). Type `null` has once instance value also named `null`. While `null` can\'t be used to formulate an expression, it is important to understand that the result of evaluating an expression can be `null`. For example, the evaluation of a variable named `x` is the data object associated with that name. If no data is associcated however (i.e. if `x` is undefined), then `x` evaluates to `null`.
 
-==== Strings ====
-A EL string starts and ends with the same quotation character. Possible quotation characters are single the quote `'` and double quote `"` character. If string uses `'` as quotation character, then there is no need to _escape_ quoation character `"` within that string. Thus the following strings are valid:
+Elements of the following types can be used when writing EL expressions:
 
--------------------------------------
+* _null_ to represent the absence of any data  
+* _integer_ for integer values
+* _float_ for any floating point values
+* _boolean_ to express boolean logic
+* _string_ to represent char sequences
+* _object_ for all other data values
 
- "a'b"   --> a'b
- 'a"b'   --> a"b
+The question is how to get a element of those types and which elements exist? EL defines literals which can be used to define elements of all but type `object`. 
 
--------------------------------------
 
-If however the string's quotation character is to be used within the string, then the quoation character needs to be escaped from its usual meaning. This is done by prepending character backslash:
 
--------------------------------------
+ 
+==== Null Literals ====
 
- "a\"b"  --> a"b
- 'a\'b'  --> a'b
-
--------------------------------------
-
-To escape the backslash character from its usual meaning (escaping that is), escape the backslash character with a backslash:
+The `null` type contains only one data element also called `null`. From a semantic point of view it is used to represent the absence of any data. Within EL, `null` has an interesting characteristic: it can be asked whether it has a certain property and the answer will always be `null` again.
 
 -------------------------------------
-
- "a\\"   --> a\
- 'a\\'   --> a\
-
+null['any property']   ; null
 -------------------------------------
 
-Other characters than the quotation and backslash character can\'t be escaped. Thus 
-
+This rather different from other languages where asking `null` for a property is asking for trouble, i.e. null pointer exception and the like. Notice also the following differences between operator `empty` and function `null()` when working with value `null`:
+-------------------------------------
+empty null    ; true
+empty list()  ; true
+empty ''      ; true
+null(null)    ; true
+null(list())  ; false
+null('')      ; false
 -------------------------------------
 
- "a\bc"  --> a\bc, NOT abc
+==== String Literals ====
 
+A string literal starts and ends with the same quotation character. Quotation characters are either the single quote `'` or the double quote `"` character. If the quotation character is needed within the literal, then the escape character `\\` must be used. The escape character must also be used if the escape character itself is to be expressed in the literal. The escape character can\'t be used to escape other characters than the quotation character and the escape character.
+-------------------------------------
+"abc"        ; abc
+'abc'        ; abc
+'abc"        ; illegal
+"a'c"        ; a'c
+'a"c'        ; a"c
+'a\'c'       ; a'c
+'a\"c'       ; a\"c
+"a\"c"       ; a"c
+'a\bc'       ; a\bc
+'a\\bc'      ; a\bc
+'ab\'        ; illegal
+'ab\\'       ; ab\
 -------------------------------------
 
-However, a escaped backslash evaluates always into a single backslash character:
+==== Object  Literals ====
 
--------------------------------------
+Well, EL has no notation for _object_ literals like literals for type integer and boolean. So, how to get an object in the first place? There are two possibilities:
 
- "a\\b"  --> a\b,  NOT a\\b
+* use an implicit object; and
+* use a function 
 
--------------------------------------
+Once you have an object, you can in addition
+* use an object\'s property 
+to retrieve another object. When does a property exist and how to retrieve it? This and other questions are answered in section <<el_properties>> while section <<el_implicit_objects>> lists available implicit objects and section <<el_functions>> is about functions to be used.
 
-This rules allow for an easy handling of strings. Just take an quoation character. Then, escape any occurences of the quoation and escape character within the string to preserve the original input string.
-
-Here are same further examples strings:
-
--------------------------------------
-
-"abc"        -- abc
-'abc'        -- abc
-"a'c'        -- illegal
-"a'c"        -- a'c
-'a\'c'       -- a'c
-'a\bc'       -- a\bc
-'a\\bc'      -- a\\bc
-'a\"bc'      -- a\"bc
-'a\\"bc'     -- a\\"bc
-'ab\'        -- illegal
-'ab\\'       -- ab\
-
--------------------------------------
+Notice that EL does also not provide a notation for arrays or list objects nor is there a `list` data type. Nevertheless, Flaka provides a `list()` function to create a collection of arbitrary objects. There is also task `for` able to iterate over collection types and there is function `size()` which returns the number of items in a collection. How does this work? EL uses a concept called _duck typing_ where a object\'s type is not given by a class but rather by it\'s properties: _I call every object that walks, swims and quacks like a duck, a duck_. Thus properties are looked up during runtime and a object provides all required properties, the object is applied.
 
 
 [[el_operators]]
@@ -263,7 +184,7 @@ This are the most important operators defined in EL:
 * usual arithmetic operators like `+`, `-`, `*`, `/`, `mod` and `div` etc.
 
 
-[[el_implicit_objects]]
+[[el_implicit_objects,EL Implicit Object]]
 === Implicit Objects ===
 
 Flaka provides a couple of implicit objects that can be utilized when writing <<el>> expressions:
@@ -301,7 +222,7 @@ property.foo            ;; `bar'
 var.x                   ;; [a, b]
 -------------------------------------
 
-[[el_functions]]
+[[el_functions,EL Functions]]
 === Functions ===
 
 ==== Generic Functions ====
@@ -475,7 +396,7 @@ join(':','a',2)              ; join(':',list('a',2))
 | `rand():double` | Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. 
 |=================================
 
-[[el_properties]]
+[[el_properties,EL Properties]]
 === Properties ===
 
 Every data object in _EL_ may have properties associated. Which properties are available has not been standardized in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[specification]. In fact, this depends heavily on the underlying implementation and usage domain. What _EL_ specifies however, is how to query a property:
@@ -549,7 +470,7 @@ list('a','b')[1]  => 'b'
 
 Negative indexes are currently not supported. If an index is specfies an not existing element, `null` is returned.
 
-[[el_string_properties]]
+[[el_string_properties,String Properties]]
 ==== String Properties ====
 
 Besides _natural_ properties (see discussion above) are the following properties supported:
@@ -565,7 +486,7 @@ Besides _natural_ properties (see discussion above) are the following properties
 | tofile   | file  | create a file based on this string; the so created will be relative to the current build file's base folder if the string's value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project's base folder (i.e. the folder containing the build script currently executed). Notice that `.` and `..` denote absolute paths, not relative ones. 
 |=================================
 
-[[el_file_properties]]
+[[el_file_properties,File Properties]]
 ==== File Properties ====
 
 Files and folders is Ant's bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to _get_ a file object in the first place. This is most easily done by using string property `tofile`:
@@ -606,7 +527,7 @@ In this example of an EL expression, string `myfolder` is converted in a File ob
 | `tourl`    | URL  | file as URL object 
 |=================================
 
-[[el_matcher_properties]]
+[[el_matcher_properties,Matcher Properties]]
 ==== Matcher Properties ====
 
 A _matcher object_ is created by task <<task_switch>> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).
@@ -627,18 +548,22 @@ A _matcher object_ is created by task <<task_switch>> if a regular expression ma
 | _i_       | matcher | The matcher object for _i_'th capturing group. See task <<task_switch>> for examples. 
 |=================================
 
+[[el_type_conversion,Type Conversion]]
+=== Type Conversion ===
 
-=== Evaluating in a boolean context ===
+Every EL expression is evaluated in the context of an _expected_ type. When a evaluated expression does not match it\'s expected type, implicit type conversion takes place. The following sections list the rules which apply.
 
-When evaluation a expr in a string context, a string representation of the final object is created. Similar, when a evaluation in a boolean context takes place, a conversion into a boolean value of the evaluated object takes place. The following table describes this boolean conversion:
+==== Type boolean ====
 
-[cols="2*15%,70%"]
+The following table describes the conversion of object `obj` into an boolean value:
+
+[cols="30%,70%"]
 |=================================
-| evaluated object type | `true` | `false` 
-| file                  | if the file exists | `false` otherwise 
-| string                | if string is empty | `false` otherwise 
-| null                  | never  | always 
-| boolean               | if true | otherwise 
-| _other_               | always  | never 
+| actual type | result 
+| null        | `false`
+| string      | `false` if obj is `""`, otherwise `Boolean.valueof(obj)`
+| boolean     | obj
+| file        | `true` if the file described by obj exists
+| object      | false
 |=================================
 

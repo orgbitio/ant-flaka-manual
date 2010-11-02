@@ -1,0 +1,16 @@
+
+Flaka has a looping statement. Use task <<task_for>> to iterate over a _list_ of items. Use <<task_break>> and <<task_continue>> to terminate the loop or to continue the loop with the next item.
+
+-------------------------------------
+ <c:for var=" name " in=" ''.tofile.list ">
+    -- sequence of task or macros
+    -- used <c:continue /> to continue ; and
+    -- <c:break /> to stop looping
+    -- use #{name} to refer to current item (as shown below)
+    <c:echo>#{name}</c:echo>
+ </c:for>
+-------------------------------------
+
+
+Attribute `in` will be evaluated as <<el>> expression. In the example above, that <<el>> expression is `''.tofile.list` which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at <<el_string_properties,properties>> of a string] and <<el_file_properties,properties>> of a file.
+

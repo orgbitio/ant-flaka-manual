@@ -2,46 +2,47 @@
 [[introduction]]
 == Introduction ==
 
-In the world of http://en.wikipedia.org/wiki/Java_(programming_language)[Java], build scripts are traditionally written in http://en.wikipedia.org/wiki/Apache_Ant[Ant], recently also using http://en.wikipedia.org/wiki/Apache_Maven[Maven].
+Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like `cp`, `mkdir` and `find`. However, Ant lacks any decent control structures. There is no `if-then-else` and there is no `while` footnote:[`if` and `while` can be implemented in terms of calling targets depending on whether a property exists or not. Rather akward ..]. What\'s more, you have to use a rather unfriendly, sometimes even hostile, http://en.wikipedia.org/wiki/XML[XML] syntax. On the bright side however, conside this Ant snippet:
 
-// When it comes to write a build script using Ant, it feels like using a Shell script in a rather awkward language (XML). Each Ant task solves a particular problem. This is similar to a Shell where you have this small masterpieces like `mkdir`, `cp`, `tar` plus some control structures to eventually being able to put the one big thing together.
+-------------------------------
+<copy todir="${destdir}">
+ <fileset dir="${srcdir}">
+   <include name="*.jar" />
+ </fileset>
+</copy>
+-------------------------------
 
-Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact you, the author, need to know what exactly needs to be done. Step by step. What\'s more, you have to use a rather unfriendly, sometimes even hostile, http://en.wikipedia.org/wiki/XML[XML] syntax. By default Ant provides you a rather large list of _tasks_ footnote::[http://ant.apache.org/manual/coretasklist.html] and _types_ footnote::[http://ant.apache.org/manual/conceptstypeslist.html]. Types are used to create data objects which can be used to feed tasks. Tasks are sequentially arranged to larger work units, called _targets_. Finally there are properties to establish a line of communication between work units and tasks. 
+It\'s its expressiveness which makes me list this example on the bright side as it is easy to graps what will happen: files ending in `.jar` are copied from one folder into another folder. Now assume that you have to include some further logic in that snippet above: 
 
-So writing a build script in Ant is like writing a Shell script where you have all those small masterpieces like `mkdir`, `cp`, `tar` available while decent control structures, like `if` and `for`, have been stripped off. This forces you, the author of a build script, to think in new categories and in rather creative ways. Ant scripts are therefore usually large, often work on the author\'s machine only and each author uses a different set of target and property names making it difficult to understand someone elses script.
+* _if a certain folder exists, copy files matching `*.zip`, otherwise stick with `*.jar`._
 
-Maven on the other side provides a high abstraction of building a project. Instead of describing how a project needs to be build, just describe the project detail and let Maven figures out what needs to be done. This is probably the reason why Maven got so much attention recently. Despite better knowledge I wrote that Maven figures out what needs to be done. That’s actually not quite true. In fact, Maven works generally fine when following conventions imposed by Maven. When not “en route”, Maven gets difficult as well. But even when following conventions, the number of options in Maven are, with the event of Maven\'s second incarnation, endless and question the idea of a declarative approach footnote::[Have a look at Maven\'s http://maven.apache.org/ref/current/maven-model/maven.html[POM] and checkout the never ending series of XML tags possible]. 
+When staying with Ant, you define a property and use it like 
 
-At the end, I found myself using Ant again. 
+-------------------------------
+<include name="${jar_or_zip}"/>
+-------------------------------
 
-However, what I am missing in Ant is the full power of a programming language. Yes, I want to have conditionals, looping constructs and a decent exception handling. I want to have variables which I can set or remove for pleasure. I don\'t want to be restricted that such variables may carry strings only. Any data object must be allowed. Eventually I need a nice expression language to retrieve and calculate data in a simple yet elegant way. There is no need to have each and everything expressed in XML. And then I want to have some kind of higher abstraction which does the right thing most of the time. 
+The problem is that you have to define that property elswehere thus you start to miss part of the logic. This is where I believe that Ant has a true deficit and this is where Flaka kicks in. Flaka provides, amongst other things, with an expression language (EL). Thus you could write
 
-In summary, this is what Flaka is all about:
+-------------------------------
+<include name=" *.#{ mydir.exists ? 'zip' : 'jar'} " />
+-------------------------------
 
-* Control Structures 
-* Expressions
-* Framework to do the _right_ thing
+However, even having such a powerfull extension like EL I am missing the full power of a programming language\'s control structures. Yes, I want to have conditionals, repetevitve constructs and a decent exception handling. Furthermore, I want to have variables which I can set or remove for pleasure. I don\'t want to be restricted that such variables may carry strings only. Any data object must be allowed. In summary, this is what Flaka currently is all about:
 
-This pillars are Flakas approach to simplify the process of writing a build script with Ant. You are by no means forced to use all or any of those pillars. You can for example just use the programming tasks with or without EL while you don't need to get in touch with Flakas dependency handling instruments and neither with the framework. 
+* Expression Language
+* Well known control structures 
+
+This pillars are Flakas approach to simplify the process of writing a build script with Ant. You are by no means forced to use all or any of those pillars. You can for example just use the control structure tasks with or without making use of EL or vice versa.
 
 === Where to go from here? ===
 
  * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the <<installation,installation page>>.
- * Jump right into chapter <<overview,Overview>> to get some ideas about elements provided by Flaka.  
+// * Jump right into chapter <<overview,Overview>> to get some ideas about elements provided by Flaka.  
  * Make sure to consult chapter <<el,EL, The Expression Language>>. It contains a lot of information on this enormous useful extension.
  * Have a closer look in the reference part of this manual for all the gory details.
  * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
 
-=== Which Flaka version? ===
-This manual corresponds with *Flaka 1.02*.
-
-=== Overall Structure ===
-There are four parts:
-
-. An overview over Flaka\'s concepts are presented in <<part1,Part I>>.
-. <<part2,Part II>>, is the reference part for all elementary control structures and for all of EL\'s gory details.
-. In <<part3,Part III>>, special purpose tasks are presented. Most of this tasks are implemented with the help of tasks and concept shown in Part I.
-. The last part, <<part4,Part IV>>, is about the installation of Flaka.
 
 === Conventions ===
 
@@ -54,8 +55,8 @@ antlib:it.haefelinger.flaka
 and whithin this manual, the abbreviation `c` will be used for this namespace. Therefore it becomes easy to see who is the provider of a task:
 
 -----------------------------
-<echo> This is Ant </echo>
-<c:echo> and this is Flaka's echo</c:echo>
+<echo> Ant </echo>
+<c:echo> Flaka </c:echo>
 -----------------------------
 
 Thus all build file snippets shown assume that the build file contains the following XML namespace declaration:
@@ -65,3 +66,4 @@ Thus all build file snippets shown assume that the build file contains the follo
   <!-- build script example -->
 </project>
 -----------------------------
+

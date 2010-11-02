@@ -1,0 +1,52 @@
+With standard Ant, task http://ant.apache.org/manual/CoreTasks/condition.html[condition] is used to set a property if a condition is given. Then a macro, task or target can be conditionally executed  by checking the existence or absence of that property (using standard attributes _if_ or _unless_. Flaka defines a couple of control structures to handle conditionals in a simpler way.
+
+Task <<task_when>> evaluates an <<el>> expressio. If the evaluation gives `true`, the sequence of tasks are executed. Nothing else happens in case of `false`. 
+
+-------------------------------------
+<c:when test=" expr ">
+   -- executed if expr evaluates to true
+</c:when>
+-------------------------------------
+
+The logical negation of `when` is task <<task_unless>> which executes the sequence of tasks only in case the evaluation of _expr_ returns `false`.
+
+-------------------------------------
+ <c:unless test=" expr ">
+   -- executed if expr evaluates to false
+ </c:unless>
+-------------------------------------
+
+
+The body of `when` and `unset` may contain any sequence of tasks or macros (or a combination of both).
+
+Task <<task_choose>> tests each `when` condition in turn until an _expr_ evalutes to `true`. It executes then the body of that when condition. Subsequent `whens` are then not further tested (nor executed). If all expressions evaluate to `false`, an optional _catch-all_ clause gets executed.
+
+
+-------------------------------------
+ <c:choose>
+  <when test="expr_1">
+    -- body_1
+  </when>
+  ..
+  <otherwise> -- optional_
+    -- catch all body
+  </otherwise>
+ <c:/choose>
+-------------------------------------
+
+A programming task often seen is to check whether a (string) value matches a given (string) value. If so, a particular action shall be carried out. This can be done via a series of _when_ statements. The nasty thing is to keep track of whether a value matched already. Flaka provides a handy task for this common scenario, the <<task_switch>> task:
+
+
+-------------------------------------
+ <c:switch value=" 'some string' ">
+  <matches re="regular expression or pattern" >
+    -- body_1
+  </case>
+  ..
+  <otherwise> -- optional
+    -- catch all body
+  </otherwise>
+ </c:switch>
+-------------------------------------
+
+Each case is tried in turn _to match_ the string value (given as <<el>> expression). If a case matches, the appropriate case body is executed. If it happens that no case matches, then the optional default body is executed. To be of greater value, a regular expression or pattern expression can be used in a case condition.
