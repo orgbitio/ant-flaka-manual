@@ -1,16 +1,16 @@
 
-<<part1>> <<el>> The http://en.wikipedia.org/wiki/Unified_Expression_Language[Java Unified Expression Language] (EL) footnote::[The gory details of _EL_ are laid out in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[the official JSR 245 specification] and are not repeated here.] offers a simple way of accessing data objects. While the expression language is part of the JSP specification, it does in no way depend on the JSP itself. To the contrary, the language can be made available in a variety of contexts. One such context is Ant:
+The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified_Expression_Language], further in this document abbreviated as _EL_, is a special purpose programming language typically used for embedding expressions in web applications. While EL is part of the JSP Specification, it does not depend on JSP and can therefore be used in a varity of other contexts. One such context is Ant. Conside the following example:
 
 -------------------------------------
-<c:echo>
+<echo>
   Modified #{ format('%tA, %1$tD', file(project).mtime) }
-</c:echo>
+<echo>
 -------------------------------------
 
-The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` takes an arbitrary name of arguments. The first argument - the format string - contains embedded formatting expressions like `%1$tA`. This particular format expression interprets second argument a date object and evaluates to the particular day in the week. The argument of `file()` -- `project` -- is an implict object, namely an object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time which can be queried using property `mtime`. The whole expression is embedded in a textual context footnote::[The reason Flaka\'s echo task is used here is due to the fact, that EL is by default _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by  `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
+The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` accepts an arbitrary number of arguments. Two arguments are provided in this example. A string argument as the first argument while the second argument is the object returned by querying property `mtime` on the object returned by calling standard function `file()` with one argument, namely `project`. `project` is an implict object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time available as property `mtime`. The whole EL expression is embedded in a textual context, here the standard Ant echo task is used for demonstration footnote:[To make this example work, one need to globally enable EL for all string contexts. By default, EL is _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
  
 -------------------------------------
-[c:echo] Modified Friday, 10/29/10
+[echo] Modified Friday, 10/29/10
 -------------------------------------
 
 Here are some further examples, demonstrating the power EL offers:
@@ -25,52 +25,44 @@ project.name                 ; (6)
 size(file('.').list)         ; (7)
 -------------------------------------
 
+The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as variable. A boolean expression is shown in the second example using operators `and`, `not` and operator `||`. The same expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and conditional operator `?:`. The expression could be read like: check whether a (list) object is empty. If empty, return `null`, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
 
-The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as untyped variable. A boolean expression is shown in the second example. Notice the usage of operator `and`, operator `not` and of operator `||`. The expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and the conditional operator `c ? t : e`. The expression could be read like: check whether a (list) object is empty. If empty return object `null`m, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
+[[el_enabling_el,Embedding EL]]
+=== Embedding ===
 
-[[el_enabling_el,Deploying EL]]
-=== Deploying EL ===
+At this point of reading the probably most important question to be answered is, 
 
-Assume that you already know how to formulate a proper EL expression, i.e. you are aware of the EL syntax and you are aware of implicit objects and EL functions. Still, how can you use them in your Ant build file? Thus the probably most important question to be answered is 
+* _Where and under what conditions can I embed EL in my build file?_
 
-* _Where can I use EL expressions?_
-
-This chapter answers this question and other, more advanced questions. 
-
-==== Globally Enabling EL References ====
-Ant does by default not understand EL expressions cause EL is not one of Ant\'s standard features. What Ant understands by default are property references `${..}` in textuel contexts like attribute values and textuel tasks, like the well known `echo` task. A standard Ant feature is however, that an extension is able to let Ant understand in addition other reference entities. This is exactly what Flaka\'s `install-property-handler` task does, it makes Ant EL aware. Consider:
-
----------------------------
-<echo message="before: #{ 3 * 4 }" />    ; before: #{ 3 * 4}
-<c:install-property-handler />
-<echo message="after:  #{ 3 * 4 }" />    ; after:  12
----------------------------
-
-In other words: Having used task `install-property-handler` once, one can make use of EL references `#{..}` everywhere where Ant property references `${..}` can be used. For example when setting up a property:
-
+If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everwhere where you can use an Ant property reference `${..}. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
 ---------------------------
 <property name="twelve" value="#{ 3 * 4 }" />
+<echo message="${twelve} = #{ 3 * 4}">   ; 12 = 12
 ---------------------------
 
-As mentioned before, EL references can be used in any context one can apply Ant property references. Ant properties are strings, thus Ant properties are used in string contexts and consequently the same applies for EL references. When a EL reference is seen, then the expression is evaluated according to EL rules into an object of some type. Then, in a second step, that object value is coerced footnote::[implicitly type converted] into a string.
+As mentioned before, EL references can be used in any context one can apply Ant property references. Ant properties are strings, thus Ant properties are used in string contexts and consequently the same applies for EL references. When an EL reference is seen, then the expression is evaluated according to EL rules into an object of some type _T_. Then, in a second step, that object value is coerced footnote::[implicitly type converted] into a string.
 
-==== Typed Attributes ====
+Flaka on the other hand is EL aware. This means that regardless of whether EL has been globally enabled or not, do all tasks provided by Flaka understand EL references `#{..}`.
 
-Flaka on the other hand is EL aware by default which means, that EL can be used in all tasks provided by Flaka without having used  task `install-property-handler`. Take task `when` as an example:
-
--------------------------------------
-<c:when test=" file(path).isdir ">..</c:when>
--------------------------------------
-
-Here, attribute `test` is used to express a condition. Evaluating this condition will either execute tasks embedded in `when` or not. The standard Ant way would be to evaluate this condition into a string and then parse the string whether it matches `true`, `false`, `yes`, `no` and so on. Not so in this Flaka task. Task `when` expects for attribute `test` a pure EL expression. This expression is then evaluated in the context of a boolean data type. In other words: attribute `test` of task `when` is a _typed_ attribute. Be aware that most - while not all - of Flaka\'s attributes are typed!
-
-Notice however, that all attributes are handled by the currently installed property handler. Thus even for attribute `test` the normal attribute rules apply. Consider this kind of meta-programming
+In addition, attributes of tasks provided by Flaka can be _typed_. This means that the argument of such an attribute is treated as EL expression. Evaluating that expression is expected to result in a value of an _expected type_. Consider attribute `test` of Flaka\'s <<task_when,`when`>> task:
 
 -------------------------------------
-<c:when test=" file('${mypath}').#{ empty fprop ? 'isdir' : fprop} ">..</c:when>
+<c:when test=" file(path).isdir ">
+  <!-- do something whith that dir folder .. -->
+</c:when>
 -------------------------------------
 
-which combines a Ant property and a EL reference to express a EL expression.
+The underlying semantic of attribute `test` is that of a condition. If the condition evalutes to _true_, then all tasks embedded in _when_ are carried out and otherwise ignored. The expected type of that attribute is obviously `boolean`. The EL expression `file(path).isdir` is evaluated into an object and then implicitly converted into a boolean value.
+
+Notice that Ant and EL references can be used in typed attributes. After all, a typed attribute is a regular attribute as far as Ant is concerned. It is just Flaka who is evaluating the expression as EL. Thus consider this kind of meta-programming , that all attributes are handled by the currently installed property handler. Thus even for attribute `test` the normal attribute rules apply. Consider this kind of meta-programming where by default an object is queried for property `isdir` subject to whether variable `prop` is empty or not. If not empty, then the value is queried for property `prop`:
+
+-------------------------------------
+<c:when test=" obj.#{ empty prop ? 'isdir' : prop} ">
+ ..
+</c:when>
+-------------------------------------
+
+The following sections will handle some advanced issues regarding EL references and especially their relation with Ant property references.
 
 ==== Nested EL References? ====
 
@@ -114,29 +106,32 @@ Elements of the following types can be used when writing EL expressions:
 * _float_ for any floating point values
 * _boolean_ to express boolean logic
 * _string_ to represent char sequences
+* _list_ for iterable types
+* _file_ representing file objects
+* _project_ representing Ant project instances
 * _object_ for all other data values
 
-The question is how to get a element of those types and which elements exist? EL defines literals which can be used to define elements of all but type `object`. 
+The question is how to get a element of those? EL defines literals denoting elements of type `null`, `integer`, `float`, `boolean`, and `string`. Furthermore there are implicit objects and functions, see below.
 
 
-
- 
 ==== Null Literals ====
 
-The `null` type contains only one data element also called `null`. From a semantic point of view it is used to represent the absence of any data. Within EL, `null` has an interesting characteristic: it can be asked whether it has a certain property and the answer will always be `null` again.
+The `null` type contains only one data element also called `null`. From a semantic point of view it is used to represent the absence of any data. Within EL, `null` has an interesting characteristic: it can be asked whether it has a certain property and the answer will always be `null` again. Consider:
 
 -------------------------------------
 null['any property']   ; null
+null.mtime             ; null
 -------------------------------------
 
-This rather different from other languages where asking `null` for a property is asking for trouble, i.e. null pointer exception and the like. Notice also the following differences between operator `empty` and function `null()` when working with value `null`:
+This rather different from other languages where asking `null` for a property is asking for trouble, i.e. null pointer exception and the like. Notice also the following differences between operator `empty` and function `nullp()` when working with value `null`:
+
 -------------------------------------
-empty null    ; true
-empty list()  ; true
-empty ''      ; true
-null(null)    ; true
-null(list())  ; false
-null('')      ; false
+empty null     ; true
+empty list()   ; true
+empty ''       ; true
+nullp(null)    ; true
+nullp(list())  ; false
+nullp('')      ; false
 -------------------------------------
 
 ==== String Literals ====
@@ -225,9 +220,17 @@ var.x                   ;; [a, b]
 [[el_functions,EL Functions]]
 === Functions ===
 
+This sections presents functions defined by Flaka and which are available without any further action. Notice that providing own functions is currently not possible. A note about the conventions used in the notation of function signatures:
+
+* _T_ is a placeholder meaning any type
+* _T.._ means that a variable list of arguments of type _T_ can be used 
+* _name:T_ is used to give a parameter a name which is then used in the follow up explanation of this function. 
+
+
+
 ==== Generic Functions ====
 
-===== `typeof(object):string` =====
+===== `typeof(T):string` =====
 
 A function to determine the object\'s type:
 -------------------------------------
@@ -238,10 +241,11 @@ typeof(pi)              ;; 'float'
 typeof(true)            ;; 'bool'
 typeof(list())          ;; 'list'
 typeof(file('.'))       ;; 'file'
+typeof(project)         ;; 'project'
 typeof(other)           ;; 'object'
 -------------------------------------
 
-===== `size(object):int` =====
+===== `size(T):integer` =====
 
 The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive typeslike `int`, `null`, `float`, `bool`. Otherwise the object\'s size is determined via a `size` or `length` property.
 -------------------------------------
@@ -250,25 +254,26 @@ size(3)               ;; 0
 size(pi)              ;; 0
 size(true)            ;; 0
 size(file(..))        ;; 0
+size(project)         ;; 0
 size(object)          ;; object.size or object.length or 0
 -------------------------------------
  
-===== `null(object):bool` =====
+===== `nullp(T):boolean` =====
 
 Evaluates to `true` if object is the `null` entity and `false` otherwise. Compare this function with operator `empty` which returns `true` if eiher the object in question does not exist or if literally empty, for example the empty list or the empty string.
 
 -------------------------------------
-null(null)            ;; true
-null(other)           ;; false
-empty(null)           ;; true
-empty(list())         ;; true
-empty(list('a'))      ;; false
-empty('')             ;; true
+nullp(null)            ;; true
+nullp(list())          ;; false
+nullp('')              ;; false
+empty null             ;; true
+empty list()           ;; true
+empty ''               ;; true
 -------------------------------------
 
 ==== File and Folder Functions ====
 
-===== `file(object):File` =====
+===== `file(T):file` =====
 Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise if the object is not of type Project, the object is stringized and that string is taken as the file\'s path name. 
 
 If the argument is an Ant project, then the project's base directory is returned as file object. Thus the following example iterates over all files and folders in the project's base directory:
@@ -284,13 +289,13 @@ If no argument is given, then object `null` is returned.
 
 ==== String Functions ====
 
-===== `concat(object..):string` =====
+===== `concat(T..):string` =====
 Creates a string by concatenating all _stringized_ objects. If no object is provided, the empty string is returned. Thus to create the string `foobar`, try
 -------------------------------------
 concat('foo','bar')  ; `foobar'
 -------------------------------------
 
-===== `format(string,object..):string` =====
+===== `format(string,T..):string` =====
 This function is a swiss army knife for creating a string based on existing objects. The functions expects a format string as first argument followed by any number of arguments. The optional arguments are used to construct the result string based on format instructions embedded in the first argument. Some examples:
 -------------------------------------
 format('foobar')           ; `foobar'
@@ -301,7 +306,7 @@ format('%s',list('a',2))   ; `[a, 2]'
 
 The number of format options to be used are almost infinite. As a reference, checkout http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[corresponding Javadoc documentation of class Formatter].
 
-===== `replace(string, subst, regex):string` =====
+===== `replace(string, subst:T, regex:T):string` =====
 
 Create a new string by replacing substrings. Substrings to be replaced are described via regular expressions. If no substitute string is given, the empty string is used. The default regular expression is `\s*,\s*` which means, that all commas - including leading and trailing whitespace - are replaced. Arguments are stringized before used.
 -------------------------------------
@@ -313,7 +318,7 @@ replace(true,'false','true') ; 'false'
 
 The behaviour of this function is undefined if called without arguments.
 
-===== `split(string, regex):list` =====
+===== `split(string, regex:T):list` =====
 
 A function to tokenize a string into a list of strings. Tokens are seperated from each other by text matching a given regular expression. Arguments are stringized before used. If no regular expression is given, then `\*s,\s*` is used. The behaviour is undefined if no arguments are given.
 -------------------------------------
@@ -348,7 +353,7 @@ list('a','b','c')[1]           ; 'b'
 -------------------------------------
 
 
-===== `list(object..):list` ===== 
+===== `list(T..):list` ===== 
 A function taking a arbitrary number of elements to create a list object. Returns the empty list when called without arguments.
 -------------------------------------
 list()                ; []
@@ -356,7 +361,7 @@ list('a',2)           ; ['a',2]
 list(list('a',2))     ; [['a',2]]
 -------------------------------------
 
-===== `append(object..):list` ===== 
+===== `append(T..):list` ===== 
 This function is similar to `list` by creating a list based on given arguments. However, each argument being a list is treated in a special way by appending the list elements rather the list itself.
 
 -------------------------------------

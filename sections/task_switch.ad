@@ -15,7 +15,7 @@ Task `switch` provides text based pattern matching. An illustrative example:
    <echo>It's a -- jar!</echo>
   </glob>
   <cmp eq="foo" lt="foo">                       (3)
-    <!-- less or equals "foo" -->
+    <!--  ${val} is less or equals "foo" -->
   </cmp>
   <otherwise>
     <! none of the above clauses matched -->
@@ -23,7 +23,7 @@ Task `switch` provides text based pattern matching. An illustrative example:
  </c:switch>
 --------------------------------------
 
-This example demonstrates, that a given value can be compared using a regular expression (1), using a glob expression (2) or compared for equality, less or greater sort order (3). Why providing alternatives for regular expressions? Cause the biggest drawback of regular expressions is their complexity. Compare this two variations to check whether a string value ends in `.jar`:
+This example demonstrates, how a given textual value can be compared using (1) regular expressions, (2) using glob expression or (3) compared for equality or alphabetical order. Why providing alternatives for regular expressions? Cause the biggest drawback of regular expressions is their complexity. Compare this two variations to check whether a string value ends in `.jar`:
 
 --------------------------------------
 <re="(.*)\.jar" var="g">
@@ -39,16 +39,7 @@ This example demonstrates, that a given value can be compared using a regular ex
 </glob>
 --------------------------------------
 
-The latter one, the glob expression, is much easier to grasp. There, a `*` just stands for a sequence of arbitrary characters. In most pattern recognitzion tasks, this is all what is needed to get going. If more power is required, then regular expressions are the tool to be applied.
-
-// allows for basic pattern matching only. In a glob expression, meta-character `*` just stands for an arbitrary long sequence of arbitrary characters footnote::[other meta-characters are `?` and `[]` - for details continue to read section Behaviour].
-
-// Glob expression do have on big disadvange besides their lack of power. That is that capturing groups are not supported. This is als o illustrated in the example given above. By using a caputuring group `(.*)`, we are able to break the input apart in well defined pieces - the _basename_ and the _extension_ (.jar). Match details are saved in a (EL) object and can the be used in EL ready tasks like shown in the echo task above.
-
-Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string.
-
-// and `?` for a single character. Glob expressions do also support character sets, i.e. `[ab]` expresses either character `a` or `b` while `[!ab]` means neither of them. Glob expressions can easily be translated into regular expressions and it's common to make them use the same underlying regular expression engine.
-//Using a regular expression is the most powerfull alternative. The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of informatio. Gory details are described in http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
+The latter one, the glob expression, is much easier to grasp. There, `*` just stands for a sequence of arbitrary characters. In most pattern recognitzion tasks, this is all what is needed to get going. If more power is required, then regular expressions are the tool to be applied. Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string.
 
 ==== Attributes ====
 // cols=5
@@ -158,92 +149,115 @@ Element *default* is an alias name for element `otherwise`.
 
 ==== Behaviour ====
 
-Attribute `value` is applied against a series of _case_-clauses. A _case_-clause can be a 
-* glob expression `<glob />` (simplified regular expression), 
-* regular expression `<re />` or 
-* simple textual comparison <cmp />. 
-Case-clauses are applied in syntactial order from to to bottowm until a match is available. If a clause matches, then tasks associated with that clause are carried out and no further clauses are applied.
+String attribute `value` is applied against a series of _case_-clauses in their syntactical order. Elements `re`, `glob`, `cmp` and `matches` are _case_-clauses. If a clause matches, then tasks associated with the matching clause are carried out and no further clauses are will be tested. If no case-clause matches, then all optional available `otherwise` elements are carried out in their syntactical order.
 
-If no case-clause matches, then all optional available <otherwise />-clauses are carried out.
+==== Examples ====
 
-A case- and otherwise-clause are Ant-task containers and may contain an arbitrary number of tasks. There can be more than one otherwise-clause in a <switch /> and they do not need to occur after all cases-clauses. Therefore the follwing <switch /> is perfectly legal.
+Tests based on regular expressions
+--------------------------------------
+<c:switch value=" foobar ">
+   <re expr="^foobar$" />     ; matches 
+   <re expr="foobar" />       ; matches
+   <re expr="foo" />          ; no
+   <re expr="foo" find="true" ; matches
+   <re expr="#{'foobar'}"     ; matches
+</c:switch>
+--------------------------------------
+
+The following example shows how to utilize matcher properties:
+--------------------------------------
+<c:switch value=" foobar ">
+   <re expr="^(.*)(b.*)$" var="m">
+     <echo>
+       #{ m          }   ; 'foobar'
+       #{ m[0]       }   ; 'foobar'
+       #{ m.start    }   ; 0
+       #{ m.end      }   ; 5
+       #{ m.groups   }   ; 2
+       #{ m.pattern  }   ; '^(.*)(b.*)$'
+       #{ m[1]       }   ; 'foo'
+       #{ m[2]       }   ; 'bar'
+       #{ m[1].end   }   ; 2
+       #{ m[2].start }   ; 3
+     <echo>
+   </re>
+</c:switch>
+--------------------------------------
+
+Tests using glob expressions
+--------------------------------------
+<c:switch value=" foobar ">
+   <glob expr="foobar" />          ; matches 
+   <glob expr="f*r" />             ; matches
+   <glob expr="foo" />             ; no
+   <glob expr="foo" find="true" /> ; matches
+   <glob expr="#{'foobar'}" />     ; matches
+</c:switch>
+--------------------------------------
+
+Matcher properties can also be used when using glob expressions. However, since glob expressions do not have enough semantics to express capturing groups, their use is limited. Consider:
 
 --------------------------------------
- <c:switch value=" bar ">
-  <otherwise>
-    <echo>Hello, </echo>
-  </otherwise>
-  <glob expr"baz" />         
-  <otherwise>
-    <echo>World</echo>
-  </otherwise>
- <c:case>
+<c:switch value=" foobar ">
+   <glob expr=" f*r " var="m">
+     <echo>
+       #{ m          }   ; 'foobar'
+       #{ m[0]       }   ; 'foobar'
+       #{ m.start    }   ; 0
+       #{ m.end      }   ; 5
+       #{ m.groups   }   ; 0
+       #{ m.pattern  }   ; 'f.*b'
+       #{ m[1]       }   ; ''
+     <echo>
+   </glob>
+</c:switch>
+--------------------------------------
+
+Finally use element `cmp` to do text based comparision in absence of any meta characters. Since element `cmp` is not based on an regular expression engine, matcher properties are not available. Consider
+
+--------------------------------------
+<c:switch value=" foobar ">
+   <cmp eq=" foobar " />           ; matches
+   <cmp eq=" f*r "    />           ; no
+   <cmp eq=" foo " find="true"/>   ; no
+</c:switch>
+--------------------------------------
+
+Element `cmp` can be used to sort text in alphabetical order. Consider:
+
+--------------------------------------
+<c:switch value=" b ">
+   <cmp eq=" b " />           ; true
+   <cmp lt=" c " />           ; true
+   <cmp gt=" a " />           ; true
+   <cmp lt=" a " eq="b" />    ; true
+</c:switch>
+--------------------------------------
+
+==== Pathologicals ====
+
+Switch has been designed to be rather tolerant. No elements are required in which case of course nothing happens.
+--------------------------------------
+<c:switch />
+<c:switch value="foobar" />
+--------------------------------------
+
+Arbitrary `otherwise` elements might be present. In addition, `otherwise` elements are carried out if not _case_-clause matches. 
+--------------------------------------
+<c:switch>
+ <otherwise>
+  <echo>first otherwise</echo>
+ </otherwise>
+ <otherwise>
+    <echo>second otherwise</echo>
+ </otherwise>
+</c:switch>
 --------------------------------------
 
 Being executed, it would print 
 --------------------------------------
-[echo] Hello, 
-[echo] World
+[echo] first otherwise
+[echo] second otherwise
 --------------------------------------
-
-
-
-Attribute `value` is the basis for all further matching. It is a string value which may contain <<glossary_property_references,property >> or <<glossary_expression_reference,EL>> references. 
-
-Any number of `matches` elements are allowed and at most one `otherwise` or `default` element. Whether the `otherwise` element is at the end, in the middle or at the begin does not matter. The order of `matches`  is relevant however. Each `matches` element is tried against the value in the order given. Then, if no element matched, a given `otherwise` or `default` element is carried out. Otherwise the winning matching elment will while remaining elements are ignored.
-
-Carrying out an element means that all enclosed tasks or macros are executed in the order given. 
-
-The underlying regular expression engine is the one given by Java. It's http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html[Javadoc] documentation is a pretty good source of information if you are familiar with regular expressions. For all the gory details, have a look at http://oreilly.com/catalog/9780596528126/index.html[Mastering Regular Expressions] by Jeffrey E. F. Friedl. 
-
-Be aware that there is no need to escape the escape character. For example, people using regular expressions in Java are used to write `\\*` if they want match the literal `*` character and thus escaping from the usual semantics (match zero or more times). This is not necessary in Flaka where the input sequence `\*` remains `\*`.
-
-So called _globs_ are a kind of simplified regular expressions. They lack the full power while simplifying the expression. For example, to specify whether a name input string end in `jar`, we can simply write 
-
---------------------------------------
- <c:switch value=" #{myfile}.name ">
-  <matches glob="*.jar">
-    -- do something with jar file ..
-  </matches>
- </c:switch>
---------------------------------------
-
-The very same can also be expressed as `re="\.jar$"` using regular expressions. The biggest disadvange of globs are that capturing groups are not supported. Thus the match above just indicates that the file name ends in `.jar` while there is nothing to figure the file's basename. Compare this with 
-
---------------------------------------
- <c:switch value=" #{myfile}.name ">
-  <matches re="^(.*)\.jar$" var="m">
-    <c:echo>
-      basename = #{m[1]}
-    </c:echo>       
-  </matches>
- </c:switch>
---------------------------------------
-
-Here we use a capturing group for the basename. A matcher object will be associated with variable `m`. This object can then <<el_matcher_properties,evaluated using properties>> for matching details.
-
-Here is a more complicated example. It was used once to examine a CVS tag which was supposed to follow the convetion `schema-(env_)version`, where `(env_)` was optional, `schema` indicated the tag's semantic and where `version` was the products version or build number: 
---------------------------------------
- <c:switch value=" 'v-uat_3_20_500' " var="m">
-   <matches re="v-(?:([^\d][^_]*)_)?(\d.*)" >
-     <c:echo>
-       pattern      = #{m.p}         -- v-(?:([^\d][^_]*)_)?(\d.*)
-       groups       = #{m.n}         -- 2
-       matched text = #{m}           -- v-uat_3_20_500  (same as m[0])
-       env          = #{m[1]}        -- uat
-       version      = #{m[2]}        -- 3_20_500
-       ;; refering to non existing group
-       ??           = #{m[3]}        -- (empty string)
-       ;; start and end index of first group
-       start        = #{m[1].s}      -- 2
-       end          = #{m[1].e}      -- 5
-     </c:echo>
-   </matches>
- </c:switch>
---------------------------------------
-
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Switch.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Switch.java[Source]
 
 

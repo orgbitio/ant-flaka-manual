@@ -135,8 +135,3 @@ Task `<c:scandeps />` uses a http://en.wikipedia.org/wiki/Duck_typing[duck typin
 The list of scanned dependencies is unique. The unique value of a dependency is calculated by property `m2path` - the Maven 2 like path. 
 
 
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/ScanDeps.html[ScanDeps Javadoc] 
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/dep/Dependency.html[Dependency Javadoc] 
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/ScanDeps.java[ScanDeps Source]
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/dep/Dependency.java[Dependency Source]

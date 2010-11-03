@@ -200,7 +200,3 @@ Those line of 40 per cent character `%` got created simply by using
 <c:echo shift="40%"/>
 -------------------------------------
 
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Echo.html[Javadoc]
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Echo.java[Source]
-

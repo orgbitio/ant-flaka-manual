@@ -48,6 +48,4 @@ The content of a line defines the property name, for example:
 </c:unset>
 --------------------------------------
 
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Unset.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Unset.java[Source]
+

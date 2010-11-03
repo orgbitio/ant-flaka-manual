@@ -42,7 +42,5 @@ Contents of text element is read line by line. Comment lines are ignored. Leadin
 
 The contents of each line is centered. Leading and trailing space is filled up with _blanks__ in order to reach the given line width. If a line is longer than `width`, then all contents after `width` characters is silently skipped.
 
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Logo.html[Javadoc]
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Logo.java[Source]
+
 

@@ -62,9 +62,3 @@ This would execute all macros and tasks listed in the otherwise clause since no 
  </c:choose>
 --------------------------------------
 
-
-==== Further Links ====
- * http://javadoc.haefelinger.it/it.haefelinger.flaka/1.01/it/haefelinger/flaka/Choose.html[Javadoc] 
- * http://code.google.com/p/flaka/source/browse/tags/1.01/src/it/haefelinger/flaka/Choose.java[Source]
-
-
