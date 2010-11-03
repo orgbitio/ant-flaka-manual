@@ -34,7 +34,7 @@ At this point of reading the probably most important question to be answered is,
 
 * _Where and under what conditions can I embed EL in my build file?_
 
-If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everwhere where you can use an Ant property reference `${..}. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
+If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everwhere where you can use an Ant property reference `${..}`. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
 ---------------------------
 <property name="twelve" value="#{ 3 * 4 }" />
 <echo message="${twelve} = #{ 3 * 4}">   ; 12 = 12
@@ -187,7 +187,7 @@ Flaka provides a couple of implicit objects that can be utilized when writing <<
 [cols="1*25%,75%"]
 |==================================
 | Implicit Object | Description 
-| project         | Ant's underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. 
+| project         | Ant\'s underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. 
 | property | Use this object to query project properties. 
 | var | A object containing all project references.  
 | reference | A synonym for `var` 
@@ -196,7 +196,7 @@ Flaka provides a couple of implicit objects that can be utilized when writing <<
 | macrodefs| Contains all `macrodef`s
 | tasks| Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. 
 | filter| A object containing all filters defined in this project. 
-| e | The mathematical number http://en.wikipedia.org/wiki/E_(mathematical_constant)[e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number.
+| e | The mathematical number http://en.wikipedia.org/wiki/E_(mathematical_constant)[e], also known as http://en.wikipedia.org/wiki/Euler[Euler]\'s number.
 | pi | The number http://en.wikipedia.org/wiki/PI[PI] 
 |==================================
 
@@ -210,7 +210,7 @@ As an example how to make use of this implicit objects assume that there is a An
 </project>
 -------------------------------------
 
-Then you could use implicit object `project` to query the project's name, the value of property `foo` and the object value of variable `x` like
+Then you could use implicit object `project` to query the project\'s name, the value of property `foo` and the object value of variable `x` like
 -------------------------------------
 project.name            ;; `helloworld'
 property.foo            ;; `bar'
@@ -276,13 +276,13 @@ empty ''               ;; true
 ===== `file(T):file` =====
 Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise if the object is not of type Project, the object is stringized and that string is taken as the file\'s path name. 
 
-If the argument is an Ant project, then the project's base directory is returned as file object. Thus the following example iterates over all files and folders in the project's base directory:
+If the argument is an Ant project, then the project\'s base directory is returned as file object. Thus the following example iterates over all files and folders in the project\'s base directory:
 -------------------------------------
 <c:for var="f" in=" file(project).list ">
  <c:echo>#{f}</c:echo>
 </c:for>
 -------------------------------------
-This function can be used to return the current working directory - which might be very different from the project's base directory. To do so, simply try `file('.')`.
+This function can be used to return the current working directory - which might be very different from the project\'s base directory. To do so, simply try `file('.')`.
 
 If no argument is given, then object `null` is returned.
 
@@ -304,7 +304,7 @@ format('%s%S','foo','bar'  ; `fooBAR'
 format('%s',list('a',2))   ; `[a, 2]'
 -------------------------------------
 
-The number of format options to be used are almost infinite. As a reference, checkout http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[corresponding Javadoc documentation of class Formatter].
+The number of format options to be used are almost infinite footnote:[Compare http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html].
 
 ===== `replace(string, subst:T, regex:T):string` =====
 
@@ -404,81 +404,60 @@ join(':','a',2)              ; join(':',list('a',2))
 [[el_properties,EL Properties]]
 === Properties ===
 
-Every data object in _EL_ may have properties associated. Which properties are available has not been standardized in the http://flaka.googlecode.com/files/jsp-2_1-fr-spec-el.pdf[specification]. In fact, this depends heavily on the underlying implementation and usage domain. What _EL_ specifies however, is how to query a property:
+It\'s best to introduce properties with three simple examples. It\'s about to ask a string about his uppercase variant, about it\'s length and about to create a folder with the string\'s value. 
 
 -------------------------------------
-
-a.b.c
-
+'abc'.toupper           => 'ABC'
+'abc'.length            => 3
+'abc'['tofile'].mkdir   => true/false
 -------------------------------------
 
-This expression can be translated into pseudo code as
+The specification of EL provides only a notation to query an object for a property. EL does not specfic which properties must exists nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how the query a property must be written. Consider:
 
 -------------------------------------
-
- (property 'c' (property 'b' (eval a)))
-
+obj.name
+obj['name.with.dot']
 -------------------------------------
 
-which means that first variable `a` is evaluted, then property `b` is looked up on the evaluation result (giving a new evaluation result) and finally `c` is looked up giving the final result. 
+The first variation is the standard notation to lookup property `name` on object `obj`. Here `name` can be composed of almost any character but character `.` itself. After all, `.` is the lookup operator here. This limitation can cause problems in certain domains. Therefore, an alternative lookup operator `[]` has been defined by the specification.
 
-Perhaps the most important point to notice is looking up a property on `null` is not an error but perfectly legal. No exception gets raised and no warning message generated. In fact, the result of such a operation is just `null` again.
-
-From a practial point a question might be asked how to query a property which happens to contain the dot (`.`) character. In `a.b.c` example shown above, how would we lookup property `b.c` on `a`? Operator `[]` comes to rescue:
+Another important point to keep in mind is about looking up a property on the `null` object and what is the result of asking for a property which does not exist? The perhaps surprising answer is that both case do not cause an error or worse but are perfectly legal and well defined. The result is in both cases the `null` object. Consider:
 
 -------------------------------------
-
- a['b']        => a.b
- (a['b'])['c'] => a.b.c
- a['b']['c']   => a.b.c
- a[b]          => can't be expressed using '.'
- a[b.c]        => neither this ..
- a['b.c']      => query property 'b.c' on a 
-
+null.someproperty        ; null
+obj.notexisting          ; null
 -------------------------------------
 
-
-So far, properties don't seem of any good use. The picture changes perhaps with this example:
-
--------------------------------------
-
- 'abc'.toupper           => 'ABC'
- 'abc'.length*4          => 12
- 'abc'['tofile'].mkdir   => true/false
-
--------------------------------------
-
-The last example demonstrates that there might also be http://en.wikipedia.org/wiki/Side_effect_(computer_science)[side effects] querying a property. In the example above, which is specific for Flaka, a directory `abc` gets created and the whole expression evaluates to `true` if the directory could get created and `false` otherwise.
+Now it\'s about time to tell, which properties are available.
 
 ==== Natural Properties ====
-In general, properties are mapped as _attribute_ on the underlying data object. In Java, every _getX_ method taking no arguments identifies property _x_. As an example, assume that we have 
+
+A _natural_ property `x` exits if the underlaying Java object has a public getter method with the same name as `x` and where the names are compared caseinsensitively. Assume that we have on object `f` of type `java.io.File` footnote:[see http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html]. The following listing shows two natural properties on object `f` and how `f` will be used by the underlying EL implementation:
 
 -------------------------------------
-public class Foo {
- public .. getBar() { .. }
-}
+f.name             ; f.getName()
+f['parentfile]     ; f.getParentFile()
 -------------------------------------
 
-then an data object of type _Foo_ will have property _bar_ and thus the following expression `x.bar` would eventually call `Foo.getBar()` assuming that `x` evaluates to an object of type `Foo`. Such properties are the *natural* properties of a type.
 
 ==== Primitve Type Properties ====
 
-Primite data types (int, double, bool, null) have no properties.
+Primite data types (integer, float, boolean and null) have no properties.
 
 ==== List and Array Properties ====
 
-Besides their _natural_ properties (see discussion above) are _index_ properties available:
+Besides _natural_ properties can lists and arrays be queried with an _index_ returning the element at that position or `null` if the index is out of range. Consider:
 
 -------------------------------------
-list('a','b')[1]  => 'b'
+list('a','b')[1]    ; 'b'
+list('a','b')[-1]   ; null
+list('a','b')[2]    ; null
 -------------------------------------
-
-Negative indexes are currently not supported. If an index is specfies an not existing element, `null` is returned.
 
 [[el_string_properties,String Properties]]
 ==== String Properties ====
 
-Besides _natural_ properties (see discussion above) are the following properties supported:
+Table above lists properties that can be queried besides natural properties:
 
 [cols="2*15%,70%"]
 |=================================
@@ -488,46 +467,45 @@ Besides _natural_ properties (see discussion above) are the following properties
 | tolower  | string | return this string in lowercase characters only 
 | toupper  | string | return this string in uppercase characters only 
 | trim     | string | remove leading and trailing whitespace characters 
-| tofile   | file  | create a file based on this string; the so created will be relative to the current build file's base folder if the string's value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project's base folder (i.e. the folder containing the build script currently executed). Notice that `.` and `..` denote absolute paths, not relative ones. 
+| tofile   | file  | create a file based on this string; the so created will be relative to the current build file\'s base folder if the string\'s value does not denote a absolute path. Furthermore, the empty string will create a file object denoting the project\'s base folder (i.e. the folder containing the build script currently executed). Notice that `.` and `..` denote absolute paths, not relative ones. 
 |=================================
 
 [[el_file_properties,File Properties]]
 ==== File Properties ====
 
-Files and folders is Ant's bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to _get_ a file object in the first place. This is most easily done by using string property `tofile`:
+Files and folders is Ant\'s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to _get_ a file object in the first place. Consider:
 
 -------------------------------------
-
-  'myfolder'.tofile
-
+'myfolder'.tofile
+file('myfolder')
 -------------------------------------
 
-In this example of an EL expression, string `myfolder` is converted in a File object using property `tofile`. Then, having a file object at your finger tips, the following properties are available:
+Then, having a file object at your finger tips, the following properties are available:
 
-[cols="2*15%,70%"]
+[cols="30%,10%,60%"]
 |=================================
 | Property | Type | Description 
-| `absoluteFile` | File | The absolute form of this abstract pathname
-| `absolutePath` | String | The absolute form of this abstract pathname
-| `canonicalFile` | File | The canonical form of this abstract pathname
-| `canonicalPath` | String | The canonical form of this abstract pathname
-| `delete` | bool | deletes the file or folder (true); false otherwise 
-| `exists` | bool | check whether file or folder exists 
-| `isdir`  | bool | check whether a folder (directory) 
-| `isfile` | bool | check whether a file 
-| `ishidden` | bool | check whether a hidden file or folder 
-| `isread` | bool | check whether a file or folder is readable 
-| `iswrite` | bool | check whether a file or folder is writable 
-| `length` | int  | same as `size` 
-| `list`   | File | array of files in folder  
-| `mkdir`  | bool | creates the folder (and intermediate) folders (true); false otherwise 
+| `absolutefile` | file | The absolute form of this abstract pathname
+| `absolutepath` | string | The absolute form of this abstract pathname
+| `canonicalfile` | file | The canonical form of this abstract pathname
+| `canonicalPpath` | string | The canonical form of this abstract pathname
+| `delete` | boolean | deletes the file or folder (true); false otherwise 
+| `exists` | boolean | check whether file or folder exists 
+| `isdir`  | boolean | check whether a folder (directory) 
+| `isfile` | boolean | check whether a file 
+| `ishidden` | boolean | check whether a hidden file or folder 
+| `isread` | boolean | check whether a file or folder is readable 
+| `iswrite` | boolean | check whether a file or folder is writable 
+| `length` | integer  | same as `size` 
+| `list`   | list | array of files in folder  
+| `mkdir`  | boolean | creates the folder (and intermediate) folders (true); false otherwise 
 | `mtime`  | Date | last modification date  
-| `name`   | String | The basename 
-| `parent` | File | parent of file or folder as file object 
-| `path`   | String |abstract pathname into a pathname string.
-| `size`   | int  | number of bytes in a (existing) file; 0 otherwise
-| `toabs`| File | file or folder as absolute file object 
-| `tostr` | String | file name as string object 
+| `name`   | string | The basename 
+| `parent` | file | parent of file or folder as file object 
+| `path`   | string |abstract pathname into a pathname string.
+| `size`   | integer  | number of bytes in a (existing) file; 0 otherwise
+| `toabs`| file | file or folder as absolute file object 
+| `tostr` | string | file name as string object 
 | `touri`    | URI  | file as URI object 
 | `tourl`    | URL  | file as URL object 
 |=================================
@@ -535,7 +513,7 @@ In this example of an EL expression, string `myfolder` is converted in a File ob
 [[el_matcher_properties,Matcher Properties]]
 ==== Matcher Properties ====
 
-A _matcher object_ is created by task <<task_switch>> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked subexpression).
+A _matcher object_ is created by task <<task_switch>> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked_ subexpression).
 
 [cols="2*15%,70%"]
 |=================================
@@ -550,8 +528,24 @@ A _matcher object_ is created by task <<task_switch>> if a regular expression ma
 | `n`       | int     | Same as `groups` 
 | `pattern` | string  | The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions. 
 | `p`       | string  | Same as `pattern` 
-| _i_       | matcher | The matcher object for _i_'th capturing group. See task <<task_switch>> for examples. 
+| _i_       | matcher | The matcher object for _i_\'th capturing group. See task <<task_switch>> for examples. 
 |=================================
+
+[[el_project_properties,Project Properties]]
+==== Project Properties ====
+
+This sections lists additional properties that can be queried on an object of type `project`, i.e. of an Ant project. For natural properties, checkout the Javadoc of class org.apache.tools.ant.Project footnote:[for example http://javadoc.haefelinger.it/org.apache.ant/1.7.1/org/apache/tools/ant/Project.html].
+
+[cols="25%,15%,60%"]
+|=================================
+| Property  | Type | Description 
+| `basedir` | file     | The project\'s base directory as file object. 
+| `targets` | list     | A list of all target names
+| `tasks`   | list     | A list of all taskdef and macrodef names
+| `taskdefs`| list     | A list of all taskdef names 
+| `macrodefs` | list   | A list of all macrodef names
+|=================================
+
 
 [[el_type_conversion,Type Conversion]]
 === Type Conversion ===

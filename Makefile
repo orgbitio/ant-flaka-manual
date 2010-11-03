@@ -51,7 +51,7 @@ flaka.db4 : \
 # Tools
 #
 
-DBLATEX.cmd  = dblatex -S flaka.specs -o $@ $<
+DBLATEX.cmd  = dblatex --verbose -S flaka.specs -o $@ $<
 ASCIIDOC.cmd = asciidoc -b docbook -o $@ $<
 SAX.cmd      = java -jar ~/saxon/saxon9he.jar
 XSLT.cmd     = xsltproc --nonet --novalid
