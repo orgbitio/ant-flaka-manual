@@ -99,7 +99,7 @@ Assume that EL references have been globally enabled and your task is to echo a 
 [[el_data_types,EL Data Types]]
 === Data Types ===
 
-Elements of the following types can be used when writing EL expressions:
+The following types can be used when writing EL expressions:
 
 * _null_ to represent the absence of any data  
 * _integer_ for integer values
@@ -107,6 +107,7 @@ Elements of the following types can be used when writing EL expressions:
 * _boolean_ to express boolean logic
 * _string_ to represent char sequences
 * _list_ for iterable types
+* _map_ for dictionary like types
 * _file_ representing file objects
 * _project_ representing Ant project instances
 * _object_ for all other data values
@@ -182,40 +183,31 @@ This are the most important operators defined in EL:
 [[el_implicit_objects,EL Implicit Object]]
 === Implicit Objects ===
 
-Flaka provides a couple of implicit objects that can be utilized when writing <<el>> expressions:
+Flaka provides implicit objects that can be utilized writing <<el>> expressions:
 
-[cols="1*25%,75%"]
+[cols="1*25%,75%",frame="topbot",grid="none",options="header,footer"]
 |==================================
 | Implicit Object | Description 
-| project         | Ant\'s underlying project object. It can be used to query the default target, base folder and other things. If you want to query properties, references, targets, tasks, taskdefs, macrodefs, filters etc., use appropriate implicit object instead. 
+| project         | The current Ant project as object. To query the project\'s default target, base folder and other things (see also <<el_project_properties,project properties>> and <<el_natural_properties,natural properties>>). 
 | property | Use this object to query project properties. 
-| var | A object containing all project references.  
-| reference | A synonym for `var` 
-| target| Contains all `target`s
-| taskdef| Contains all `taskdef`s 
-| macrodefs| Contains all `macrodef`s
-| tasks| Either taskdef or macrodef. Macros are specialized task and thus same the same namespace. 
-| filter| A object containing all filters defined in this project. 
-| e | The mathematical number http://en.wikipedia.org/wiki/E_(mathematical_constant)[e], also known as http://en.wikipedia.org/wiki/Euler[Euler]\'s number.
+| e | The mathematical number http://en.wikipedia.org/wiki/E_(mathematical_constant)[e], also known as http://en.wikipedia.org/wiki/Euler[Euler]'s number.
 | pi | The number http://en.wikipedia.org/wiki/PI[PI] 
 |==================================
 
-As an example how to make use of this implicit objects assume that there is a Ant build script like
+The following implicit objects are deprecated:
 
--------------------------------------
-<project xmlns:c="antlib:it.haefelinger.flaka" name="helloworld">
-  <property name="foo" value="bar" />
-  <c:let>x = list('a','b')</c:let>
-  ..
-</project>
--------------------------------------
+[cols="1*25%,75%",frame="topbot",grid="none",options="header,footer"]
+|==================================
+| Implicit Object | Alternative
+| reference | `project.references`
+| var | `project.references`
+| target| `project.targets`
+| taskdef| `project.taskdefs`
+| macrodefs| `project.macrodefs`
+| tasks| `project.tasks`
+| filter| `project.filters`
+|==================================
 
-Then you could use implicit object `project` to query the project\'s name, the value of property `foo` and the object value of variable `x` like
--------------------------------------
-project.name            ;; `helloworld'
-property.foo            ;; `bar'
-var.x                   ;; [a, b]
--------------------------------------
 
 [[el_functions,EL Functions]]
 === Functions ===
@@ -234,28 +226,46 @@ This sections presents functions defined by Flaka and which are available withou
 
 A function to determine the object\'s type:
 -------------------------------------
-typeof(null)            ;; 'null'
-typeof('')              ;; 'string'
-typeof(3)               ;; 'int'
-typeof(pi)              ;; 'float'
-typeof(true)            ;; 'bool'
-typeof(list())          ;; 'list'
-typeof(file('.'))       ;; 'file'
-typeof(project)         ;; 'project'
-typeof(other)           ;; 'object'
+typeof(null)               ; 'null'
+typeof('')                 ; 'string'
+typeof(3)                  ; 'int'
+typeof(pi)                 ; 'float'
+typeof(true)               ; 'bool'
+typeof(list())             ; 'list'
+typeof(file('.'))          ; 'file'
+typeof(project)            ; 'project'
+typeof(project.properties) ; 'map'
+typeof(other)              ; 'object'
 -------------------------------------
+
+===== `nativetype(T):string` =====
+
+Use this function to determine native type, the type of the underlying implementation, of the given argument.
+-------------------------------------
+nativetype(null)                ; ''
+nativetype('')                  ; 'java.lang.String'
+nativetype(3)                   ; 'java.lang.Long'
+nativetype(pi)                  ; 'java.lang.Double'
+nativetype(true)                ; 'java.lang.Boolean'
+nativetype(list())              ; 'java.util.ArrayList'
+nativetype(file(project))       ; 'java.io.File'
+nativetype(project)             ; 'org.apache.ant.tools.Project'
+nativetype(project.properties)  ; 'java.util.Hashtable'
+nativetype(file(project).mtime) ; 'java.util.Date'
+-------------------------------------
+
 
 ===== `size(T):integer` =====
 
 The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive typeslike `int`, `null`, `float`, `bool`. Otherwise the object\'s size is determined via a `size` or `length` property.
 -------------------------------------
-size(null)            ;; 0
-size(3)               ;; 0
-size(pi)              ;; 0
-size(true)            ;; 0
-size(file(..))        ;; 0
-size(project)         ;; 0
-size(object)          ;; object.size or object.length or 0
+size(null)            ; 0
+size(3)               ; 0
+size(pi)              ; 0
+size(true)            ; 0
+size(file(..))        ; 0
+size(project)         ; 0
+size(object)          ; object.size or object.length or 0
 -------------------------------------
  
 ===== `nullp(T):boolean` =====
@@ -263,12 +273,12 @@ size(object)          ;; object.size or object.length or 0
 Evaluates to `true` if object is the `null` entity and `false` otherwise. Compare this function with operator `empty` which returns `true` if eiher the object in question does not exist or if literally empty, for example the empty list or the empty string.
 
 -------------------------------------
-nullp(null)            ;; true
-nullp(list())          ;; false
-nullp('')              ;; false
-empty null             ;; true
-empty list()           ;; true
-empty ''               ;; true
+nullp(null)            ; true
+nullp(list())          ; false
+nullp('')              ; false
+empty null             ; true
+empty list()           ; true
+empty ''               ; true
 -------------------------------------
 
 ==== File and Folder Functions ====
@@ -386,8 +396,9 @@ join(':','a',2)              ; join(':',list('a',2))
 
 
 ==== Mathematical Functions ====
-[cols="35%,65%"]
+[cols="45%,55%",frame="topbot",grid="none",options="header,footer"]
 |=================================
+| Function | Description 
 | `sin(double):double` | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[sine] function 
 | `cos(double):double` | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[cosine] function 
 | `tan(double):double` | The mathematical http://en.wikipedia.org/wiki/Trigonometric_functions[tangent] function 
@@ -430,6 +441,7 @@ obj.notexisting          ; null
 
 Now it\'s about time to tell, which properties are available.
 
+[[el_natural_properties,Natural Properties]]
 ==== Natural Properties ====
 
 A _natural_ property `x` exits if the underlaying Java object has a public getter method with the same name as `x` and where the names are compared caseinsensitively. Assume that we have on object `f` of type `java.io.File` footnote:[see http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html]. The following listing shows two natural properties on object `f` and how `f` will be used by the underlying EL implementation:
@@ -459,7 +471,7 @@ list('a','b')[2]    ; null
 
 Table above lists properties that can be queried besides natural properties:
 
-[cols="2*15%,70%"]
+[cols="2*15%,70%",frame="topbot",grid="none",options="header,footer"]
 |=================================
 | Property | Type | Description 
 | length   | int  | number of characters in this string 
@@ -482,7 +494,7 @@ file('myfolder')
 
 Then, having a file object at your finger tips, the following properties are available:
 
-[cols="30%,10%,60%"]
+[cols="30%,10%,60%",frame="topbot",grid="none",options="header,footer"]
 |=================================
 | Property | Type | Description 
 | `absolutefile` | file | The absolute form of this abstract pathname
@@ -515,7 +527,7 @@ Then, having a file object at your finger tips, the following properties are ava
 
 A _matcher object_ is created by task <<task_switch>> if a regular expression matches a input value. Such a matcher object contains details of the match like the start and end position, the pattern used to match and it allows to explore details of capturing groups (also known as _marked_ subexpression).
 
-[cols="2*15%,70%"]
+[cols="2*15%,70%",frame="topbot",grid="none",options="header,footer"]
 |=================================
 | Property | Type     | Description 
 | `start`   | int     | The position within the input where the match starts. 
@@ -536,7 +548,7 @@ A _matcher object_ is created by task <<task_switch>> if a regular expression ma
 
 This sections lists additional properties that can be queried on an object of type `project`, i.e. of an Ant project. For natural properties, checkout the Javadoc of class org.apache.tools.ant.Project footnote:[for example http://javadoc.haefelinger.it/org.apache.ant/1.7.1/org/apache/tools/ant/Project.html].
 
-[cols="25%,15%,60%"]
+[cols="25%,15%,60%",frame="topbot",grid="none",options="header,footer"]
 |=================================
 | Property  | Type | Description 
 | `basedir` | file     | The project\'s base directory as file object. 
@@ -556,13 +568,13 @@ Every EL expression is evaluated in the context of an _expected_ type. When a ev
 
 The following table describes the conversion of object `obj` into an boolean value:
 
-[cols="30%,70%"]
+[cols="30%,70%",frame="topbot",grid="none",options="header,footer"]
 |=================================
-| actual type | result 
+| Type        | Result 
 | null        | `false`
 | string      | `false` if obj is `""`, otherwise `Boolean.valueof(obj)`
 | boolean     | obj
 | file        | `true` if the file described by obj exists
-| object      | false
+| _other_      | false
 |=================================
 
