@@ -41,13 +41,15 @@
     <xsl:text>%&#10;</xsl:text>
     <xsl:text>% Let's rock!&#10;</xsl:text>
     <xsl:text>%&#10;</xsl:text>
+    <xsl:text>\usepackage{layout}%&#10;</xsl:text>
     <xsl:text>\begin{document}&#10;</xsl:text>
+    <xsl:text>\layout*&#10;</xsl:text>
     <!-- 
     <xsl:text>\preamble&#10;</xsl:text>
     -->
     <!-- ?? -->
     <xsl:call-template name="label.id"/>
-
+    
     <!-- Render -->
     <xsl:apply-templates select="
                                  *[not(self::abstract or
@@ -88,7 +90,7 @@
 
     <!-- Parameters to pass to python parser -->
     <xsl:call-template name="py.params.set"/>
-    <xsl:text>\documentclass[10pt]{article}&#10;</xsl:text>
+    <xsl:text>\documentclass[]{article}&#10;</xsl:text>
     
     <!-- Load babel before the style (bug #babel/3875) -->
     <xsl:call-template name="babel.setup"/>

@@ -32,7 +32,11 @@
 }
 
 % wanna have A4 paper in any case.
-\usepackage[a4paper]{geometry}
+\usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
+\addtolength{\hoffset}{-1cm}
+% That will be ~ 73 characters per line when set in 11pt.
+%\addtolength{\textwidth}{-2cm}
+
 %\usepackage[english]{babel}
 
 %
@@ -98,7 +102,7 @@
 }
 
 \setlength{\parindent}{0cm}
-\setlength{\marginparwidth}{4cm}
+% The width of the margin text block
 
 \xdefinecolor{red}{rgb}{1.0,0.0,0.0}
 \xdefinecolor{greenyellow}{rgb}{0.85,1,0.31}
@@ -123,7 +127,7 @@
     Wolfgang H\"afelinger\\
     h\"afelinger IT\\[1cm]
     Flaka, version \textbf{\flakaversion}\\[2cm]
-    \today\\ document version 1.0\\[1cm]
+    \today\\ draft document version 1.0\\[1cm]
  \end{flushright}
 }
 
@@ -158,8 +162,6 @@
     }%
 }%
 
-%\makeatother 
-
 \renewcommand{\cftaftertoctitle}{
   \thispagestyle{empty}
 } 
@@ -170,8 +172,7 @@
 \allsectionsfont{\normalsize\normalfont}
 
 
-\addtolength{\textwidth}{-1cm}
-\setlength{\marginparsep}{2cm}
+%\setlength{\marginparsep}{2cm}
 
 
 %
@@ -214,7 +215,7 @@
 
 \rhead{ 
   \begin{picture}(0,0) 
-    \put(20,0){\parbox[t][5cm]{5cm}{
+    \put(60,0){\parbox[t][2cm]{5cm}{
         \color{red}
         \vspace{1cm}
         Flaka \flakaversion\\
