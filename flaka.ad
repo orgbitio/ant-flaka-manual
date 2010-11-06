@@ -13,10 +13,6 @@ author wh@haefelinger.it
 //
 
 include::sections/introduction.ad[]
-//
-// The glossary
-//
-include::sections/glossary.ad[]
 
 [[part1, Installation]]
 == Installation ==
@@ -71,6 +67,13 @@ include::sections/task_trycatch.ad[]
 [[part9, Other Tasks]]
 == Other Tasks ==
 include::sections/task_install-property-handler.ad[]
+
+//
+// The glossary
+//
+[[glossary]]
+== Flaka Glossary ==
+include::sections/glossary.ad[]
 
 //
 // A chapter about doing things with Flaka

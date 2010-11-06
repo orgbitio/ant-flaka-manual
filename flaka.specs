@@ -6,7 +6,7 @@
 # To use this file, apply option -S <file> when using dblatex
 
 TexInputs: texmf
-TexStyle:  flaka
+#TexStyle:  flaka
 # Hint: The name of this option is kind of misnamed. It defines the name of the XSLT
 # stylesheet to apply.
 XslParam:  xsl/flaka.xsl

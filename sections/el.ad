@@ -418,9 +418,9 @@ join(':','a',2)              ; join(':',list('a',2))
 It\'s best to introduce properties with three simple examples. It\'s about to ask a string about his uppercase variant, about it\'s length and about to create a folder with the string\'s value. 
 
 -------------------------------------
-'abc'.toupper           => 'ABC'
-'abc'.length            => 3
-'abc'['tofile'].mkdir   => true/false
+'abc'.toupper           ; 'ABC'
+'abc'.length            ; 3
+'abc'['tofile'].mkdir   ; true/false
 -------------------------------------
 
 The specification of EL provides only a notation to query an object for a property. EL does not specfic which properties must exists nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how the query a property must be written. Consider:
@@ -447,8 +447,8 @@ Now it\'s about time to tell, which properties are available.
 A _natural_ property `x` exits if the underlaying Java object has a public getter method with the same name as `x` and where the names are compared caseinsensitively. Assume that we have on object `f` of type `java.io.File` footnote:[see http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html]. The following listing shows two natural properties on object `f` and how `f` will be used by the underlying EL implementation:
 
 -------------------------------------
-f.name             ; f.getName()
-f['parentfile]     ; f.getParentFile()
+f.name              ; f.getName()
+f['parentfile']     ; f.getParentFile()
 -------------------------------------
 
 
@@ -500,7 +500,7 @@ Then, having a file object at your finger tips, the following properties are ava
 | `absolutefile` | file | The absolute form of this abstract pathname
 | `absolutepath` | string | The absolute form of this abstract pathname
 | `canonicalfile` | file | The canonical form of this abstract pathname
-| `canonicalPpath` | string | The canonical form of this abstract pathname
+| `canonicalpath` | string | The canonical form of this abstract pathname
 | `delete` | boolean | deletes the file or folder (true); false otherwise 
 | `exists` | boolean | check whether file or folder exists 
 | `isdir`  | boolean | check whether a folder (directory) 

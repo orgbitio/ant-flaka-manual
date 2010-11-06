@@ -24,85 +24,34 @@
   \usepackage{ifxetex}  %
   \usepackage{xltxtra}  % provides also \XeTeX
   \usepackage{fontspec}
-  \setmonofont{Andale Mono} 
   \usepackage{cmbright}
 }{%
   \newif\ifxetex
   \xetexfalse
 }
 
-% wanna have A4 paper in any case.
-\usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
-\addtolength{\hoffset}{-1cm}
-% That will be ~ 73 characters per line when set in 11pt.
-%\addtolength{\textwidth}{-2cm}
+% Fancy package to easily define \section, \subsection etc the way you
+% like it. 
+\usepackage{titlesec}
 
-%\usepackage[english]{babel}
-
-%
-% Still required when using XeTeX (??)
-%
 \usepackage[T1]{fontenc}
-% TODO: make sure that we are processing an UTF-8 document.
-
 \usepackage[subfigure]{tocloft}
 \usepackage[usenames]{xcolor}
-% 
-% lastpage:
-% provides me with a nice (?) counter for the total number of pages
-%
 \usepackage{lastpage}
-\usepackage{sectsty}
 \usepackage{fancyhdr}
 \usepackage{everypage}
 \usepackage{afterpage}
-
-% dbk packages
 \usepackage{float}
-
-%
+\usepackage{ellipsis,ragged2e,marginnote}
 % Make sure that dbk_core is using default values of package listings 
-%
-
 \newcommand{\lstparamset}{}
 \usepackage{dbk_core}
+\usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
 
 
-\usepackage{
-  ellipsis, 
-  ragged2e, 
- marginnote
-}
+% Move the whole layout one centimeter left.
+\addtolength{\hoffset}{-1cm}
 
-
-%
-% tocdepth specifies the depth of numbering while making the Table of Contents
-%
-\setcounter{tocdepth}{5}
-
-%
-% Specifies how deep section numbering goes.
-%
-\setcounter{secnumdepth}{0}
-
-
-\title{}
-\author{}
-
-\hypersetup{
-      bookmarks=true,
-      pdftitle={The Flaka \flakaversion Manual},
-      pdfauthor={Wolfgang Häfelinger},
-      pdfsubject={The Flaka Documentation},
-      pdfcreator={XeTeX},        
-      pdfproducer={haefelinger IT},
-      pdfkeywords={flaka,ant,häfelinger IT,english,Wolfgang Häfelinger},
-      urlcolor=red,
-      linkcolor=blue
-}
-
-\setlength{\parindent}{0cm}
-% The width of the margin text block
 
 \xdefinecolor{red}{rgb}{1.0,0.0,0.0}
 \xdefinecolor{greenyellow}{rgb}{0.85,1,0.31}
@@ -111,13 +60,35 @@
 \newcommand{\fgcolordefault}{black}
 \newcommand{\bgcolordefault}{white}
 
+
+\titleformat*{\section}{\pagebreak\LARGE\color{red}}
+\titleformat*{\subsection}{\Large\color{red}}
+\titleformat*{\subsubsection}{\large\color{red}}
+
+\title{}
+\author{}
+
+\hypersetup{
+  bookmarks=true,
+  pdftitle={The Flaka \flakaversion Manual},
+  pdfauthor={Wolfgang Häfelinger},
+  pdfsubject={The Flaka Documentation},
+  pdfcreator={XeTeX},        
+  pdfproducer={haefelinger IT},
+  pdfkeywords={flaka,ant,häfelinger IT,english,Wolfgang Häfelinger},
+  urlcolor=red,
+  linkcolor=blue
+}
+
+\setlength{\parindent}{0cm}
+
+
 %
 % gap between lines
 %
 \renewcommand{\baselinestretch}{1.1}
 
 \newcommand{\coverpage}{
-  %\label{labelcoverpage}
   \thispagestyle{empty}
   \pagecolor{red}
   \color{white}
@@ -130,59 +101,6 @@
     \today\\ draft document version 1.0\\[1cm]
  \end{flushright}
 }
-
-%
-% Redefining \section and \subsection
-%
-% Note: when using  character '@' within a definition I would need to embrace
-% it by \makeatletter .. \maketoletter. However, this needs only be done when
-% within a document. Here I am within a package and therefore I can ommit it.
-
-%\makeatletter 
-
-\renewcommand\section{\pagebreak%
-\@startsection {section}{1}{\z@}% 
-  {-2.5ex \@plus -1ex \@minus -.2ex}% 
-  {1.3ex \@plus.2ex}% 
-  {\color{red}\normalfont\Huge}} 
-
-\renewcommand\subsection{%
-\@startsection {subsection}{1}{\z@}% 
-  {-2.5ex \@plus -1ex \@minus -.2ex}% 
-  {1.3ex \@plus.2ex}% 
-  {\color{red}\normalfont\Huge}} 
-
-%
-% Redefine \subsubsection command.
-%
-
-\renewcommand\subsubsection{%
-    \@startsection{subsubsection}{2}{\z@}{1pt}{1pt} {%
-         \Large\color{red}
-    }%
-}%
-
-\renewcommand{\cftaftertoctitle}{
-  \thispagestyle{empty}
-} 
-
-\renewcommand{\cfttoctitlefont}{\color{red}\large} 
-\renewcommand{\cftsecfont}{\color{red}\normalfont\scshape} 
-
-\allsectionsfont{\normalsize\normalfont}
-
-
-%\setlength{\marginparsep}{2cm}
-
-
-%
-% Define how pages look like
-%
-\pagestyle{fancy}
-\fancyhf{}
-\setlength{\headheight}{14pt}
-\renewcommand{\headrulewidth}{0pt} 
-\renewcommand{\footrulewidth}{0pt} 
 
 %
 % What I want to achive is a kind of logo showing up in a kind of sidebar, something like
@@ -213,6 +131,13 @@
 % 2. within the picture, use a \put statement to put your logo wherever you like.
 % This is how it's implemented below.
 
+% Use this pagestyle to make it work
+\pagestyle{fancy}
+% Cancel the header text
+\fancyhf{}
+% Cancel the line in the head
+\renewcommand{\headrulewidth}{0pt} 
+% Define what to put on the right side ..
 \rhead{ 
   \begin{picture}(0,0) 
     \put(60,0){\parbox[t][2cm]{5cm}{
@@ -247,27 +172,15 @@ This document got written in Asciidoc markup and translated into DocBook by usin
 }
 
 
-
-
-%
-% gap between paragraphs 
-%
-
-\setlength{\parskip}{11pt plus 2pt minus 2pt} 
-
-%
-% How to render source code ..
-%
-
 \lstset{ %
   language=XML,
-  xleftmargin=20pt,
+  xleftmargin=1em,
   aboveskip=1em,
-  belowskip=0pt,
+  belowskip=1em,
   frame=leftline,
-  framexleftmargin=6pt,
+  framexleftmargin=1ex,
   rulecolor=\color{red},
-  basicstyle=\footnotesize,
+  basicstyle=\small,
   numbers=none,
   numberstyle=\footnotesize,
   stepnumber=2,

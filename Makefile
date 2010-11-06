@@ -9,6 +9,8 @@ flaka.pdf : flaka.db4
 flaka.db4 : flaka.ad
 	$(ASCIIDOC.cmd)
 
+flaka.tex : flaka.db4
+	dblatex --verbose -S flaka.specs --type=tex -o $@ $<
 #
 # Trigger
 #
