@@ -283,19 +283,19 @@ empty ''               ; true
 
 ==== File and Folder Functions ====
 
-===== `file(T):file` =====
-Creates and returns a file object out of `object`. If `object` is already a file, the object is simply returned. Otherwise if the object is not of type Project, the object is stringized and that string is taken as the file\'s path name. 
+===== `file(T..):file` =====
+A function to create a `file` object. If `file()` is called without argument, then the current working directory is returned. Otherwise, if the function is called with one argument and that argument is already a file, the argument is simply returned. Otherwise, if the argument\'s type is `project`, then the base directory of that Ant project is returned. If the argument is a `list` type, the a file is constructed based on the list\'s elements. Otherwise the argument stringized. If the stringized argument consists only of whitespace, then the current working directory is returnd while otherwise that string is taken as the file\'s path name. If `file()` is called with two or more arguments, then the behaviour is the same as if `file()` would have been called with one list argument where the list consists of the function\'s arguments.
 
-If the argument is an Ant project, then the project\'s base directory is returned as file object. Thus the following example iterates over all files and folders in the project\'s base directory:
 -------------------------------------
-<c:for var="f" in=" file(project).list ">
- <c:echo>#{f}</c:echo>
-</c:for>
+file()               ; your JVM current work directory
+file('.')            ; file()
+file(file(arg))      ; file(arg)
+file(project)        ; project.basedir
+file(list('/',a))    ; file('/',file(a))
+file(other)          ; file(format('%s',other)) 
+file(a,b,c)          ; file(list(a,b,c))
+file(a,list(b,c),d)  ; file(list(a,b,c,d))
 -------------------------------------
-This function can be used to return the current working directory - which might be very different from the project\'s base directory. To do so, simply try `file('.')`.
-
-If no argument is given, then object `null` is returned.
-
 
 ==== String Functions ====
 
