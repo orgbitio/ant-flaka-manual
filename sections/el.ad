@@ -1,19 +1,19 @@
 
-The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified_Expression_Language], further in this document abbreviated as _EL_, is a special purpose programming language typically used for embedding expressions in web applications. While EL is part of the JSP Specification, it does not depend on JSP and can therefore be used in a variety of other contexts. One such context is Ant. Consider the following example:
+The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified_Expression_Language], further in this document abbreviated as _EL_, is a special purpose programming language typically used for embedding expressions in web applications. While EL is part of the JSP Specification, it does not depend on JSP and can therefore be used in a variety of other contexts. One such context is Ant. Consider the following example footnote:[To make this example work, one need to globally enable EL for all string contexts. By default, EL is _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`]:
 
 -------------------------------------
 <echo>
-  Modified #{ format('%tA, %1$tD', file(project).mtime) }
+  Modified #{ format('%tD', file(project).mtime) }
 <echo>
 -------------------------------------
 
-The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` accepts an arbitrary number of arguments. Two arguments are provided in this example. A string argument as the first argument while the second argument is the object returned by querying property `mtime` on the object returned by calling standard function `file()` with one argument, namely `project`. `project` is an implicit object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time available as property `mtime`. The whole EL expression is embedded in a textual context, here the standard Ant echo task is used for demonstration footnote:[To make this example work, one need to globally enable EL for all string contexts. By default, EL is _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
+The EL expression here, a function call with two arguments, utilizes two standard of Flaka\'s standard functions, namely `format()` for creating a string and `file()` for turning something into a file object. Function `format()` accepts an arbitrary number of arguments. Two arguments are provided in this example. A string argument as the first argument while the second argument is the object returned by querying property `mtime` on the file object returned `file(project)`.  Argument `project` is one of Flaka\'s implicit objects. In particular, `project` represents the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time available as property `mtime`. The whole EL expression is embedded in the textual context of Ant\'s standard `echo` task.  The embedment is done using `#{` and `}` respectively. When executed, this snippet produces something like
  
 -------------------------------------
-[echo] Modified Friday, 10/29/10
+[echo] Modified 10/29/10
 -------------------------------------
 
-Here are some further examples, demonstrating the power EL offers:
+Here are some further examples of EL expressions:
 
 -------------------------------------
 7 * (5.0+x) >= 0             ; (1)
@@ -28,24 +28,125 @@ size(file('.').list)         ; (7)
 The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as variable. A Boolean expression is shown in the second example using operators `and`, `not` and operator `||`. The same expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and conditional operator `?:`. The expression could be read like: check whether a (list) object is empty. If empty, return `null`, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
 
 [[el_enabling_el,Embedding EL]]
-=== Syntatic Sugar ===
+=== EL References ===
 
-At this point of reading the probably most important question to be answered is
+It turned out that it is a good idear to have a clear distinction between properties and EL expressions. Therefore, an EL expression must be enclosed by `#{..}` rather than by `${..}`. A enclosed EL expression is called an reference to a EL expression. Similarly is `${..}` named a reference to a Ant property. Consider:
 
-* _How can I use EL in my build file?_
-
-
-If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everywhere where you can use an Ant property reference `${..}`. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
 ---------------------------
+<echo>
+ ${3 * 4}   ; Property reference
+ #{3 * 4}   ; EL expression reference
+</echo>
+---------------------------
+
+Ant is by default not aware of EL. Thus the EL reference `#{3 * 4}` would not be evaluated and would be passed as is. To let Ant evaluate EL expression references, EL must be enabled footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this]. Once enabled, EL references can be used wherever Ant property references can be used. Consider:
+
+---------------------------
+<echo>
+ #{3 * 4}   ; still #{3 * 4}
+</echo>
+<c:install-property-handler />
 <property name="twelve" value="#{ 3 * 4 }" />
-<echo message="${twelve} = #{ 3 * 4}">   ; 12 = 12
+<echo>
+ #{3 * 4}   ; 12  
+ ${twelve}  ; 12
+</echo>
+---------------------------
+==== Enabling ====
+
+To enable EL references in addition to Ant property references, Ant\'s standard property helper engine must be exchanged. This is best done using Flaka\'s  <<task_install_property_handler,`install-property-handler`>> task. This task can be used everywhere. It is however recommended to (a) call it only once (b) to call it as early as possible.
+
+Starting with version 1.8 Ant provides a task for switching property helpers. This task can also be used to change the characteristics how Ant property references are handled. To support this new property API, Flaka provides a second Antlib in addition to the standard one. Consider:
+
+---------------------------
+<project xmlns:prop="antlib:it.haefelinger.flaka.prop">
+ <propertyhelper>
+    <prop:elreferences />
+ </propertyhelper>
+ <echo>
+   #{ 3 * 4 }   ; 12
+ </echo>
+</project>
 ---------------------------
 
-As mentioned before, EL references can be used in any context one can apply Ant property references. Ant properties are strings, thus Ant properties are used in string contexts and consequently the same applies for EL references. When an EL reference is seen, then the expression is evaluated according to EL rules into an object of some type _T_. Then, in a second step, that object value is coerced footnote::[implicitly type converted] into a string.
+For those who want to stay more inline with Ant property references, Flaka ships with a property evaluator. When this evaluator is plugged in, then `${..}` will be evaluated as EL reference. Consider:
 
-Flaka on the other hand is EL aware. This means that regardless of whether EL has been globally enabled or not, do all tasks provided by Flaka understand EL references `#{..}`.
+---------------------------
+<project xmlns:prop="antlib:it.haefelinger.flaka.prop">
+ <propertyhelper>
+    <prop:elevaluator />
+ </propertyhelper>
+ <echo>
+   ${ 3 * 4 }   ; 12
+ </echo>
+</project>
+---------------------------
 
-In addition, attributes of tasks provided by Flaka can be _typed_. This means that the argument of such an attribute is treated as EL expression. Evaluating that expression is expected to result in a value of an _expected type_. Consider attribute `test` of Flaka\'s <<task_when,`when`>> task:
+==== Conversion ====
+
+Ant properties are strings, thus Ant properties are used in string contexts and consequently the same applies for EL references. When an EL reference is seen, the EL expression is firstly evaluated into an object of some type _T_. Then, in a second step, that object value is coerced footnote::[implicitly type converted] into a string value.
+
+==== Nested References ====
+
+Nested references are _not_ supported. The following example, which tries to do some sort of meta-programming on implicit object `project`, is therefore illegal
+
+-------------------------------------
+<c:echo>
+     #{ project.#{ property } }   ; illegal
+</c:echo>
+-------------------------------------
+
+==== Nested Properties ====
+
+Ant property references `${..}` are resolved before any EL reference is resolved. Consider:
+
+-------------------------------------
+<property name="pname" value="basedir" />
+<c:echo>
+     #{ project.${pname} }        ; project.basedir
+     ${ project.#{ 'basedir' }}   ; no way
+</c:echo>
+-------------------------------------
+
+==== The Great Escape ====
+
+How about to print a text sequence like `#{ 3 * 4}`. In other words, how to disable evaluation of an EL reference? Consider:
+-------------------------------------
+<c:echo>
+     #{ 3 * 4 }        ; 12
+    \#{ 3 * 4 }        ; #{ 3 * 4 }
+  #{'{'}3 * 4 }        ; #{ 3 * 4 }
+    ##{ 3 * 4 }        ; #12
+    \#{                ; \#{
+    $${twelve}         ; ${twelve}
+    $$x                ; $x
+</c:echo>
+-------------------------------------
+
+Please notice that escaping a property reference is different than escaping a EL reference. By default, Ant stops evaluation of property references if the reference is prefixed with a dollar character. In addition, every double dollar sequence `$$` is reduced into a single dollar character.
+
+Escaping in EL is different as the example above demonstrates. The prefered way is to prefix the EL reference with a backslash character `\\`.
+
+==== Whitespace ====
+
+Trailing and leading whitespace is meaningless within EL references. This is different from Ant properties where whitespace is meaning full. Consider:
+
+-------------------------------------
+<property name=" p " value="weired name ` p '" />
+<property name="p" value="regular name `p'" />
+<c:echo>
+     ${p}                 ; regular name `p'
+     ${ p }               ; weired name ` p '
+     #{ p }               ; regular name `p'
+     #{ property[' p '] } ; weired name ` p '
+</c:echo>
+-------------------------------------
+
+==== EL Awareness ====
+
+Flaka is naturally EL aware. Regardless of whether EL has been enabled or not, all Flaka tasks understand EL references `#{..}` without any additional action.
+
+In addition, attributes of tasks provided by Flaka can be _typed_. A argument provided to a _typed_ attribute is expected to be an EL expression. Evaluating that expression will be done in the context of an expected _type_. Consider attribute `test` of Flaka\'s <<task_when,`when`>> task:
 
 -------------------------------------
 <c:when test=" file(path).isdir ">
@@ -53,7 +154,7 @@ In addition, attributes of tasks provided by Flaka can be _typed_. This means th
 </c:when>
 -------------------------------------
 
-The underlying semantic of attribute `test` is that of a condition. If the condition evaluates to _true_, then all tasks embedded in _when_ are carried out and otherwise ignored. The expected type of that attribute is obviously `boolean`. The EL expression `file(path).isdir` is evaluated into an object and then implicitly converted into a boolean value.
+Attribute `test` is typed and it\'s expected type is `boolean`. The argument must be a an EL expression, here `file(path).isdir`. That EL expression will be evaluated into some object and then, in a second step coerced into a boolean value.
 
 Notice that Ant and EL references can be used in typed attributes. After all, a typed attribute is a regular attribute as far as Ant is concerned. It is just Flaka who is evaluating the expression as EL. Thus consider this kind of meta-programming , that all attributes are handled by the currently installed property handler. Thus even for attribute `test` the normal attribute rules apply. Consider this kind of meta-programming where by default an object is queried for property `isdir` subject to whether variable `prop` is empty or not. If not empty, then the value is queried for property `prop`:
 
@@ -65,37 +166,7 @@ Notice that Ant and EL references can be used in typed attributes. After all, a 
 
 The following sections will handle some advanced issues regarding EL references and especially their relation with Ant property references.
 
-==== Nested EL References? ====
 
-Nested references are _not_ supported. The following example, which tries to do some sort of meta-programming on implicit object `project`, is therefore illegal
-
--------------------------------------
-<c:echo>
-     #{ project.#{ property } }   ; illegal
-</c:echo>
--------------------------------------
-
-==== Evaluation Order ====
-
-All Ant property references `${..}` are resolved before any EL reference is resolved:
-
--------------------------------------
-<c:echo>
-     #{ project.${ property } }   ; good
-     ${ project.#{ 'basedir' }}   ; no way
-</c:echo>
--------------------------------------
-
-==== The Great Escape ====
-
-Assume that EL references have been globally enabled and your task is to echo a text sequence like `#{ 3 * 4}`. How can you disable EL references from being evaluated? The following example snippet provides the answer:
--------------------------------------
-<c:echo>
-     #{ 3 * 4 }        ; 12
-    \#{ 3 * 4 }        ; #{ 3 * 4 }
-  #{'{'}3 * 4 }        ; #{ 3 * 4 }
-</c:echo>
--------------------------------------
 
 [[el_data_types,EL Data Types]]
 === Data Types ===
@@ -166,6 +237,41 @@ Once you have an object, you can in addition
 to retrieve another object. When does a property exist and how to retrieve it? This and other questions are answered in section <<el_properties>> while section <<el_implicit_objects>> lists available implicit objects and section <<el_functions>> is about functions to be used.
 
 Notice that EL does also not provide a notation for arrays or list objects nor is there a `list` data type. Nevertheless, Flaka provides a `list()` function to create a collection of arbitrary objects. There is also task `for` able to iterate over collection types and there is function `size()` which returns the number of items in a collection. How does this work? EL uses a concept called _duck typing_ where a object\'s type is not given by a class but rather by it\'s properties: _I call every object that walks, swims and quacks like a duck, a duck_. Thus properties are looked up during runtime and a object provides all required properties, the object is applied.
+
+[[el_variables]]
+=== Variables ===
+
+The EL language does not allow you to create variables and must thus be created by other means footnote:[See task <<task_let>> for creating EL variables, properties and overriding properties]. Nevertheless, variables can be used within expressions. When a _name_ is evaluated, then _name_ is looked up 
+
+* as implicit object; or
+* as entry in EL\'s variable dictionary; or
+* as Ant property name
+
+in this particular order, consider:
+
+-------------------------------------
+<property name="p" value="property" />
+<property name="q" value="property" />
+<c:let>
+ q = 'variable'
+</c:let>
+<echo>
+ ${p}           ; 'property'
+ #{p}           ; 'property'
+ ${q}           ; 'property'
+ #{q}           ; 'variable'
+ #{property.q } ; 'property'
+</echo>
+-------------------------------------
+
+If no entry can be associated with _name_, then `null` will be the lookup\'s result. This has the interessting consequence, that EL references are _always_ disappearing, i.e. can always be resolved. Whereas unknown properties remain as  property references. Consider:
+
+-------------------------------------
+<echo>
+ ${not_a_name}  ; ${not_a_name}
+ #{not_a_name}  ; ''
+</echo>
+-------------------------------------
 
 
 [[el_operators]]
