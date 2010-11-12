@@ -39,7 +39,7 @@ This example demonstrates, how a given textual value can be compared using (1) r
 </glob>
 --------------------------------------
 
-The latter one, the glob expression, is much easier to grasp. There, `*` just stands for a sequence of arbitrary characters. In most pattern recognitzion tasks, this is all what is needed to get going. If more power is required, then regular expressions are the tool to be applied. Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string.
+The latter one, the glob expression, is much easier to grasp. There, `*` just stands for a sequence of arbitrary characters. In most pattern recognition tasks, this is all what is needed to get going. If more power is required, then regular expressions are the tool to be applied. Eventually `cmp` allows for simple text comparison without any meta-characters. It also allows to check whether the input string is before or after a given test string.
 
 ==== Attributes ====
 // cols=5
@@ -48,15 +48,15 @@ The latter one, the glob expression, is much easier to grasp. There, `*` just st
 | Attribute | Type   | Default | Description 
 | `value`   | string |    ""   | The string value that needs to be matched against.
 | `var`     | string |       - | Save details of this match as `matching object`. 
-| `not`     | bool | false | Whether to invert the test result or not.
-| `find`    | bool | false | Whether to match the input value partially (true) or as a whole (false) 
-| `debug`      | bool  | false | Whether to turn on extra debug information 
-| `literally` | bool | false | Whether to take an invalid expression literally or not.
-| `ignorecase` | bool | false  | Whether to enable case-insensitive matching. 
-| `comments`   | bool | false  | Whether to allow whitespace and comments in an _regex_. 
-| `dotall`     | bool | false  | Whether literal `.` matches _any_ character.
-| `unixlines`  | bool | false  | Whether _only_ `nl` is accepted as line terminator 
-| `multiline`  | bool | false | Whether `^` and `$` shall _only_ match begin and end of input
+| `not`     | boolean | false | Whether to invert the test result or not.
+| `find`    | boolean | false | Whether to match the input value partially (true) or as a whole (false) 
+| `debug`      | boolean  | false | Whether to turn on extra debug information 
+| `literally` | boolean | false | Whether to take an invalid expression literally or not.
+| `ignorecase` | boolean | false  | Whether to enable case-insensitive matching. 
+| `comments`   | boolean | false  | Whether to allow whitespace and comments in an _regex_. 
+| `dotall`     | boolean | false  | Whether literal `.` matches _any_ character.
+| `unixlines`  | boolean | false  | Whether _only_ `nl` is accepted as line terminator 
+| `multiline`  | boolean | false | Whether `^` and `$` shall _only_ match begin and end of input
 | _re_.`expr`  | string |    | Element `matches`: Specify a matching pattern as regular expression. 
 | _glob_.`expr` | string |   | Element `matches`: Specify a matching pattern as glob expression 
 | _cmp_.`lt` | string | -  | `<cmp/>`: Specify a matching pattern as glob expression 
@@ -88,7 +88,7 @@ Attribute *not* can be used to invert the result of a test match.
  </c:switch>
 --------------------------------------
 
-When applying a regular or glob expression on a test value, then by default, the expression must describe the whole test value for a sucessful match. Attribute *find* can be used to change this behaviour. Set to `true`, then a sucessful match is given if the expression describes a part of the input string:
+When applying a regular or glob expression on a test value, then by default, the expression must describe the whole test value for a successful match. Attribute *find* can be used to change this behaviour. Set to `true`, then a successful match is given if the expression describes a part of the input string:
 
 --------------------------------------
  <c:switch value="foobar">
@@ -110,7 +110,7 @@ Attribute *ignorecase* can be used to enable case-insensitive matching. This att
 
 Use attribute *comment* to enrich regular expressions by comments. When set, whitespace is ignored and embedded comments starting with # are ignored until the end of a line. Comments mode can also be enabled via the embedded flag expression `(?x)`.
 
-Attribute *dotall* can be used to change the characteristics of metacharacter `.`, the dot. By default all characters but line terminators are matched by this meta-character. When set, all characters are matched. The embedded equivalent is `(?s)` . 
+Attribute *dotall* can be used to change the characteristics of meta-character `.`, the dot. By default all characters but line terminators are matched by this meta-character. When set, all characters are matched. The embedded equivalent is `(?s)` . 
 
 Use attribute *unixlines* to let the regular expression engine accept `\n` as line termination character. The embedded flag expression is `(?d)`. 
 
@@ -143,7 +143,7 @@ Element *glob* is a task container similar to element *re*. The only difference 
 
 Element *cmp* is a task container similar to element *re* and *glob*. This element supports attributes *lt*, *eq* and *gt* in addition to inherited attributes. Embedded tasks are carried out if each comparison in each used attribute evaluates to true. If none of the attributes is used, then the condition is also satisfied.
 
-Element *otherwise* does not express a test clause and does not support any attributes. This element is a task container. Embedded tasks are carried out if attribute _switch_.`value` has been set and if none of the test-clauses matched. This element can be present more than once. Elements are carried out in syntatical order.
+Element *otherwise* does not express a test clause and does not support any attributes. This element is a task container. Embedded tasks are carried out if attribute _switch_.`value` has been set and if none of the test-clauses matched. This element can be present more than once. Elements are carried out in syntactical order.
 
 Element *default* is an alias name for element `otherwise`.
 
@@ -213,7 +213,7 @@ Matcher properties can also be used when using glob expressions. However, since 
 </c:switch>
 --------------------------------------
 
-Finally use element `cmp` to do text based comparision in absence of any meta characters. Since element `cmp` is not based on an regular expression engine, matcher properties are not available. Consider
+Finally use element `cmp` to do text based comparison in absence of any meta characters. Since element `cmp` is not based on an regular expression engine, matcher properties are not available. Consider
 
 --------------------------------------
 <c:switch value=" foobar ">
@@ -234,7 +234,7 @@ Element `cmp` can be used to sort text in alphabetical order. Consider:
 </c:switch>
 --------------------------------------
 
-==== Pathologicals ====
+==== Pathological ====
 
 Switch has been designed to be rather tolerant. No elements are required in which case of course nothing happens.
 --------------------------------------

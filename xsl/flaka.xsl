@@ -41,9 +41,7 @@
     <xsl:text>%&#10;</xsl:text>
     <xsl:text>% Let's rock!&#10;</xsl:text>
     <xsl:text>%&#10;</xsl:text>
-    <xsl:text>\usepackage{layout}%&#10;</xsl:text>
     <xsl:text>\begin{document}&#10;</xsl:text>
-    <xsl:text>\layout*&#10;</xsl:text>
     <!-- 
     <xsl:text>\preamble&#10;</xsl:text>
     -->

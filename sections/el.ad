@@ -1,5 +1,5 @@
 
-The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified_Expression_Language], further in this document abbreviated as _EL_, is a special purpose programming language typically used for embedding expressions in web applications. While EL is part of the JSP Specification, it does not depend on JSP and can therefore be used in a varity of other contexts. One such context is Ant. Conside the following example:
+The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified_Expression_Language], further in this document abbreviated as _EL_, is a special purpose programming language typically used for embedding expressions in web applications. While EL is part of the JSP Specification, it does not depend on JSP and can therefore be used in a variety of other contexts. One such context is Ant. Consider the following example:
 
 -------------------------------------
 <echo>
@@ -7,7 +7,7 @@ The _Unified Expression Language_ footnote:[http://en.wikipedia.org/wiki/Unified
 <echo>
 -------------------------------------
 
-The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` accepts an arbitrary number of arguments. Two arguments are provided in this example. A string argument as the first argument while the second argument is the object returned by querying property `mtime` on the object returned by calling standard function `file()` with one argument, namely `project`. `project` is an implict object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time available as property `mtime`. The whole EL expression is embedded in a textual context, here the standard Ant echo task is used for demonstration footnote:[To make this example work, one need to globally enable EL for all string contexts. By default, EL is _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
+The EL expression - here a function call with two arguments - utilizes two standard functions provided by Flaka, namely function `format()` for creating a string and function `file()` for creating a file object. Function `format()` accepts an arbitrary number of arguments. Two arguments are provided in this example. A string argument as the first argument while the second argument is the object returned by querying property `mtime` on the object returned by calling standard function `file()` with one argument, namely `project`. `project` is an implicit object representing the current Ant project. The evaluation of `file(project)` is the project\'s base directory as file object. Such a file object has various properties. One property is the file\'s last modification time available as property `mtime`. The whole EL expression is embedded in a textual context, here the standard Ant echo task is used for demonstration footnote:[To make this example work, one need to globally enable EL for all string contexts. By default, EL is _not_ globally enabled. To enable it globally, use Flaka\'s task `<c:install-property-handler/>`] and enclosed by `#{` and `}` respectively. This indicates that within this textual context, everything wrapped by `#{..}` must be evaluated as EL expression while everything outside is left as is. When executed, this snippet produces something like
  
 -------------------------------------
 [echo] Modified Friday, 10/29/10
@@ -25,16 +25,17 @@ project.name                 ; (6)
 size(file('.').list)         ; (7)
 -------------------------------------
 
-The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as variable. A boolean expression is shown in the second example using operators `and`, `not` and operator `||`. The same expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and conditional operator `?:`. The expression could be read like: check whether a (list) object is empty. If empty, return `null`, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
+The first expression (1) shows a algebraic equation. Notice the usage of `5.0` being of type float, `7` being an integral type and furthermore `x` as variable. A Boolean expression is shown in the second example using operators `and`, `not` and operator `||`. The same expression could also have been written like `a && !(b or false)`. Example (3) shows operator `empty` and conditional operator `?:`. The expression could be read like: check whether a (list) object is empty. If empty, return `null`, otherwise return the list\'s first item. The fourth and fifth expression shows two list generating functions - `list()` just collects all arguments into a list while `split()` breaks a string apart based on a regular expression. The project\'s name is queried in example (6) while example (7), calculates the number of files and folders in the current working directory.
 
 [[el_enabling_el,Embedding EL]]
-=== Embedding ===
+=== Syntatic Sugar ===
 
-At this point of reading the probably most important question to be answered is, 
+At this point of reading the probably most important question to be answered is
 
-* _Where and under what conditions can I embed EL in my build file?_
+* _How can I use EL in my build file?_
 
-If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everwhere where you can use an Ant property reference `${..}`. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
+
+If you globally enabled EL in your build file footnote:[see task <<task_install_property_handler,`install-property-handler`>> for how to do this] then the answer is simply, that you can embed an EL expression everywhere where you can use an Ant property reference `${..}`. An EL expression must then be written as EL reference, i.e. must be enclosed by `#{` and `}`. Consider:
 ---------------------------
 <property name="twelve" value="#{ 3 * 4 }" />
 <echo message="${twelve} = #{ 3 * 4}">   ; 12 = 12
@@ -48,11 +49,11 @@ In addition, attributes of tasks provided by Flaka can be _typed_. This means th
 
 -------------------------------------
 <c:when test=" file(path).isdir ">
-  <!-- do something whith that dir folder .. -->
+  <!-- do something with that dir folder .. -->
 </c:when>
 -------------------------------------
 
-The underlying semantic of attribute `test` is that of a condition. If the condition evalutes to _true_, then all tasks embedded in _when_ are carried out and otherwise ignored. The expected type of that attribute is obviously `boolean`. The EL expression `file(path).isdir` is evaluated into an object and then implicitly converted into a boolean value.
+The underlying semantic of attribute `test` is that of a condition. If the condition evaluates to _true_, then all tasks embedded in _when_ are carried out and otherwise ignored. The expected type of that attribute is obviously `boolean`. The EL expression `file(path).isdir` is evaluated into an object and then implicitly converted into a boolean value.
 
 Notice that Ant and EL references can be used in typed attributes. After all, a typed attribute is a regular attribute as far as Ant is concerned. It is just Flaka who is evaluating the expression as EL. Thus consider this kind of meta-programming , that all attributes are handled by the currently installed property handler. Thus even for attribute `test` the normal attribute rules apply. Consider this kind of meta-programming where by default an object is queried for property `isdir` subject to whether variable `prop` is empty or not. If not empty, then the value is queried for property `prop`:
 
@@ -81,7 +82,7 @@ All Ant property references `${..}` are resolved before any EL reference is reso
 -------------------------------------
 <c:echo>
      #{ project.${ property } }   ; good
-     ${ project.#{ 'basedir' }}   ; no
+     ${ project.#{ 'basedir' }}   ; no way
 </c:echo>
 -------------------------------------
 
@@ -104,7 +105,7 @@ The following types can be used when writing EL expressions:
 * _null_ to represent the absence of any data  
 * _integer_ for integer values
 * _float_ for any floating point values
-* _boolean_ to express boolean logic
+* _boolean_ to express Boolean logic
 * _string_ to represent char sequences
 * _list_ for iterable types
 * _map_ for dictionary like types
@@ -170,11 +171,11 @@ Notice that EL does also not provide a notation for arrays or list objects nor i
 [[el_operators]]
 === Operators ===
 
-This are the most important operators defined in EL:
+The following operators are defined in <<el,EL>>:
 
-* `empty` checks whether a variable is empty or not and returns either `true` or `false`. It is important to understand that `null` is considered empty.
-*  condition operator `c ? a : b` evaluates `c` in a boolean context and returns the evaluation of expression `a` if `c` evaluates to `true`; otherwise `eval(b)` will be the result of this operator.
-* `.` and  `[]` are property operators described in <<el_properties,section _Properties_>> below.
+* operator `empty` checks whether a variable is empty or not and returns either `true` or `false`. It is important to understand that `null` is considered empty. 
+* condition operator `?:` can be used for branching in expressions. The expression `cond ? a : b` evaluates expression `cond` in a Boolean context. If `eval(cond)` returns `true` then the result of the expression is `eval(a)` and otherwise `eval(b)`.
+* operators `.` and  `[]` are used to query properties on objects. See also section <<el_properties,Properties_>>.
 * logical operators `not`, `and` and `or`
 * relational operators `==`, '!=`, `<`, `>`, `<=` and `>=` (resp. `eq`, `ne`, `lt`, `gt`, `le` and `ge`).
 * usual arithmetic operators like `+`, `-`, `*`, `/`, `mod` and `div` etc.
@@ -228,9 +229,9 @@ A function to determine the object\'s type:
 -------------------------------------
 typeof(null)               ; 'null'
 typeof('')                 ; 'string'
-typeof(3)                  ; 'int'
+typeof(3)                  ; 'integer'
 typeof(pi)                 ; 'float'
-typeof(true)               ; 'bool'
+typeof(true)               ; 'boolean'
 typeof(list())             ; 'list'
 typeof(file('.'))          ; 'file'
 typeof(project)            ; 'project'
@@ -257,20 +258,24 @@ nativetype(file(project).mtime) ; 'java.util.Date'
 
 ===== `size(T):integer` =====
 
-The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive typeslike `int`, `null`, `float`, `bool`. Otherwise the object\'s size is determined via a `size` or `length` property.
+The size of the object is given by the number of entities it contains. This is 0 (zero) for all primitive types like `integer`, `null`, `float`, `boolean`. Otherwise the object\'s size is determined via a `size` or `length` property.
 -------------------------------------
 size(null)            ; 0
 size(3)               ; 0
 size(pi)              ; 0
 size(true)            ; 0
-size(file(..))        ; 0
+size('abc')           ; 3
+size(list(1,2))       ; 2
+size(file(..))        ; see below
 size(project)         ; 0
 size(object)          ; object.size or object.length or 0
 -------------------------------------
- 
+
+If the argument of `size()` is of type _file_ and the argument denotes an existing and accessible directory _d_, then `size(d)` returns the amount of files and folders in _d_. Otherwise, if the argument denotes an existing and accessible file, then the length of that file is returned. Otherwise, size() will return 0.
+
 ===== `nullp(T):boolean` =====
 
-Evaluates to `true` if object is the `null` entity and `false` otherwise. Compare this function with operator `empty` which returns `true` if eiher the object in question does not exist or if literally empty, for example the empty list or the empty string.
+Evaluates to `true` if object is the `null` entity and `false` otherwise. Compare this function with operator `empty` which returns `true` if either the object in question does not exist or if literally empty, for example the empty list or the empty string.
 
 -------------------------------------
 nullp(null)            ; true
@@ -284,7 +289,7 @@ empty ''               ; true
 ==== File and Folder Functions ====
 
 ===== `file(T..):file` =====
-A function to create a `file` object. If `file()` is called without argument, then the current working directory is returned. Otherwise, if the function is called with one argument and that argument is already a file, the argument is simply returned. Otherwise, if the argument\'s type is `project`, then the base directory of that Ant project is returned. If the argument is a `list` type, the a file is constructed based on the list\'s elements. Otherwise the argument stringized. If the stringized argument consists only of whitespace, then the current working directory is returnd while otherwise that string is taken as the file\'s path name. If `file()` is called with two or more arguments, then the behaviour is the same as if `file()` would have been called with one list argument where the list consists of the function\'s arguments.
+A function to create a `file` object. If `file()` is called without argument, then the current working directory is returned. Otherwise, if the function is called with one argument and that argument is already a file, the argument is simply returned. Otherwise, if the argument\'s type is `project`, then the base directory of that Ant project is returned. If the argument is a `list` type, the a file is constructed based on the list\'s elements. Otherwise the argument stringized. If the stringized argument consists only of whitespace, then the current working directory is returned while otherwise that string is taken as the file\'s path name. If `file()` is called with two or more arguments, then the behaviour is the same as if `file()` would have been called with one list argument where the list consists of the function\'s arguments.
 
 -------------------------------------
 file()               ; your JVM current work directory
@@ -306,7 +311,7 @@ concat('foo','bar')  ; `foobar'
 -------------------------------------
 
 ===== `format(string,T..):string` =====
-This function is a swiss army knife for creating a string based on existing objects. The functions expects a format string as first argument followed by any number of arguments. The optional arguments are used to construct the result string based on format instructions embedded in the first argument. Some examples:
+This function is a Swiss army knife for creating a string based on existing objects. The functions expects a format string as first argument followed by any number of arguments. The optional arguments are used to construct the result string based on format instructions embedded in the first argument. Some examples:
 -------------------------------------
 format('foobar')           ; `foobar'
 format('foo%s','bar')      ; `foobar'
@@ -330,7 +335,7 @@ The behaviour of this function is undefined if called without arguments.
 
 ===== `split(string, regex:T):list` =====
 
-A function to tokenize a string into a list of strings. Tokens are seperated from each other by text matching a given regular expression. Arguments are stringized before used. If no regular expression is given, then `\*s,\s*` is used. The behaviour is undefined if no arguments are given.
+A function to tokenize a string into a list of strings. Tokens are separated from each other by text matching a given regular expression. Arguments are stringized before used. If no regular expression is given, then `\*s,\s*` is used. The behaviour is undefined if no arguments are given.
 -------------------------------------
 split('a,b')          ; list('a','b')
 split('a:b',':')      ; list('a','b')
@@ -338,7 +343,7 @@ split('a:b',':')      ; list('a','b')
 
 ===== `trim(string):string` =====
 
-A convenience function to remove leading and trailing whitespice from a string (stringized object). This function can be expressed in terms of function `replace()` like
+A convenience function to remove leading and trailing whitespace from a string (stringized object). This function can be expressed in terms of function `replace()` like
 -------------------------------------
 trim(s)              ; replace(s,'','^\s*|\s*$')
 -------------------------------------
@@ -408,7 +413,7 @@ join(':','a',2)              ; join(':',list('a',2))
 | `sqrt(double):double` | Returns the correctly rounded positive square root of a double value. 
 | `abs(double):double` | Returns the absolute value of a double value. 
 | `min(double, double):double` | Returns the smaller of two double values. 
-| `max(double, double):double` | Returns the larget of two double values. 
+| `max(double, double):double` | Returns the larger of two double values. 
 | `rand():double` | Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0. 
 |=================================
 
@@ -444,7 +449,7 @@ Now it\'s about time to tell, which properties are available.
 [[el_natural_properties,Natural Properties]]
 ==== Natural Properties ====
 
-A _natural_ property `x` exits if the underlaying Java object has a public getter method with the same name as `x` and where the names are compared caseinsensitively. Assume that we have on object `f` of type `java.io.File` footnote:[see http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html]. The following listing shows two natural properties on object `f` and how `f` will be used by the underlying EL implementation:
+A _natural_ property `x` exits if the underlying Java object has a public getter method with the same name as `x` and where the names are compared case-insensitively. Assume that we have on object `f` of type `java.io.File` footnote:[see http://download.oracle.com/javase/1.5.0/docs/api/java/io/File.html]. The following listing shows two natural properties on object `f` and how `f` will be used by the underlying EL implementation:
 
 -------------------------------------
 f.name              ; f.getName()
@@ -452,9 +457,9 @@ f['parentfile']     ; f.getParentFile()
 -------------------------------------
 
 
-==== Primitve Type Properties ====
+==== Primitive Type Properties ====
 
-Primite data types (integer, float, boolean and null) have no properties.
+Primitive data types (integer, float, boolean and null) have no properties.
 
 ==== List and Array Properties ====
 
@@ -485,14 +490,7 @@ Table above lists properties that can be queried besides natural properties:
 [[el_file_properties,File Properties]]
 ==== File Properties ====
 
-Files and folders is Ant\'s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Most important is however how to _get_ a file object in the first place. Consider:
-
--------------------------------------
-'myfolder'.tofile
-file('myfolder')
--------------------------------------
-
-Then, having a file object at your finger tips, the following properties are available:
+Files and folders is Ant\'s bread and butter. A couple of properties are defined on file objects to simplify scripting (see below). Consider:
 
 [cols="30%,10%,60%",frame="topbot",grid="none",options="header,footer"]
 |=================================
@@ -575,6 +573,6 @@ The following table describes the conversion of object `obj` into an boolean val
 | string      | `false` if obj is `""`, otherwise `Boolean.valueof(obj)`
 | boolean     | obj
 | file        | `true` if the file described by obj exists
-| _other_      | false
+| _other_     | false
 |=================================
 
