@@ -1,16 +1,18 @@
 
 
-all: flaka.db4 flaka.pdf
+all: flaka.db4 flaka.pdf flaka.tex
 
 
 flaka.pdf : flaka.db4
-	$(DBLATEX.cmd) 
+	$(DBLATEX.cmd) $<
 
 flaka.db4 : flaka.ad
 	$(ASCIIDOC.cmd)
 
 flaka.tex : flaka.db4
-	dblatex --verbose -S flaka.specs --type=tex -o $@ $<
+	$(DBLATEX.cmd) --type=tex -o $@ $<
+
+
 #
 # Trigger
 #
@@ -53,9 +55,11 @@ flaka.db4 : \
 # Tools
 #
 
-DBLATEX.cmd  = dblatex --verbose -S flaka.specs -o $@ $<
+DBLATEX.cmd  = dblatex --verbose -S flaka.specs -o $@
 ASCIIDOC.cmd = asciidoc -b docbook -o $@ $<
 SAX.cmd      = java -jar ~/saxon/saxon9he.jar
 XSLT.cmd     = xsltproc --nonet --novalid
 XMLLINT.cmd  = xmllint --encode utf-8 --format 
 
+clean:
+	rm -f *.aux *.log *.toc *.cb *.db* *.out

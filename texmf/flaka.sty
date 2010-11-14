@@ -16,19 +16,10 @@
 % If defined, process the options
 \ProcessOptions\relax
 
-% Needed packages
-%
-% Need to define this cause some dblatex sty files depend on it (???)
-%
-\IfFileExists{ifxetex.sty}{%
-  \usepackage{ifxetex}  %
-  \usepackage{xltxtra}  % provides also \XeTeX
-  \usepackage{fontspec}
-  \usepackage{cmbright}
-}{%
-  \newif\ifxetex
-  \xetexfalse
-}
+% PACKAGES
+% dblatex depends on this, do not remove.
+\usepackage{ifxetex}
+\usepackage{cmbright}
 
 % Fancy package to easily define \section, \subsection etc the way you
 % like it. 
@@ -49,6 +40,19 @@
 \usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
 
 
+% FONTS
+\usepackage{xltxtra}  % provides also \XeTeX
+
+%\usepackage{fontsmpl}
+\usepackage[infoshow]{tracefnt}
+
+\usepackage{xunicode}
+% \usepackage{xltxtra}
+% \defaultfontfeatures{Mapping=tex-text} % converts LaTeX specials (``quotes'' --- dashes etc.) to unicode
+% \setromanfont [Ligatures={Common}, Numbers={OldStyle}]{Hoefler Text}
+\setmonofont[Scale=0.8]{Monaco} 
+% \setsansfont[Scale=0.9]{Optima Regular} 
+
 % Move the whole layout one centimeter left.
 \addtolength{\hoffset}{-1cm}
 
@@ -65,14 +69,18 @@
 \titleformat*{\subsection}{\Large\color{red}}
 \titleformat*{\subsubsection}{\large\color{red}}
 
+
+% do not indend a paragraph
+\setlength{\parindent}{0cm}
+
+
 \title{}
 \author{}
 
 \hypersetup{
-  bookmarks=true,
-  pdftitle={The Flaka \flakaversion Manual},
+  pdftitle={Flaka \flakaversion{}, The Manual},
   pdfauthor={Wolfgang Häfelinger},
-  pdfsubject={The Flaka Documentation},
+  pdfsubject={Flaka, The Manual},
   pdfcreator={XeTeX},        
   pdfproducer={haefelinger IT},
   pdfkeywords={flaka,ant,häfelinger IT,english,Wolfgang Häfelinger},
@@ -80,7 +88,6 @@
   linkcolor=blue
 }
 
-\setlength{\parindent}{0cm}
 
 
 %
@@ -93,12 +100,12 @@
   \pagecolor{red}
   \color{white}
   \begin{flushright}
-    \Huge The Flaka Manual\\[1em]
+    \Huge Flaka, The Manual\\[1em]
     \large
     Wolfgang H\"afelinger\\
     h\"afelinger IT\\[1cm]
     Flaka, version \textbf{\flakaversion}\\[2cm]
-    \today\\ draft document version 1.0\\[1cm]
+    \today\\ document version 1.0\\[1cm]
  \end{flushright}
 }
 
@@ -170,9 +177,12 @@
 This document got written in Asciidoc markup and translated into DocBook by using the \texttt{asciidoc} command. From DocBook it got translated into \LaTeX\ using \texttt{dblatex} and from \LaTeX\ eventually into PDF by using \XeTeX.
 
 }
-
+% To avoid warning about \headheight is too small, we set headheight
+% to this value.
+\setlength{\headheight}{15pt}
 
 \lstset{ %
+  basicstyle=\ttfamily,
   language=XML,
   xleftmargin=1em,
   aboveskip=1em,
@@ -180,9 +190,7 @@ This document got written in Asciidoc markup and translated into DocBook by usin
   frame=leftline,
   framexleftmargin=1ex,
   rulecolor=\color{red},
-  basicstyle=\small,
   numbers=none,
-  numberstyle=\footnotesize,
   stepnumber=2,
   numbersep=5pt,
   backgroundcolor=\color{white},
