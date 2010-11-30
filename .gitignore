@@ -1,2 +1,6 @@
 flaka.pdf
 flaka.db4
+.svn
+*.aux
+*.log
+*.toc

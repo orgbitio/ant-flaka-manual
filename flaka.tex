@@ -9,7 +9,7 @@
 %
 % Define title and author
 %
-\newcommand{\dbktitle}{The flaka manual}
+\newcommand{\dbktitle}{The Flaka Manual}
 \newcommand{\dbkauthors}{author wh@haefelinger.it}
 %
 % Let's rock!
@@ -20,8 +20,8 @@
 \label{introduction}\hyperlabel{introduction}%
 
 Writing a project's build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like \texttt{c\-p}, \texttt{m\-k\-d\-i\-r} and \texttt{f\-i\-n\-d}. However, Ant lacks any decent control structures. There is no \texttt{i\-f\--{}\-t\-h\-e\-n\--{}\-e\-l\-s\-e} and there is no \texttt{w\-h\-i\-l\-e} \footnote{
-\texttt{i\-f} and \texttt{w\-h\-i\-l\-e} can be implemented in terms of calling targets depending on whether a property exists or not. Rather akward ..
-}. What's more, you have to use a rather unfriendly, sometimes even hostile, \href{http://en.wikipedia.org/wiki/XML}{XML} syntax. On the bright side however, conside this Ant snippet:
+\texttt{i\-f} and \texttt{w\-h\-i\-l\-e} can be implemented in terms of calling targets depending on whether a property exists or not. Rather awkward ..
+}. What's more, you have to use a rather unfriendly, sometimes even hostile, \href{http://en.wikipedia.org/wiki/XML}{XML} syntax. On the bright side however, consider this Ant snippet:
 
 \begin{lstlisting}[firstnumber=1,]
 <copy todir="${destdir}">
@@ -30,7 +30,7 @@ Writing a project's build script is serious business. And so it is when using An
  </fileset>
 </copy>\end{lstlisting}
 
-It's its expressiveness which makes me list this example on the bright side as it is easy to graps what will happen: files ending in \texttt{.\-j\-a\-r} are copied from one folder into another folder. Now assume that you have to include some further logic in that snippet above:
+It's its expressiveness which makes me list this example on the bright side as it is easy to grasp what will happen: files ending in \texttt{.\-j\-a\-r} are copied from one folder into another folder. Now assume that you have to include some further logic in that snippet above:
 \begin{itemize}
 
 \item{} \emph{if a certain folder exists, copy files matching \texttt{*\-.\-z\-i\-p}, otherwise stick with \texttt{*\-.\-j\-a\-r}.} 
@@ -42,12 +42,12 @@ When staying with Ant, you define a property and use it like
 \begin{lstlisting}[firstnumber=1,]
 <include name="${jar_or_zip}"/>\end{lstlisting}
 
-The problem is that you have to define that property elswehere thus you start to miss part of the logic. This is where I believe that Ant has a true deficit and this is where Flaka kicks in. Flaka provides, amongst other things, with an expression language (EL). Thus you could write
+The problem is that you have to define that property elsewhere thus you start to miss part of the logic. This is where I believe that Ant has a true deficit and this is where Flaka kicks in. Flaka provides, amongst other things, with an expression language (EL). Thus you could write
 
 \begin{lstlisting}[firstnumber=1,]
 <include name=" *.#{ mydir.exists ? 'zip' : 'jar'} " />\end{lstlisting}
 
-However, even having such a powerfull extension like EL I am missing the full power of a programming language's control structures. Yes, I want to have conditionals, repetevitve constructs and a decent exception handling. Furthermore, I want to have variables which I can set or remove for pleasure. I don't want to be restricted that such variables may carry strings only. Any data object must be allowed. In summary, this is what Flaka currently is all about:
+However, even having such a powerful extension like EL I am missing the full power of a programming language's control structures. Yes, I want to have conditionals, repetitive constructs and a decent exception handling. Furthermore, I want to have variables which I can set or remove for pleasure. I don't want to be restricted that such variables may carry strings only. Any data object must be allowed. In summary, this is what Flaka currently is all about:
 \begin{itemize}
 
 \item{} Expression Language
@@ -90,7 +90,7 @@ Ant build file examples show a mix of tasks provided by Flaka and by Ant. Ant ta
 \begin{lstlisting}[firstnumber=1,]
 antlib:it.haefelinger.flaka\end{lstlisting}
 
-and whithin this manual, the abbreviation \texttt{c} will be used for this namespace. Therefore it becomes easy to see who is the provider of a task:
+and within this manual, the abbreviation \texttt{c} will be used for this namespace. Therefore it becomes easy to see who is the provider of a task:
 
 \begin{lstlisting}[firstnumber=1,]
 <echo> Ant </echo>
@@ -109,7 +109,7 @@ Thus all build file snippets shown assume that the build file contains the follo
 \label{installation}\hyperlabel{installation}%
 Download \footnote{
 see either \href{http://download.haefelinger.it/flaka}{http://download.haefelinger.it/\-flaka} or use \href{http://code.google.com/p/flaka/downloads}{http://code.google.com/\-p/\-flaka/\-downloads}
-} latest version of Flaka and \emph{drop} \texttt{a\-n\-t\--{}\-f\-l\-a\-k\-a\-.\-x\-.\-y\-.\-z\-.\-j\-a\-r} into your local Ant installation. All that needs to be done is to put this jar into Java’s classpath when running Ant. There are various techniques how to do so. Please read-{}on what exactly needs to be done.
+} latest version of Flaka and \emph{drop} \texttt{a\-n\-t\--{}\-f\-l\-a\-k\-a\-.\-x\-.\-y\-.\-z\-.\-j\-a\-r} into your local Ant installation. All that needs to be done is to put this jar into Java's classpath when running Ant. There are various techniques how to do so. Please read-{}on what exactly needs to be done.
 
 \subsection{Ready, ..}
 \label{_ready}\hyperlabel{_ready}%
@@ -129,13 +129,13 @@ The following \textbf{requirements} must be satisfied before you start:
 \subsection{Charge, ..}
 \label{_charge}\hyperlabel{_charge}%
 
-The most primitive technique is to save \texttt{a\-n\-t\--{}\-f\-l\-a\-k\-a\--{}\-x\-.\-y\-.\-z\-.\-j\-a\-r} into Ant’s library folder \texttt{l\-i\-b}. If you have no clue where Ant is installed, try
+The most primitive technique is to save \texttt{a\-n\-t\--{}\-f\-l\-a\-k\-a\--{}\-x\-.\-y\-.\-z\-.\-j\-a\-r} into Ant's library folder \texttt{l\-i\-b}. If you have no clue where Ant is installed, try
 
 \begin{lstlisting}[firstnumber=1,]
  $ ant -diagnostics | grep ant.home
  ant.home: /opt/ant/1.7.1\end{lstlisting}
 
-Saving something in Ant’s library folder may not work if you lack required permissions. There is also the disadvantage that when switching to another installation of Ant, you need to reinstall Flaka again. Therefore consider to use option \texttt{-{}\-l\-i\-b}:
+Saving something in Ant's library folder may not work if you lack required permissions. There is also the disadvantage that when switching to another installation of Ant, you need to reinstall Flaka again. Therefore consider to use option \texttt{-{}\-l\-i\-b}:
 
 \begin{lstlisting}[firstnumber=1,]
  $ ant -lib ant-flaka-x.y.z.jar\end{lstlisting}
@@ -149,13 +149,13 @@ A pretty nice feature of option \texttt{-{}\-l\-i\-b} is, that if the argument i
 
 This approach has the nice advantage that you simply can drop other jar files into folder \texttt{\$\-H\-O\-M\-E\-/\-l\-i\-b\-/\-a\-n\-t} to make them reachable  without touching the original Ant installation. As already mentioned, this will get handy when you have multiple Ant installations. Notice that option \texttt{-{}\-l\-i\-b} can be applied more than once if your jars reside in various folders. Finally notice, that folders are \emph{not} recursively scanned.
 
-When working from the command line, it is rather annoying to provide option \texttt{-{}\-l\-i\-b} for each and every call. Fortunatley, Ant recognizes environment variable \texttt{A\-N\-T\-\_\-A\-R\-G\-S} which can be used to let \texttt{-{}\-l\-i\-b} disappear:
+When working from the command line, it is rather annoying to provide option \texttt{-{}\-l\-i\-b} for each and every call. Fortunately, Ant recognizes environment variable \texttt{A\-N\-T\-\_\-A\-R\-G\-S} which can be used to let \texttt{-{}\-l\-i\-b} disappear:
 
 \begin{lstlisting}[firstnumber=1,]
  $ ANT_ARGS="-lib $HOME/lib/ant"
  $ export ANT_ARGS\end{lstlisting}
 
-The drawback with this technique is that you need to make sure that this variable is set in every environment you start up Ant. This sounds perhaps easier than actually done. Luckily again, Ant reads file \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-r\-c} and \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-/\-a\-n\-t\-.\-c\-o\-n\-f} on each and every startup. It is therefore recommended to set variable \texttt{A\-N\-T\-\_\-A\-R\-G\-S} in one of this files \footnote{
+The drawback with this technique is that you need to make sure that this variable is set in every environment you start up Ant. This sounds perhaps easier than actually done. Luckily again, Ant reads file \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-r\-c} and \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-/\-a\-n\-t\-.\-c\-o\-n\-f} on each and every start-{}up. It is therefore recommended to set variable \texttt{A\-N\-T\-\_\-A\-R\-G\-S} in one of this files \footnote{
 when doing so, you don’t need to \emph{export} that variable
 }to make just every plain call to \texttt{a\-n\-t} is aware of Flaka. For example:
 
@@ -163,7 +163,7 @@ when doing so, you don’t need to \emph{export} that variable
  $ cat $HOME/.antrc
  ANT_ARGS="-lib $HOME/lib/ant"\end{lstlisting}
 
-Finally it should be mentioned, that Ant scannes for additional jars in folder \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-/\-l\-i\-b}. Thus the following two invocations of Ant are identical
+Finally it should be mentioned, that Ant scans for additional jars in folder \texttt{\$\-H\-O\-M\-E\-/\-.\-a\-n\-t\-/\-l\-i\-b}. Thus the following two invocations of Ant are identical
 
 \begin{lstlisting}[firstnumber=1,]
  $ ant
@@ -231,7 +231,7 @@ The first expression (1) shows a algebraic equation. Notice the usage of \texttt
 \subsection{EL References}
 \label{el_enabling_el}\hyperlabel{el_enabling_el}%
 
-It turned out that it is a good idear to have a clear distinction between properties and EL expressions. Therefore, an EL expression must be enclosed by \texttt{\#\-\{\-.\-.\-\}} rather than by \texttt{\$\-\{\-.\-.\-\}}. A enclosed EL expression is called an reference to a EL expression. Similarly is \texttt{\$\-\{\-.\-.\-\}} named a reference to a Ant property. Consider:
+It turned out that it is a good idea to have a clear distinction between properties and EL expressions. Therefore, an EL expression must be enclosed by \texttt{\#\-\{\-.\-.\-\}} rather than by \texttt{\$\-\{\-.\-.\-\}}. A enclosed EL expression is called an reference to a EL expression. Similarly is \texttt{\$\-\{\-.\-.\-\}} named a reference to a Ant property. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
 <echo>
@@ -271,7 +271,7 @@ Starting with version 1.8 Ant provides a task for switching property helpers. Th
  </echo>
 </project>\end{lstlisting}
 
-For those who want to stay more inline with Ant property references, Flaka ships with a property evaluator. When this evaluator is plugged in, then \texttt{\$\-\{\-.\-.\-\}} will be evaluated as EL reference. Consider:
+For those who want to stay more in-{}line with Ant property references, Flaka ships with a property evaluator. When this evaluator is plugged in, \texttt{\$\-\{\-.\-.\-\}} will be evaluated as EL reference. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
 <project xmlns:prop="antlib:it.haefelinger.flaka.prop">
@@ -330,7 +330,7 @@ How about to print a text sequence like \texttt{\#\-\{ 3 * 4\-\}}. In other word
 
 Please notice that escaping a property reference is different than escaping a EL reference. By default, Ant stops evaluation of property references if the reference is prefixed with a dollar character. In addition, every double dollar sequence \texttt{\$\-\$} is reduced into a single dollar character.
 
-Escaping in EL is different as the example above demonstrates. The prefered way is to prefix the EL reference with a backslash character \texttt{\textbackslash{}\-\textbackslash{}}.
+Escaping in EL is different as the example above demonstrates. The preferred way is to prefix the EL reference with a backslash character \texttt{\textbackslash{}}.
 
 \subsubsection{Whitespace}
 \label{_whitespace}\hyperlabel{_whitespace}%
@@ -338,13 +338,13 @@ Escaping in EL is different as the example above demonstrates. The prefered way 
 Trailing and leading whitespace is meaningless within EL references. This is different from Ant properties where whitespace is meaning full. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
-<property name=" p " value="weired name ` p '" />
-<property name="p" value="regular name `p'" />
+<property name=" p " value="weired name ' p '" />
+<property name="p" value="regular name 'p'" />
 <c:echo>
-     ${p}                 ; regular name `p'
-     ${ p }               ; weired name ` p '
-     #{ p }               ; regular name `p'
-     #{ property[' p '] } ; weired name ` p '
+     ${p}                 ; regular name 'p'
+     ${ p }               ; weired name ' p '
+     #{ p }               ; regular name 'p'
+     #{ property[' p '] } ; weired name ' p '
 </c:echo>\end{lstlisting}
 
 \subsubsection{EL Awareness}
@@ -441,7 +441,7 @@ nullp('')      ; false\end{lstlisting}
 \subsubsection{String Literals}
 \label{_string_literals}\hyperlabel{_string_literals}%
 
-A string literal starts and ends with the same quotation character. Quotation characters are either the single quote \texttt{'} or the double quote \texttt{"} character. If the quotation character is needed within the literal, then the escape character \texttt{\textbackslash{}\-\textbackslash{}} must be used. The escape character must also be used if the escape character itself is to be expressed in the literal. The escape character can't be used to escape other characters than the quotation character and the escape character.
+A string literal starts and ends with the same quotation character. Quotation characters are either the single quote \texttt{'} or the double quote \texttt{"} character. If the quotation character is needed within the literal, then the escape character \texttt{\textbackslash{}} must be used. The escape character must also be used if the escape character itself is to be expressed in the literal. The escape character can't be used to escape other characters than the quotation character and the escape character.
 
 \begin{lstlisting}[firstnumber=1,]
 "abc"        ; abc
@@ -515,7 +515,7 @@ in this particular order, consider:
  #{property.q } ; 'property'
 </echo>\end{lstlisting}
 
-If no entry can be associated with \emph{name}, then \texttt{n\-u\-l\-l} will be the lookup's result. This has the interessting consequence, that EL references are \emph{always} disappearing, i.e. can always be resolved. Whereas unknown properties remain as  property references. Consider:
+If no entry can be associated with \emph{name}, then \texttt{n\-u\-l\-l} will be the look-{}up's result. This has the interesting consequence, that EL references are \emph{always} disappearing, i.e. can always be resolved. Whereas unknown properties remain as  property references. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
 <echo>
@@ -786,7 +786,7 @@ file(a,list(b,c),d)  ; file(list(a,b,c,d))\end{lstlisting}
 Creates a string by concatenating all \emph{stringized} objects. If no object is provided, the empty string is returned. Thus to create the string \texttt{f\-o\-o\-b\-a\-r}, try
 
 \begin{lstlisting}[firstnumber=1,]
-concat('foo','bar')  ; `foobar'\end{lstlisting}
+concat('foo','bar')  ; 'foobar'\end{lstlisting}
 
 \paragraph{\texttt{f\-o\-r\-m\-a\-t\-(\-s\-t\-r\-i\-n\-g\-,\-T\-.\-.\-)\-:\-s\-t\-r\-i\-n\-g}}
 \label{_literal_format_string_t_string_literal}\hyperlabel{_literal_format_string_t_string_literal}%
@@ -794,10 +794,10 @@ concat('foo','bar')  ; `foobar'\end{lstlisting}
 This function is a Swiss army knife for creating a string based on existing objects. The functions expects a format string as first argument followed by any number of arguments. The optional arguments are used to construct the result string based on format instructions embedded in the first argument. Some examples:
 
 \begin{lstlisting}[firstnumber=1,]
-format('foobar')           ; `foobar'
-format('foo%s','bar')      ; `foobar'
-format('%s%S','foo','bar'  ; `fooBAR'
-format('%s',list('a',2))   ; `[a, 2]'\end{lstlisting}
+format('foobar')           ; 'foobar'
+format('foo%s','bar')      ; 'foobar'
+format('%s%S','foo','bar') ; 'fooBAR'
+format('%s',list('a',2))   ; '[a, 2]'\end{lstlisting}
 
 The number of format options to be used are almost infinite \footnote{
 Compare \href{http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html}{http://download.oracle.com/\-javase/\-1.5.0/\-docs/\-api/\-java/\-util/\-Formatter.html}
@@ -811,7 +811,7 @@ Create a new string by replacing substrings. Substrings to be replaced are descr
 \begin{lstlisting}[firstnumber=1,]
 replace('a, b')              ; 'ab'
 replace('a, b','')           ; 'ab'
-replace('a, b','','\s*,\s*)  ; 'ab'
+replace('a, b','','\s*,\s*')  ; 'ab'
 replace(true,'false','true') ; 'false'\end{lstlisting}
 
 The behaviour of this function is undefined if called without arguments.
@@ -883,9 +883,9 @@ append(1,list('a',2),true)     ; list(1,'a',2,true)\end{lstlisting}
 This functions creates a string by joining elements in \texttt{l\-i\-s\-t} with the first argument. The first argument is stringized. If the second argument not given, the empty string is returned. Otherwise, if the second argument is not a list, then the stringized second argument is returned. The behaviour is undefined if called without arguments.
 
 \begin{lstlisting}[firstnumber=1,]
-join(':')                    ; `'
-join(':',5)                  ; `5'
-join(':',list('a',2))        ; `a:2'\end{lstlisting}
+join(':')                    ; ''
+join(':',5)                  ; '5'
+join(':',list('a',2))        ; 'a:2'\end{lstlisting}
 
 If this function is called with more then two arguments, then all arguments but the first are collected into a list object and then processed like described above.
 
@@ -1000,13 +1000,13 @@ It's best to introduce properties with three simple examples. It's about to ask 
 'abc'.length            ; 3
 'abc'['tofile'].mkdir   ; true/false\end{lstlisting}
 
-The specification of EL provides only a notation to query an object for a property. EL does not specfic which properties must exists nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how the query a property must be written. Consider:
+The specification of EL provides only a notation to query an object for a property. EL does not specify which properties must exist nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how to query a property. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
 obj.name
 obj['name.with.dot']\end{lstlisting}
 
-The first variation is the standard notation to lookup property \texttt{n\-a\-m\-e} on object \texttt{o\-b\-j}. Here \texttt{n\-a\-m\-e} can be composed of almost any character but character \texttt{.} itself. After all, \texttt{.} is the lookup operator here. This limitation can cause problems in certain domains. Therefore, an alternative lookup operator \texttt{[\-]} has been defined by the specification.
+The first variation is the standard notation to look-{}up property \texttt{n\-a\-m\-e} on object \texttt{o\-b\-j}. Here \texttt{n\-a\-m\-e} can be composed of almost any character but character \texttt{.} itself. After all, \texttt{.} is the look-{}up operator here. This limitation can cause problems in certain domains. Therefore, an alternative look-{}up operator \texttt{[\-]} has been defined by the specification.
 
 Another important point to keep in mind is about looking up a property on the \texttt{n\-u\-l\-l} object and what is the result of asking for a property which does not exist? The perhaps surprising answer is that both case do not cause an error or worse but are perfectly legal and well defined. The result is in both cases the \texttt{n\-u\-l\-l} object. Consider:
 
@@ -1512,13 +1512,33 @@ Same as \texttt{p\-a\-t\-t\-e\-r\-n}
 matcher
 %
 }&\multicolumn{1}{p{70\newtblstarfactor+\arrayrulewidth}}{\raggedright%
-The matcher object for \emph{i}\textbackslash{}'th capturing group. See task \hyperlink{task_switch}{switch} for examples.
+The matcher object for \emph{i}-{}th capturing group. See task \hyperlink{task_switch}{switch} for examples.
 %
 }\tabularnewline
 \hline
 \end{longtable}\endgroup%
 \restoretablecounter%
 }
+
+The following example shows how to utilize matcher properties:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:switch value="foobar">
+   <re expr="^(.*)(b.*)$" var="m">
+     <echo>
+       #{ m          }   ; 'foobar'
+       #{ m[0]       }   ; 'foobar'
+       #{ m.start    }   ; 0
+       #{ m.end      }   ; 5
+       #{ m.groups   }   ; 2
+       #{ m.pattern  }   ; '^(.*)(b.*)$'
+       #{ m[1]       }   ; 'foo'
+       #{ m[2]       }   ; 'bar'
+       #{ m[1].end   }   ; 2
+       #{ m[2].start }   ; 3
+     <echo>
+   </re>
+</c:switch>\end{lstlisting}
 
 \subsubsection{Project Properties}
 \label{el_project_properties}\hyperlabel{el_project_properties}%
@@ -1661,19 +1681,222 @@ false
 \restoretablecounter%
 }
 
+\section{Property Tasks}
+\label{part4}\hyperlabel{part4}%
+
+\subsection{properties}
+\label{task_properties}\hyperlabel{task_properties}%
+
+This task essentially allows one to move the contents of a Ant property file \footnote{
+see \href{http://ant.apache.org/manual/Tasks/property.html}{http://ant.apache.org/\-manual/\-Tasks/\-property.html}
+} into a build file.
+
+\begin{lstlisting}[firstnumber=1,]
+<c:properties>
+  ; this is a comment
+
+  ; regular properties
+  p0 = hello
+  p1 : ${p0}, \
+       world!
+
+  ; EL references enabled by default
+  p2 = hello, #{ 'world' }!
+</c:properties>\end{lstlisting}
+
+This task is quite similar to \hyperlink{tasks_let}{let}. The major difference is that this task is about creating properties in the spirit of Ant while \hyperlink{tasks_let}{let} on the other side, supports in addition the creation of variables, overriding and deleting of properties.
+
+\subsubsection{Attributes}
+\label{_attributes}\hyperlabel{_attributes}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{llll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Attribute
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+Default
+%
+}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{d\-e\-b\-u\-g}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{f\-a\-l\-s\-e}
+%
+}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
+Turn extra debug information on
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{c\-o\-m\-m\-e\-n\-t}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
+The character that starts a comment line
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\subsubsection{Elements}
+\label{_elements}\hyperlabel{_elements}%
+
+This task accepts a implicit text element.
+
+\subsubsection{Behaviour}
+\label{_behaviour}\hyperlabel{_behaviour}%
+
+The format to define properties within a this task is a subset of the format supported by Ant. Consider:
+\begin{itemize}
+
+\item{} The first non-{}whitespace character of a comment is by default \texttt{;} while a Ant property files use \texttt{\#} and \texttt{!}. The comment character can be changed using attribute \texttt{c\-o\-m\-m\-e\-n\-t}.
+
+
+
+\item{} Ant comment lines do not support continuation lines, this task does.
+
+
+
+\item{} This task requires that either \texttt{=} or \texttt{:} separates the key from it's value.
+
+
+
+\item{} Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant \footnote{
+.. and responsible for unexpected and hard to track script behaviour
+}.
+
+
+
+\item{} EL-{}references \texttt{\#\-\{\-.\-.\-\}} are resolved regardless of whether EL has been enabled or not.
+
+
+\end{itemize}
+
+\subsection{unset}
+\label{task_unset}\hyperlabel{task_unset}%
+
+The unset statement allows the removal of properties \footnote{
+Removal of user-{}properties is currently not supported
+} . Use this task with care as properties are not meant to be changed during execution of a project.
+
+\begin{lstlisting}[firstnumber=1,]
+ <c:unset>
+   ; remove property p1 ..
+   p1
+   ; .. and p2
+   p\
+   2
+ </c:unset>
+ <fail if="p1" />
+ <fail if="p2" />\end{lstlisting}
+
+You may also use the more universal task \hyperlink{task_let}{let} for property removal.
+
+\subsubsection{Attributes}
+\label{_attributes_2}\hyperlabel{_attributes_2}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{llll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Attribute
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+Default
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+debug
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{f\-a\-l\-s\-e}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+Turn extra debug information on
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+comment
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+The character that starts a comment line
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\subsubsection{Elements}
+\label{_elements_2}\hyperlabel{_elements_2}%
+
+This element accepts implicit text.
+
+\subsubsection{Behaviour}
+\label{_behaviour_2}\hyperlabel{_behaviour_2}%
+
+Each non comment line defines a property name to be removed. Comment lines and empty lines are ignored. Continuation lines are accumulated before being processed. EL-{}references are resolved. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:unset>
+ ; property 'foo bar', not 'foo' and 'bar'
+ foo bar
+
+ ; EL references are resolve, so this will remove
+ ; property p15.
+ p#{3*5}
+</c:unset>\end{lstlisting}
+
 \section{Assignment Tasks}
 \label{part3}\hyperlabel{part3}%
 
 \subsection{let}
 \label{task_let}\hyperlabel{task_let}%
 
-XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
+XML is not particular easy to read for humans. When assigning a couple of variables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
 
 \begin{lstlisting}[firstnumber=1,]
   <c:let>
-    f = 'folder'
+    f = 'my/path'
     ; turn f into a file object
-    f = f.tofile
+    f = file(f)
     b = f.isdir ? true : false
     ; assign a *property*
     p := 'hello world'
@@ -1682,66 +1905,56 @@ XML is not particular easy to read for humans. When assigning a couple of varabl
     WORLD"
   </c:let>\end{lstlisting}
 
-In this example, \texttt{f} is first assigned to be string \texttt{"\-f\-o\-l\-d\-e\-r\-"}. The comment line -{} the one starting with character \texttt{;} -{} tells what the next line is going to do: turn \texttt{f} into a file object which can then be used further. Here we assign a variable \texttt{b} which becomes \texttt{t\-r\-u\-e} if \texttt{f} is a directory.
+In this example, variable \texttt{f} is first assigned to be a string object (\texttt{'\-m\-y\-/\-p\-a\-t\-h\-'}). The comment line, the one starting with character \texttt{;}, tells what the next line is going to do: turn \texttt{f} into a file object which can then be used for further processing. Here we create variable \texttt{b} which becomes \texttt{t\-r\-u\-e} if \texttt{f} is a directory and \texttt{f\-a\-l\-s\-e} otherwise.
 
-While character \texttt{=} is used to assign a variable, use character sequence \texttt{:\-=} to assign a property instead. If such a property already exists, it will not be changed in accordance with Ant’s standard behaviour.
-If you dare and insist to override a property, use \texttt{:\-:\-=} to do so.
+Character \texttt{=} is used to create or set a variable while \texttt{:\-=} indicates to create a property instead. If such a property already exists, it will not be changed in accordance with Ant's standard behaviour. If you however dare to override a property, then you may do so using \texttt{:\-:\-=} as the last example shows.
 
-Notice that the right side of \texttt{=}, \texttt{:\-=} and \texttt{:\-:\-=} are in any cases a EL expression while the left side are expected to contain valid identifiers for variables and properties.
+Notice that the right side of \texttt{=}, \texttt{:\-=} and \texttt{:\-:\-=} is evaluated as EL expression while the left side is expected to constitute a valid identifier for a variable or property.
 
 \subsubsection{Attributes}
-\label{_attributes}\hyperlabel{_attributes}%
+\label{_attributes_3}\hyperlabel{_attributes_3}%
 
 {\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
 \setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
 
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+\begin{longtable}{llll}\hline
+\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
 Attribute
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 Type
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 Default
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-\hyperlink{el}{EL}
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Meaning
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+Description
 %
 }\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
 comment
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 string
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 \texttt{;}
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 The comment character sequence.
 %
 }\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
 debug
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-bool
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+boolean
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 \texttt{f\-a\-l\-s\-e}
 %
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 Turn on extra debug information.
 %
 }\tabularnewline
@@ -1750,90 +1963,30 @@ Turn on extra debug information.
 \restoretablecounter%
 }
 
-All attributes follow the rule that leading and trailing whitespace is ignored. Any attribute combination is allowed and will not result necessarily in a build error. If in doubt, turn on extra debug information.
-
 \subsubsection{Elements}
-\label{_elements}\hyperlabel{_elements}%
+\label{_elements_3}\hyperlabel{_elements_3}%
 
-This task accepts implicit text. Text may contain any amount of \hyperlink{el}{EL} and property references references. Continuation and comment lines are supported.
+This task accepts an implicit text element.
 
 \subsubsection{Behaviour}
-\label{_behaviour}\hyperlabel{_behaviour}%
+\label{_behaviour_3}\hyperlabel{_behaviour_3}%
 
-The comment character sequence is \texttt{"\-;\-"} by default. It can be changed to an arbitrary sequence using attribute \texttt{c\-o\-m\-m\-e\-n\-t}. Once set, it can’t be changed during the execution of this task. A comment characters are used to identify lines to be ignored from execution. Such a line is given if the first non whitespace characters of that line are identical with the sequence of comment characters. In other words, a line is being ingnored if matches the regular expression \texttt{\^{}\-\textbackslash{}\-s\-*\-<{}\-c\-o\-m\-m\-e\-n\-t\->{}}. The comment characters itself are not interpreted as regular expression characters. Therefore a given comment sequence like \texttt{"\-(\-\#\-|\-;\-)\-"} does not mean that either \texttt{"\-;\-"} or \texttt{"\-\#\-"} start a comment. Instead it means that a comment line starts with the characters \texttt{"\-(\-\#\-|\-;\-)\-"} which would be rather awkward (while perfectly \emph{legal}).
+A comment line is indicated by starting with character \texttt{;} as first non white-{}space character. This character can be changed to any character sequence using attribute \texttt{c\-o\-m\-m\-e\-n\-t}. Comment lines are ignored from further processing.
 
-To support readability continuation lines are supported. Such a line is indicated by having \texttt{\textbackslash{}} as last character. Be careful not to put any whitespace characters after \texttt{\textbackslash{}}, otherwise the line will not be recognized as such. Continuation lines are also working on comments as the example above shows. If a line is a continuation line, the last character \texttt{\textbackslash{}} is removed, the line is accumulated and the next line is read. If finally a non-{}continuation line is red (and only then), an evaluation of the accumulated line takes place: If the accumlated line is a comment it will be ignored and otherwise either treated as property or variable assignment.
+Any logical line can be spread across an arbitrary number of contiguous physical lines. A physical line is continued if there is an odd number of contiguous backslash characters \texttt{\textbackslash{}} before the line-{}terminator sequence. The escape character before the line-{}terminator sequence, the line-{}terminator sequence and any whitespace after the line-{}terminator sequence are ignored within a logical line.
 
-Leading and trailing whitespace characters ignored in every (accumulated) line. For example, the property assignment  \texttt{x :\-= '\-f\-o\-o b\-a\-r\-'} will assign the string \texttt{f\-o\-o b\-a\-r} to property \texttt{x}. Notice that whitespace before and after \texttt{x} and before and \emph{after} \texttt{'\-f\-o\-o b\-a\-r\-'} is ignored. This is slightly different from reading Java properties where whitespace after \texttt{'\-f\-o\-o b\-a\-r\-'} would \emph{not} have been ignored!
+Line terminating sequences are \texttt{\textbackslash{}\-r}, \texttt{\textbackslash{}\-n} or \texttt{\textbackslash{}\-r\-\textbackslash{}\-n}. Whitespace characters are tab (\texttt{\textbackslash{}\-t}), formfeed (\texttt{\textbackslash{}\-f}) and the blank character (space). The escape character is backslash (\texttt{\textbackslash{}}).
 
-When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as \hyperlink{el}{EL} expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
-
-Notice that it is perfectly legal to use property or variable references as the following example shows:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
- f = '${ant.file}'
- F = '#{f}'
-</c:let>\end{lstlisting}
-
-Be aware that property references are evaluated \emph{before} \hyperlink{el}{EL} expressions. Consider:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
-  ;; let s hold string ant.file
-  s = 'ant.file'
-  ;; bad, f will not assigned
-  f = ${#{s}}
-</c:let>\end{lstlisting}
-
-The second assignment will not work as expected because, in a first step, all occurrences of \texttt{\$\-\{\-.\-.\-\}} are resolved by Ant itself. In a second step, the expression \texttt{\$\-\{\-\#\-\{\-s\-\}\-\}} will be evaluated. Since this expression is invalid, \texttt{f} will not be assigned.
-
-Each line is evaluated in order. Therefore the following works as expected:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
-  s := '3 * 5'
-  ;; defines r as 15
-  r = ${s}
-</c:let>\end{lstlisting}
-
-The following kind of meta programming will not work for \texttt{l\-e\-t}:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
-  property_or_var := condition ? '=' : ':='
-
-  name ${property_or_var} expr
-</c:let>\end{lstlisting}
-
-In a first step all continuation lines are accumulated. Then each line is split in left and right part and in addition the assignment type. After that, properties are resolved on both sides by Ant’s property resolver. In an additonal step are \emph{EL references} evaluated on both sides. Eventually, the right side is evaluated as EL expression and its result is assigned to the stringized and whitespace-{}chopped left side.
+When the text element is processed, then all comment lines are removed in a first step and all physical lines are transformed into logical lines. Then each logical line is processed in syntactical order. Empty \footnote{
+A line is considered empty if consisting of whitespace characters only
+} logical lines are discarded. Otherwise, each non-{}empty logical line is broken up into a key and value part by using the first occurrance of sequence \texttt{=}, \texttt{:\-=} or \texttt{:\-:\-=}. Leading and trailing whitespace characters are removed from key and value and escaped characters are replaced. Then, property and EL references are resolved in key and value. Eventually the value is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
 
 \subsubsection{Then meaning of \texttt{n\-u\-l\-l} and \emph{void}}
 \label{_then_meaning_of_literal_null_literal_and_emphasis_void_emphasis}\hyperlabel{_then_meaning_of_literal_null_literal_and_emphasis_void_emphasis}%
 
-Task \texttt{l\-e\-t} can also be used to \emph{remove} variables and even properties. To illustrate this, here are example behaviours:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
- x = 3 * 5
- ;; remove x
- x =
- ;; remove x
- x = null
-
- ;; let property p to '3*5' (a string)
- p := 3 * 5
- ;; ignored
- p := null
- ;; remove property 'p'
- p ::= null
- ;; .. same as
- p ::=
-</c:let>\end{lstlisting}
-
-The following table gives an overview of the meaning of \texttt{n\-u\-l\-l} and \emph{void} \footnote{
-\emph{void} means that the absense of any characters
-} on the right side of an assignement:
+This task can also be used to \emph{remove} variables and properties. The following table gives an overview of the meaning of \texttt{n\-u\-l\-l} and \emph{void} \footnote{
+\emph{void} means that the absence of any characters
+} on the right side of an assignment:
 
 {\centering \savetablecounter \begingroup%
 \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
@@ -1841,13 +1994,13 @@ The following table gives an overview of the meaning of \texttt{n\-u\-l\-l} and 
 
 \begin{longtable}{lll}\hline
 \multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
-Assignment
+Assignment Type
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-Right Side
+Evaluated Value
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-Result
+Description
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
@@ -1857,7 +2010,7 @@ Result
 \texttt{n\-u\-l\-l}
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-If the right side evaluates to \texttt{n\-u\-l\-l}, then the variable will be removed if existing.
+Remove variable if existing, else do nothing
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
@@ -1867,7 +2020,7 @@ If the right side evaluates to \texttt{n\-u\-l\-l}, then the variable will be re
 \emph{void}
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-The evaluation of an empty expression is \texttt{n\-u\-l\-l}. See above how \texttt{n\-u\-l\-l} is handled\`{}
+Same as \texttt{= n\-u\-l\-l}
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
@@ -1877,7 +2030,7 @@ The evaluation of an empty expression is \texttt{n\-u\-l\-l}. See above how \tex
 \texttt{n\-u\-l\-l}
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-Cause a \emph{read only} property can’t be removed, nothing will happen with this assignment. The property will also not be created.
+Nothing
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
@@ -1897,7 +2050,7 @@ Same as \texttt{:\-= n\-u\-l\-l}
 \texttt{n\-u\-l\-l}
 %
 }&\multicolumn{1}{p{33\newtblstarfactor}|}{\raggedright%
-Removes the property denoted by the left side
+Remove property
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{33\newtblstarfactor}|}{\raggedright%
@@ -1915,6 +2068,50 @@ Same as \texttt{:\-:\-= n\-u\-l\-l}
 \restoretablecounter%
 }
 
+\subsubsection{Examples}
+\label{_examples}\hyperlabel{_examples}%
+
+To start with, some basic examples.
+
+\begin{lstlisting}[firstnumber=1,]
+<c:let>
+ ; a comment line
+ ; variable x will hold integer 12
+ x   = 3 * 4
+ ; property p will hold string '12'
+ p  := 3 * 4
+ ; ignored, cause property p exists already
+ p  := 'twelve'
+ ; override property p to hold string value '12'
+ p ::= 'twelve'
+</c:let>\end{lstlisting}
+
+It is perfectly legal to use property or variable references. Variables and properties created within \texttt{l\-e\-t} can also be used. Be aware that property references are resolved \emph{before} EL references. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<property name="a" value="a" />
+<c:let>
+ ; variabe v becomes the string object 'bar' and property p
+ ; becomes 'foobar'
+ v  = 'b${a}r'
+ p := 'foo#{v}'
+ ; property- and El-references can be used on both sides. Here we
+ ; override property 'a' to become string value `bar`
+ ${a} ::= '#{v}'
+ ; This will not work as planned cause there is no property
+ ; with that weired name '#{v}'.
+ f = ${#{v}}
+</c:let>\end{lstlisting}
+
+The following kind of meta programming will \emph{not} work for \texttt{l\-e\-t} cause property and EL references are resolved after the logical line has been broken up in a key and value part:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:let>
+  ; This example will NOT work as planned
+  assigntype := condition ? '=' : ':='
+  key ${assigntype} el-expr
+</c:let>\end{lstlisting}
+
 \subsection{list}
 \label{task_list}\hyperlabel{task_list}%
 
@@ -1929,7 +2126,7 @@ A elementary task to create a variable containing a \emph{list} of objects.
 </c:list>\end{lstlisting}
 
 \subsubsection{Attributes}
-\label{_attributes_2}\hyperlabel{_attributes_2}%
+\label{_attributes_4}\hyperlabel{_attributes_4}%
 
 {\centering \savetablecounter \begingroup%
 \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
@@ -1964,7 +2161,7 @@ string
 r
 %
 }&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-The name of the variabled to be assigned.
+The name of the variable to be assigned.
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
@@ -2019,14 +2216,14 @@ Enable evaluation as EL expression
 }
 
 \subsubsection{Elements}
-\label{_elements_2}\hyperlabel{_elements_2}%
+\label{_elements_4}\hyperlabel{_elements_4}%
 
 This task may contain a implicit text element.
 
 \subsubsection{Behaviour}
-\label{_behaviour_2}\hyperlabel{_behaviour_2}%
+\label{_behaviour_4}\hyperlabel{_behaviour_4}%
 
-This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable’s name is given by attribute \texttt{v\-a\-r}. This attribute may contain references to EL expressions.
+This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The name of the variable is given by attribute \texttt{v\-a\-r}. This attribute may contain references to EL expressions.
 
 If given text element is parsed on a line by line basis, honouring comments and continuation lines. Each line will be evaluated as EL expression after having resolved \texttt{\$\-\{\-.\-.\-\}} and \texttt{\#\-\{\-.\-.\-\}} references. A illegal EL expression will be discarded while the evaluation of lines continues. Turn on extra debug information in case of problems.
 
@@ -2049,218 +2246,7 @@ Use attribute \texttt{e\-l} to disable the interpretation of a line as \hyperlin
  hello, #{message}
 </c:list>\end{lstlisting}
 
-This creates a list variable \texttt{m\-y\-s\-t\-r\-i\-n\-g\-s} containing two elements. The first element will be string \texttt{3 * 5} and the second element will be string \texttt{h\-e\-l\-l\-o\-, w\-o\-r\-l\-d}. Notice thateven if EL evaluation has been turned off, EL references can still be used.
-
-\section{Property Tasks}
-\label{part4}\hyperlabel{part4}%
-
-\subsection{properties}
-\label{task_properties}\hyperlabel{task_properties}%
-
-A task to set multiple properties in one go. It is typically used to \emph{inline} properties otherwise written in an additional properties file. Thus using this task reduces the clutter on your top level directory:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:properties>
-  ; this is \
-  a comment
-
-  ; assume that variable 'foo' has been defined here and that
-  ; foo.name resolves into 'foo', then the next line will set
-  ; property foo to be the string `foo'.
-  foo     = #{foo.name}
-  ; next lines creates property `foobar' to be the string `foobar'.
-  foobar  = ${name}bar
-</c:properties>\end{lstlisting}
-
-\subsubsection{Attributes}
-\label{_attributes_3}\hyperlabel{_attributes_3}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-Attribute
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Type
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Default
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-EL
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Description
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-debug
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-boolean
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{f\-a\-l\-s\-e}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Turn extra debug information on
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-comment
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-String
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{;}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-The character that starts a comment line
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-\subsubsection{Elements}
-\label{_elements_3}\hyperlabel{_elements_3}%
-
-This task accepts a implicit text element.
-
-\subsubsection{Behaviour}
-\label{_behaviour_3}\hyperlabel{_behaviour_3}%
-
-This task is similar to \hyperlink{tasks_let}{let}. The difference is that this task only allows to define properties while  \hyperlink{tasks_let}{let} also supports the creation of variables. Furthermore, the right side of \texttt{=} will be literally taken as string value. This is different from \hyperlink{tasks_let}{let} where the right side will be additionally evaluted as \hyperlink{el}{EL} expression. The following example defines each property foobar, once done with task  \hyperlink{tasks_let}{let} and once with this \emph{properties} task:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:let>
-  foobar := 'foobar'
-</c:let>
-<c:properties>
-  foobar = foobar
-</c:properties>\end{lstlisting}
-
-Notice the usage of the quote character \texttt{'} in the former example and the absence of it in the latter.
-
-Task \emph{properties} supports, like task \hyperlink{tasks_let}{let} does, continuation lines and comments. Furthermore, variable references \texttt{\#\-\{\-.\-.\-\}} and property references \texttt{\$\-\{\-.\-.\-\}} are resolved on both sides of \texttt{=}.
-
-If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is \texttt{n\-u\-l\-l}, a property with string value \texttt{n\-u\-l\-l} will be assigned if the property does not already exist (this is very much different than when using task \hyperlink{task_let}{let} to create properties.
-
-Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant (and responsible for unexpected and hard to track script behaviour).
-
-\subsection{unset}
-\label{task_unset}\hyperlabel{task_unset}%
-
-The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project.
-
-\begin{lstlisting}[firstnumber=1,]
- <c:unset>
-   p1
-   ;; use embedded EL references for dynamic names
-   p#{ index }
- </c:unset>\end{lstlisting}
-
-This example demonstrates how to remove properties \texttt{p\-1} and a property whose name dependes on the curent value of \texttt{i\-n\-d\-e\-x}.
-
-\subsubsection{Attributes}
-\label{_attributes_4}\hyperlabel{_attributes_4}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-Attribute
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Type
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Default
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-EL
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Description
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-debug
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-boolean
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{f\-a\-l\-s\-e}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Turn extra debug information on
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-comment
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-String
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{;}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-The character that starts a comment line
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-\subsubsection{Elements}
-\label{_elements_4}\hyperlabel{_elements_4}%
-
-This element accepts implicit text.
-
-\subsubsection{Behaviour}
-\label{_behaviour_4}\hyperlabel{_behaviour_4}%
-
-Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. \texttt{a\-n\-t\-.\-f\-i\-l\-e}) are also removed.
-
-Comment lines and empty lines are ignored. Continuation lines, i.e. lines ending in \texttt{\textbackslash{}} but not in \texttt{\textbackslash{}\-\textbackslash{}}, are accumulated before being processed.
-
-References to properties \texttt{\$\-\{\-.\-.\-\}} and expressions \texttt{\#\-\{\-.\-.\-\}} are resolved.
-
-The content of a line defines the property name, for example:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:unset>
- ;; property 'foo bar', not 'foo' and 'bar'
- foo bar
-
- ;; a line is *not* a EL expression (this will be property '3 * 5')
- 3 * 5
-
- ;; use #{..} references for dynamic content (this will be 'p15')
- p#{3*5}
-</c:unset>\end{lstlisting}
+This creates a list variable \texttt{m\-y\-s\-t\-r\-i\-n\-g\-s} containing two elements. The first element will be string \texttt{3 * 5} and the second element will be string \texttt{h\-e\-l\-l\-o\-, w\-o\-r\-l\-d}. Notice that even if EL evaluation has been turned off, EL references can still be used.
 
 \section{Reporting Tasks}
 \label{part5}\hyperlabel{part5}%
@@ -2268,60 +2254,37 @@ The content of a line defines the property name, for example:
 \subsection{echo}
 \label{task_echo}\hyperlabel{task_echo}%
 
-Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example.
+Task \texttt{<{}\-c\-:\-e\-c\-h\-o\-/\->{}} is an extension of Ant's standard \texttt{e\-c\-h\-o} task \footnote{
+see \href{http://ant.apache.org/manual/Tasks/echo.html}{http://ant.apache.org/\-manual/\-Tasks/\-echo.html}
+} to generate nicly formatted output.  Ant's standard \texttt{e\-c\-h\-o} task is rather fragile when it comes to reformatting XML. Here is a simple example where the output dumped is shown on the right side:
 
 \begin{lstlisting}[firstnumber=1,]
-<echo>foobar</echo>\end{lstlisting}
+<echo>foobar</echo>       ; '[echo] foobar'\end{lstlisting}
 
-When executed by Ant, this dumps
-
-\begin{lstlisting}[firstnumber=1,]
-[echo] foobar\end{lstlisting}
-
-However, one day you reformat your XML build file \footnote{
+Then, one day you reformat your XML input \footnote{
 \href{http://xmlsoft.org/xmllint.html}{xmlint} is a good choice
-} and you end up in
+} ending up in \footnote{
+In order to visualize space characters, character dot (\texttt{.}) is going to be used within this chapter
+}
 
 \begin{lstlisting}[firstnumber=1,]
-<echo>
-...foobar
-</echo>\end{lstlisting}
+<echo>                   ; '[echo]'
+...foobar                ; '[echo] ...foobar'
+</echo>                  ; '[echo]'\end{lstlisting}
 
-Notice the usage of character \texttt{.} (dot) in this example and the rest of this (and only this) chapter to visualize a \emph{space} \footnote{
-Also known as \emph{blank} character
-} character. If you execute this, you will get
-
-\begin{lstlisting}[firstnumber=1,]
-[echo]
-[echo] ...foobar
-[echo]\end{lstlisting}
-
-This is definitly not what you had in mind.
-
-Task \texttt{<{}\-c\-:\-e\-c\-h\-o\-/\->{}} is an extension of Ant's standard \texttt{e\-c\-h\-o} task. That standard task is used for doing all that low level work, i.e. dumping text on streams on loggers. On top of it, some features have been implemented intented to generate nicly formatted output.
-
-Here is the \texttt{f\-o\-o\-b\-a\-r} example again:
+All of a sudden there are three more space characters in front of \texttt{f\-o\-o\-b\-a\-r} and, to make matters worse, there are two additional empty lines printed. Compare this output with Flaka's \texttt{e\-c\-h\-o}
 
 \begin{lstlisting}[firstnumber=1,]
 <c:echo>
-
-  foo\
-  bar
-  ; supports continuation and \
-  comment lines
+  foobar                 ; '[c:echo] foobar'
 </c:echo>\end{lstlisting}
 
-This would output
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] foobar\end{lstlisting}
-
-which I believe is just what you had in mind.
+which I believe is what you had in mind. Besides being invariant regarding formatting, \texttt{e\-c\-h\-o} supports other features in helping to generate pretty output.
 
 \subsubsection{Attributes}
 \label{_attributes_5}\hyperlabel{_attributes_5}%
 
-This tasks supports all attributes inherited from Ant’s echo task. In addition, further supported attributes are:
+This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
 
 {\centering \savetablecounter \begingroup%
 \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
@@ -2364,7 +2327,7 @@ string
 \texttt{;}
 %
 }&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
-Allows for comments.
+Change the start-{}of-{}commentline character
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
@@ -2377,7 +2340,7 @@ string
 \`{}\`{}
 %
 }&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
-Allows to prefix each line with \texttt{s\-h\-i\-f\-t} characters. See also Behaviour below.
+Prefix for each output line
 %
 }\tabularnewline
 \hline
@@ -2387,131 +2350,73 @@ Allows to prefix each line with \texttt{s\-h\-i\-f\-t} characters. See also Beha
 
 Notice that \textbf{debug} output will be written on stream \texttt{s\-t\-d\-e\-r\-r} regardless whether \texttt{d\-e\-b\-u\-g} has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is \texttt{f\-a\-l\-s\-e}, i.e. no additional output is created.
 
-The trimmed \textbf{\texttt{c\-o\-m\-m\-e\-n\-t}} attribute value is used to construct a regular expression like \texttt{\^{}\-\textbackslash{}\-s\-*\-\textbackslash{}\-Q\-<{}\-<{}\-c\-o\-m\-m\-e\-n\-t\->{}\->{}\-\textbackslash{}\-E}. Every line matching this regular expression will not show up in the output. Notice that the comment value given does not allow for regular expression meta characters. Thus something like \texttt{(\-;\-|\-\#\-)} does \emph{not} mean either \texttt{;} or \texttt{\#}. Instead it means that a line starting with \texttt{(\-;\-\#\-)} is ignored from output. By default, lines starting with character \texttt{;} -{} like in Lisp -{} are ignored.
-
 \subsubsection{Elements}
 \label{_elements_5}\hyperlabel{_elements_5}%
 
-This task optionally accepts implicit text. That text may contain Ant property \texttt{\$\-\{\-.\-.\-\}} or \hyperlink{el}{EL} \texttt{\#\-\{\-.\-.\-\}} references.
+This task optionally accepts implicit text.
 
 \subsubsection{Behaviour}
 \label{_behaviour_5}\hyperlabel{_behaviour_5}%
 
-\textbf{Continuation Lines} are lines where the last character before the line termination character is the backslash character. Such a line is continued, i.e. the line will be merged with the next one (which could also be a continuation line).
+Comment lines are stripped from input. A comment line is a natural line starting with whitespace characters followed by character \texttt{;} or character sequence given via attribute \texttt{c\-o\-m\-m\-e\-n\-t}. In a subsequent step, continuation lines merged into logical lines.
 
-A (merge continuation) line starting with an arbitrary number of whitespace characters followed by the characters given in attribute \texttt{c\-o\-m\-m\-e\-n\-t} is a \textbf{comment line}. Such lines are removed from output. The characters given are taken literaly and have no meta character functionality. To disable comment lines altogether use an empty string \footnote{
-A string consisting only of whitespace characters
-}.
-
-To allow a \textbf{decent formatting} unnecessary whitespace characters are removed. The process is illustrated \footnote{
+To support \textbf{decent formatting}, unnecessary whitespace characters are removed. The process is illustrated \footnote{
 Again character dot \texttt{.} is used to illustrate a whitespace character with the exception of line ending characters
 } using the introduction example used above:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:echo>
-
-..foo\
-..bar
+..foo                ; 'foo'
+...bar               ; '.bar'
+.baz                 ; 'baz'
 </c:echo>\end{lstlisting}
 
-In a first step is the first non-{}whitespace character determined. In the example above, this is character \texttt{f}. From there Flaka counts backwards until a line termination character or the begin of input is reached. The counted number is the amount of whitespace characters stripped from the begin of each line. If a line starts with less than that amount of whitespace characters, then only those available are removed. Additionally, all whitespace characters before the first non-{}whitespace character are removed from the input.
+In a first step, the number of whitespace characters before the first non-{}whitespace character is determined. This will be \texttt{2} in the example above. Then the whole printable content is being left shifted by this amount. This gives then the output shown as above. Notice that \texttt{f\-o\-o} and \texttt{b\-a\-z} are now on the same idendation level by this left-{}shift.
 
-There are two whitespace characters before \texttt{f\-o\-o\-\textbackslash{}}. If support for continuation lines would have been disabled, Flaka would dump the following:
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] foo\
-[c:echo] bar\end{lstlisting}
-
-Handling of continuation lines takes place \textbf{after} whitespace has been stripped. Thus Flaka prints
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] foobar\end{lstlisting}
-
-as shown in the introduction example. A slight variation of the example above is given next:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:echo>
-
-..foo\
-.bar
-...indended by one character, right?
-</c:echo>\end{lstlisting}
-
-Notice that in front of \texttt{b\-a\-r} is only one whitespace character while there are three in the line after. What will be Flaka’s output?
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] foobar
-[c:echo] .indended by one character, right?\end{lstlisting}
-
-As you can see, no more than the initial counted amount of whitespace is removed from each line.
-
-However, assume that you really want to have a couple of empty lines dumped before any real content. How can this be done. There are two options. Firstly you can always fall back to use Ant’s standard \texttt{e\-c\-h\-o} task. Secondly, you can use a comment line like shown next
-
-\begin{lstlisting}[firstnumber=1,]
-<c:echo>
-..; two empty lines following
-
-
-..foobar
-</c:echo>\end{lstlisting}
-
-which would dump:
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo]
-[c:echo]
-[c:echo] foobar\end{lstlisting}
-
-This all works because comment lines are removed from the input \textbf{after} the position of the first non-{}whitespace character gets determined. It obviously means that this kind of comments do matter and can’t simply be stripped off. They may carry some semantics, so it’s probably best to avoid this kind of trick. Make use of it when approbriate.
-
-We have seen how to force leading empty lines in the example above. What needs to be done if some leading whitespace is intended? Again there are two options. First you may attack the problem using the comment line trick:
-
-\begin{lstlisting}[firstnumber=1,]
-<c:echo>
-..; dummy comment
-.......foobar
-</c:echo>\end{lstlisting}
-
-This would produce like \texttt{[\-c\-:\-e\-c\-h\-o\-] .\-.\-.\-.\-.\-f\-o\-o\-b\-a\-r}. Or you may use the \textbf{shift} attribute to right-{}shift the whole output by an arbitrary amount of characters like
+It is possible to perform a right-{}shift of content \emph{after} the automatic left shift:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:echo shift="5">
-..foobar
+..foo                ; '.....foo'
 </c:echo>\end{lstlisting}
-
-producing the same as before, namely
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] .....foobar\end{lstlisting}
 
 Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different \emph{shift} character sequence as show next:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:echo shift="5>">
-..foobar
+<c:echo shift="5> ">
+..foobar              ; '> > > > >foobar'
 </c:echo>\end{lstlisting}
 
-This produces \texttt{>{}\->{}\->{}\->{}\->{}} as shift character sequence for every line dumped as shown next:
+\subsubsection{Examples}
+\label{_examples_2}\hyperlabel{_examples_2}%
+
+Create a single output line consisting of 20 times character \texttt{\%}:
 
 \begin{lstlisting}[firstnumber=1,]
-[c:echo] >>>>>foobar\end{lstlisting}
+<c:echo shift="20%" />   ; '%%%%%%%%%%%%%%%%%%%%'\end{lstlisting}
 
-Notice that every character after the integral number counts. Thus \`{}5>{} \`{} would produce
-
-\begin{lstlisting}[firstnumber=1,]
-[c:echo] > > > > > foobar\end{lstlisting}
-
-instead.
-
-This feature also allows to create some horizontal lines which might be useful to get attention for a particular message of importance like
+Type a comment in echo to document what will be echoed:
 
 \begin{lstlisting}[firstnumber=1,]
-[c:echo] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\end{lstlisting}
+<c:echo>
+  ; make sure that property p is defined here
+  p : ${p}         ; 'p : ..'
+</c:echo>\end{lstlisting}
 
-Those line of 40 per cent character \texttt{\%} got created simply by using
+Follow the guideline that lines should not exceed 80 characters by using continuation lines if necessary
 
 \begin{lstlisting}[firstnumber=1,]
-<c:echo shift="40%"/>\end{lstlisting}
+<c:echo>
+  a very long \    ; 'a very long line'
+  line
+</c:echo>\end{lstlisting}
+
+\hyperlink{el}{EL} is enabled by default:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:echo>
+  #{3 * 4}   ; '12'
+</c:echo>\end{lstlisting}
 
 \subsection{logo}
 \label{task_logo}\hyperlabel{task_logo}%
@@ -2608,14 +2513,14 @@ Task \hyperlink{task_when}{when} evaluates an \hyperlink{el}{EL} expressio. If t
 
 \begin{lstlisting}[firstnumber=1,]
 <c:when test=" expr ">
-   -- executed if expr evaluates to true
+   ; executed if expr evaluates to true
 </c:when>\end{lstlisting}
 
 The logical negation of \texttt{w\-h\-e\-n} is task \hyperlink{task_unless}{unless} which executes the sequence of tasks only in case the evaluation of \emph{expr} returns \texttt{f\-a\-l\-s\-e}.
 
 \begin{lstlisting}[firstnumber=1,]
  <c:unless test=" expr ">
-   -- executed if expr evaluates to false
+   ; executed if expr evaluates to false
  </c:unless>\end{lstlisting}
 
 The body of \texttt{w\-h\-e\-n} and \texttt{u\-n\-s\-e\-t} may contain any sequence of tasks or macros (or a combination of both).
@@ -2625,11 +2530,11 @@ Task \hyperlink{task_choose}{choose} tests each \texttt{w\-h\-e\-n} condition in
 \begin{lstlisting}[firstnumber=1,]
  <c:choose>
   <when test="expr_1">
-    -- body_1
+    ; body_1
   </when>
   ..
-  <otherwise> -- optional_
-    -- catch all body
+  <otherwise> ; optional_
+    ; catch all body
   </otherwise>
  <c:/choose>\end{lstlisting}
 
@@ -2638,11 +2543,11 @@ A programming task often seen is to check whether a (string) value matches a giv
 \begin{lstlisting}[firstnumber=1,]
  <c:switch value=" 'some string' ">
   <matches re="regular expression or pattern" >
-    -- body_1
+    ; body_1
   </case>
   ..
-  <otherwise> -- optional
-    -- catch all body
+  <otherwise> ; optional
+    ; catch all body
   </otherwise>
  </c:switch>\end{lstlisting}
 
@@ -2651,7 +2556,7 @@ Each case is tried in turn \emph{to match} the string value (given as \hyperlink
 \subsection{when}
 \label{task_when}\hyperlabel{task_when}%
 
-Task when represents a else-{}less if statement. The following example dumps the content of a file to stdout via Ant’s echo task if the file exists.
+Task when represents a else-{}less if statement. The following example dumps the content of a file to stdout via Ant's echo task if the file exists.
 
 \begin{lstlisting}[firstnumber=1,]
  <c:when test=" 'path/to/file'.tofile.isfile" >
@@ -2660,7 +2565,7 @@ Task when represents a else-{}less if statement. The following example dumps the
     <echo message="${__z__}" />
  </c:when>\end{lstlisting}
 
-Note that the example is bit artificial cause Ant’s loadfile task is sufficient.
+Note that the example is bit artificial cause Ant's loadfile task is sufficient.
 
 \subsubsection{Attributes}
 \label{_attributes_7}\hyperlabel{_attributes_7}%
@@ -2719,7 +2624,7 @@ A \hyperlink{el}{EL} expression that must evaluate to \texttt{t\-r\-u\-e} in ord
 \subsection{unless}
 \label{task_unless}\hyperlabel{task_unless}%
 
-This task is the logical opposite of task \hyperlink{tasks_when}{when}. It’s body is only executed if the condition evaluates to false. See \hyperlink{tasks_when}{when} for details. This example shows how to create a folder named libdir if such a folder does not already exist.
+This task is the logical opposite of task \hyperlink{tasks_when}{when}. It's body is only executed if the condition evaluates to false. See \hyperlink{tasks_when}{when} for details. This example shows how to create a folder named libdir if such a folder does not already exist.
 
 \begin{lstlisting}[firstnumber=1,]
  <c:unless test=" 'libdir'.tofile.isdir ">
@@ -2772,7 +2677,7 @@ A EL condition. When \texttt{t\-r\-u\-e} corresponding clause will be executed.
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\emph{unless}.text
+\emph{unless}.test
 %
 }&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
 string
@@ -2874,14 +2779,14 @@ Synonym for \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e}
 \subsubsection{Behaviour}
 \label{_behaviour_7}\hyperlabel{_behaviour_7}%
 
-Each \texttt{w\-h\-e\-n} and \texttt{u\-n\-l\-e\-s\-s} clause’s conditions are evaluated in order given until a claus get’s executed. Then, further processing stops ignoring all further elements not taken into account so far. If no \texttt{w\-h\-e\-n} or \texttt{u\-n\-l\-e\-s\-s} clause got executed, then a present \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} or \texttt{d\-e\-f\-a\-u\-l\-t} clause gets executed.
+Each \texttt{w\-h\-e\-n} and \texttt{u\-n\-l\-e\-s\-s} clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no \texttt{w\-h\-e\-n} or \texttt{u\-n\-l\-e\-s\-s} clause got executed, then a present \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} or \texttt{d\-e\-f\-a\-u\-l\-t} clause gets executed.
 
 The shortest possible \texttt{c\-h\-o\-o\-s\-e} statement is
 
 \begin{lstlisting}[firstnumber=1,]
  <c:choose />\end{lstlisting}
 
-It’s useless and does nothing, it’s completely harmless.
+It's useless and does nothing, it's completely harmless.
 
 The following example would execute all macros or tasks listed in the \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} clause cause no \texttt{w\-h\-e\-n} or \texttt{u\-n\-l\-e\-s\-s} clause got executed.
 
@@ -2921,13 +2826,13 @@ Task \texttt{s\-w\-i\-t\-c\-h} provides text based pattern matching. An illustra
     </c:echo>
   </re>
   <glob expr"*.jar">                            (2)
-   <echo>It's a -- jar!</echo>
+   <echo>It is a -- jar!</echo>
   </glob>
   <cmp eq="foo" lt="foo">                       (3)
     <!--  ${val} is less or equals "foo" -->
   </cmp>
   <otherwise>
-    <! none of the above clauses matched -->
+    <!-- none of the above clauses matched -->
   </otherwise>
  </c:switch>\end{lstlisting}
 
@@ -3214,9 +3119,9 @@ When applying a regular or glob expression on a test value, then by default, the
 
 Attribute \textbf{find} does not apply on clause \texttt{c\-m\-p}.
 
-Use attribute \textbf{debug} to enable extra output of debug information on your attached standard error stream, bypassing Ant’s logging mechanics.
+Use attribute \textbf{debug} to enable extra output of debug information on your attached standard error stream, bypassing Ant's logging mechanics.
 
-The semantics of attribute \textbf{literally} varies depending on it’s context. A build failure is thrown if an illegal regular expression pattern -{} like \texttt{*} -{} is seen. If literally is enabled, the regular expression string is taken literally instead, no exception is thrown while a warning message is reported. If attribute \textbf{literally} is enabled in context of a glob expression, then any meta characters are taken as regular characters. Attribute \textbf{literally} has no meaning in the context of clause \texttt{c\-m\-p}.
+The semantics of attribute \textbf{literally} varies depending on it's context. A build failure is thrown if an illegal regular expression pattern -{} like \texttt{*} -{} is seen. If literally is enabled, the regular expression string is taken literally instead, no exception is thrown while a warning message is reported. If attribute \textbf{literally} is enabled in context of a glob expression, then any meta characters are taken as regular characters. Attribute \textbf{literally} has no meaning in the context of clause \texttt{c\-m\-p}.
 
 The remaining part of this section describes attributes \textbf{ignorecase}, .., \textbf{multiline}. This attributes can be used to change the characteristics of the underlying regular expression engine. Modern regular expression engines also allow to their characteristics on the fly by using embedded flags. Embedded flag alternatives are also listed.
 
@@ -3326,12 +3231,12 @@ Element \textbf{default} is an alias name for element \texttt{o\-t\-h\-e\-r\-w\-
 String attribute \texttt{v\-a\-l\-u\-e} is applied against a series of \emph{case}-{}clauses in their syntactical order. Elements \texttt{r\-e}, \texttt{g\-l\-o\-b}, \texttt{c\-m\-p} and \texttt{m\-a\-t\-c\-h\-e\-s} are \emph{case}-{}clauses. If a clause matches, then tasks associated with the matching clause are carried out and no further clauses are will be tested. If no case-{}clause matches, then all optional available \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} elements are carried out in their syntactical order.
 
 \subsubsection{Examples}
-\label{_examples}\hyperlabel{_examples}%
+\label{_examples_3}\hyperlabel{_examples_3}%
 
 Tests based on regular expressions
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <re expr="^foobar$" />     ; matches
    <re expr="foobar" />       ; matches
    <re expr="foo" />          ; no
@@ -3342,7 +3247,7 @@ Tests based on regular expressions
 The following example shows how to utilize matcher properties:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <re expr="^(.*)(b.*)$" var="m">
      <echo>
        #{ m          }   ; 'foobar'
@@ -3362,7 +3267,7 @@ The following example shows how to utilize matcher properties:
 Tests using glob expressions
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <glob expr="foobar" />          ; matches
    <glob expr="f*r" />             ; matches
    <glob expr="foo" />             ; no
@@ -3373,8 +3278,8 @@ Tests using glob expressions
 Matcher properties can also be used when using glob expressions. However, since glob expressions do not have enough semantics to express capturing groups, their use is limited. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" foobar ">
-   <glob expr=" f*r " var="m">
+<c:switch value="foobar">
+   <glob expr="f*r" var="m">
      <echo>
        #{ m          }   ; 'foobar'
        #{ m[0]       }   ; 'foobar'
@@ -3390,20 +3295,20 @@ Matcher properties can also be used when using glob expressions. However, since 
 Finally use element \texttt{c\-m\-p} to do text based comparison in absence of any meta characters. Since element \texttt{c\-m\-p} is not based on an regular expression engine, matcher properties are not available. Consider
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" foobar ">
-   <cmp eq=" foobar " />           ; matches
-   <cmp eq=" f*r "    />           ; no
-   <cmp eq=" foo " find="true"/>   ; no
+<c:switch value="foobar">
+   <cmp eq="foobar" />           ; matches
+   <cmp eq="f*r"    />           ; no
+   <cmp eq="foo" find="true"/>   ; no
 </c:switch>\end{lstlisting}
 
 Element \texttt{c\-m\-p} can be used to sort text in alphabetical order. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:switch value=" b ">
-   <cmp eq=" b " />           ; true
-   <cmp lt=" c " />           ; true
-   <cmp gt=" a " />           ; true
-   <cmp lt=" a " eq="b" />    ; true
+<c:switch value="b">
+   <cmp eq="b" />           ; true
+   <cmp lt="c" />           ; true
+   <cmp gt="a" />           ; true
+   <cmp lt="a" eq="b" />    ; true
 </c:switch>\end{lstlisting}
 
 \subsubsection{Pathological}
@@ -3415,23 +3320,14 @@ Switch has been designed to be rather tolerant. No elements are required in whic
 <c:switch />
 <c:switch value="foobar" />\end{lstlisting}
 
-Arbitrary \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} elements might be present. In addition, \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} elements are carried out if not \emph{case}-{}clause matches.
+An \texttt{o\-t\-h\-e\-r\-w\-i\-s\-e} elements is carried out if not \emph{case}-{}clause matches, especially in the case of absent \emph{case}-{}clauses:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:switch>
  <otherwise>
-  <echo>first otherwise</echo>
- </otherwise>
- <otherwise>
-    <echo>second otherwise</echo>
+  <echo>executed, cause nothing matched.</echo>
  </otherwise>
 </c:switch>\end{lstlisting}
-
-Being executed, it would print
-
-\begin{lstlisting}[firstnumber=1,]
-[echo] first otherwise
-[echo] second otherwise\end{lstlisting}
 
 \section{Repetative Tasks}
 \label{part7}\hyperlabel{part7}%
@@ -3440,14 +3336,14 @@ Flaka has a looping statement. Use task \hyperlink{task_for}{for} to iterate ove
 
 \begin{lstlisting}[firstnumber=1,]
  <c:for var=" name " in=" ''.tofile.list ">
-    -- sequence of task or macros
-    -- used <c:continue /> to continue ; and
-    -- <c:break /> to stop looping
-    -- use #{name} to refer to current item (as shown below)
+    ; sequence of task or macros
+    ; used <c:continue /> to continue ; and
+    ; <c:break /> to stop looping
+    ; use #{name} to refer to current item (as shown below)
     <c:echo>#{name}</c:echo>
  </c:for>\end{lstlisting}
 
-Attribute \texttt{i\-n} will be evaluated as \hyperlink{el}{EL} expression. In the example above, that \hyperlink{el}{EL} expression is \texttt{'\-'\-.\-t\-o\-f\-i\-l\-e\-.\-l\-i\-s\-t} which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at \hyperlink{el_string_properties}{properties} of a string] and \hyperlink{el_file_properties}{properties} of a file.
+Attribute \texttt{i\-n} will be evaluated as \hyperlink{el}{EL} expression. In the example above, that \hyperlink{el}{EL} expression is \texttt{'\-'\-.\-t\-o\-f\-i\-l\-e\-.\-l\-i\-s\-t} which, when evaluated, creates a list of all files in the folder containing the current build script. To understand the expression, have a look at \hyperlink{el_string_properties}{properties} of a string and \hyperlink{el_file_properties}{properties} of a file.
 
 \subsection{while}
 \label{task_while}\hyperlabel{task_while}%
@@ -3596,7 +3492,7 @@ The items to be iterated over as \hyperlink{el}{EL} expression. A iteration take
 \subsubsection{Behaviour}
 \label{_behaviour_10}\hyperlabel{_behaviour_10}%
 
-This is the shortest possible for statement. It’s legal albeit completely useless.
+This is the shortest possible for statement. It's legal albeit completely useless.
 
 \begin{lstlisting}[firstnumber=1,]
  <c:for />\end{lstlisting}
@@ -3826,64 +3722,421 @@ The example given above can thus be shortened to
 
 Flaka has been charged with exception handling tasks.
 
-Flaka contains a task to handle exceptions thrown by tasks, \hyperlink{task_trycatch}{trycatch}. This task implements the usual \emph{try/catch/finally} trinity found in various programming languages (like in Java for example):
+\subsection{trycatch}
+\label{task_trycatch}\hyperlabel{task_trycatch}%
+
+A task mirroring try-{}catch exception handling found in modern programming languages. The following snippet demonstrates the usage of trycatch:
 
 \begin{lstlisting}[firstnumber=1,]
- <c:trycatch>
+ <c:trycatch property="reason">
    <try>
-     -- sequence of task or macros
+     <echo>one ..</echo>
+     <echo>two ..</echo>
+     <fail message="bang" />
+     <echo>three ..</echo>
    </try>
    <catch>
-     -- sequence of task or macros
+     <echo>..caught : ${reason}</echo>
    </catch>
+   <else>
+     <echo>nothing exceptionell</echo>
+   </else>
    <finally>
-     -- sequence of task or macros
+     <echo>..finally</echo>
    </finally>
  </c:trycatch>\end{lstlisting}
 
-Element \emph{try}, \emph{catch} and \emph{finally} are all optional or can appear multiple times. If \emph{catch} is used without any argument, then that catch clause will match any \textbf{build exception}. To differentiate between different exception types, \emph{catch} can additionally be used with a \emph{type} and \emph{match} argument. The former can be used to select a particular exception type (like a 'java.lang.NullPointerException), the latter can be used to select an exception based on the message carried. Both arguments are interpreted as pattern expression. For example:
+When executed, the following will be reported by Ant:
 
 \begin{lstlisting}[firstnumber=1,]
- <c:trycatch>
+[echo] one ..
+[echo] two ..
+[echo] ..caught : bang
+[echo] ..finally\end{lstlisting}
+
+\subsubsection{Attributes}
+\label{_attributes_14}\hyperlabel{_attributes_14}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{llll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Attribute
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+Default
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{p\-r\-o\-p\-e\-r\-t\-y}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+Property that should hold the exception message
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+Reference to hold the exception object
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\emph{catch}.\texttt{t\-y\-p\-e}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+\texttt{*\-.\-B\-u\-i\-l\-d\-E\-x\-c\-e\-p\-t\-i\-o\-n}
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+A glob pattern to match the exception's type
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\emph{catch}.\texttt{m\-a\-t\-c\-h}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+\texttt{*}
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+A glob pattern to match the exception's message
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\subsubsection{Elements}
+\label{_elements_12}\hyperlabel{_elements_12}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{ll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Element
+%
+}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+try
+%
+}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
+A task container to hold tasks and macros to be given a try
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+catch
+%
+}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
+A task container to be executed if an exception gets thrown
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+else
+%
+}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
+Task container executed if no exception is thrown in the \texttt{t\-r\-y} element
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+finally
+%
+}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
+A task container to be executed in any case
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+All elements are optional. There can be an arbitrary number of catch-{}clauses.
+
+\subsubsection{Behaviour}
+\label{_behaviour_13}\hyperlabel{_behaviour_13}%
+
+If a try-{}clause exists, then tasks within that clause are executed. If an exception is thrown by one of them, then ..
+\begin{itemize}
+
+\item{} If a property name is given, then that property will hold the message of the exception thrown.
+
+
+
+\item{} If a reference name is given, then that reference will hold the exception object thrown.
+
+
+
+\item{} All catch-{}clauses are tried in syntactical order whether a clause matches.
+
+
+
+\item{} If there is a \emph{matching} catch clause, then all tasks in that matching clause are executed and all further catch-{}clauses are ignored.
+
+
+\end{itemize}
+
+If no exception is thrown within the try-{}clause, then an optional else-{}clause will be executed.
+
+An optional finally-{}clause is always executed, regardless of whether an exception gets thrown in a try-{}, else-{} or within a catch-{}clause. A finally-{}clause is especially executed in the absence of a try-{}clause.
+
+An exception thrown in a try-{}clause for which a matching catch-{}clause exists, is assumed to be handled by the matching clause and therefore not propagated. An exception for which no matching clause exists, an exception thrown in an else-{}clause or in a matching catch-{}clause is propagated to an optional existing finally-{}clause. If no finally-{}clause exists, then the incoming exception will be propagated to the caller. The finally-{}clause propagates it's incoming exception to the caller.
+
+An exception thrown in a catch-{}clause, in an else-{}clause or in a finally-{}clause overrides any previously existing exception when propagating. However, an exception thrown in a catch-{}, else-{} or finally-{}clause will neither update nor assign the property or reference.
+
+A catch-{}clause can be decorated with a \emph{type} or \emph{match} argument to handle a specific exception class. Both arguments expect a glob expression. A catch-{}clauses matches if both, the type-{}argument and the match-{}argument do match. The type-{}argument is matched against exception's native type name. The match-{}argument is matched against the exception's message. Both default values ensure that a build exception thrown by Ant is caught while an implementation dependent exception passes. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:trycatch>
    <try>
-      ..
-      <fail message="#PANIC!" unless="ant.file"/>
-      ..
+      <fail message="houston, we have a problem" />
    </try>
-   <catch match="*#PANIC!*">
-      <echo>Ant initialization problem!!</echo>
-      <fail/>
+   <catch match="*houston*">
+     ; handle exceptions where the exception's message
+     ; contains the word 'houston'
+   </catch>
    <catch type="java.lang.*">
-     -- handle Java runtime problems
+     ; handle Java runtime exceptions
    </catch>
    <catch>
-     -- handle all other build exceptions
+     ; handle standard build exceptions
    </catch>
-  </c:trycatch>\end{lstlisting}
+</c:trycatch>\end{lstlisting}
 
-Property \emph{ant.file} is a standard Ant property that should always be set. If not, there’s something seriously wrong and it does not make much sense to continue. Use attribute \emph{type} to catch (runtime) exceptions thrown by the underlying implementation.
+When matching against the error message, be aware that the actual error message might be slightly different from the actual message given cause usually the error message contains also information about where the exception got thrown. It is therefore wise to accept any leading and trailing space.
 
-Task \hyperlink{task_throw}{throw} throws a (build) exception.
+\subsection{throw}
+\label{task_throw}\hyperlabel{task_throw}%
+
+A task to re-{}throw a previously thrown exception.
 
 \begin{lstlisting}[firstnumber=1,]
- <c:throw [var="sym"] />\end{lstlisting}
+<c:trycatch>
+  <try>
+     <fail message="houston,.."/>
+  </try>
+  <catch>
+    <echo level="DEBUG">*** exception seen ***</echo>
+    <c:throw />
+  </c:catch>
+</c:trycatch>\end{lstlisting}
 
-This task can also be used to rethrow an existing exception.
+\subsubsection{Attributes}
+\label{_attributes_15}\hyperlabel{_attributes_15}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{llll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Attribute
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+Default
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+The name of the reference holding the previously thrown exception
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{v\-a\-r}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}
+%
+}&\multicolumn{1}{p{50\newtblstarfactor}|}{\raggedright%
+An alias for attribute \texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\subsubsection{Behaviour}
+\label{_behaviour_14}\hyperlabel{_behaviour_14}%
+
+When this task is executed, it looks-{}up whether the current project contains a specific reference. By default, the name of that reference is \texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}. The name of this reference can be changed  by using attribute \texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}. If that reference exists and an exception is attached with that reference, then that exception is thrown. Otherwise, a standard build exception is generated and thrown. In that case, \texttt{t\-h\-r\-o\-w} acts like Ant's standard task \texttt{f\-a\-i\-l}.
+
+Note that \texttt{t\-h\-r\-o\-w} works in any context. Consider
+
+\begin{lstlisting}[firstnumber=1,]
+<c:trycatch>
+ <try>
+   <fail message="houston,.." />
+ </try>
+ ; ignores build exception
+ <catch />
+</c:trycatch>
+..
+; very much later
+..
+; throws build exception 'houston,..'
+<c:throw />\end{lstlisting}
 
 \subsection{fail}
 \label{task_fail}\hyperlabel{task_fail}%
 
-This task has been derived from \href{http://ant.apache.org/manual/CoreTasks/fail.html}{Ant’s standard fail task}. All attributes and elements are supported. When defining a message however, EL references can be used:
+This task has been derived from Ant's core task \texttt{f\-a\-i\-l} \footnote{
+see \href{http://ant.apache.org/manual/CoreTasks/fail.htm}{http://ant.apache.org/\-manual/\-CoreTasks/\-fail.htm}
+}. In addition, EL-{}references can be used regardless whether \hyperlink{el}{EL} has been enabled or not. Furthermore, attribute \texttt{t\-e\-s\-t} has been added. The value of \texttt{t\-e\-s\-t} will be evaluated as EL expression in a boolean context. Thus it is possible to throw a build exception not only based on whether a property exists or not but also whether an EL-{}expression is evaluated as \texttt{t\-r\-u\-e}.
 
 \begin{lstlisting}[firstnumber=1,]
-<c:fail message="illegal state #{whichstate} seen" />\end{lstlisting}
+<c:fail message="negative number #{ i } seen" test=" i lt 0 " />\end{lstlisting}
 
-Furthermore, attribute \texttt{t\-e\-s\-t} has been added. The value of \texttt{t\-e\-s\-t} will be evaluated as EL expression in a boolean context. Being \texttt{t\-r\-u\-e}, fail will throw a build exception. When used in this way, \texttt{<{}\-c\-:\-f\-a\-i\-l t\-e\-s\-t\-=\-'\-e\-x\-p\-r\-' /\->{}} behaves exactly the same as
+\subsubsection{Attributes}
+\label{_attributes_16}\hyperlabel{_attributes_16}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+Attribute
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{70\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{t\-e\-s\-t}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{70\newtblstarfactor}|}{\raggedright%
+An arbitrary EL-{}expression.
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\section{Other Tasks}
+\label{part9}\hyperlabel{part9}%
+
+\subsection{install-{}property-{}handler}
+\label{task_install_property_handler}\hyperlabel{task_install_property_handler}%
+
+A task to install Flaka's property handler. When installed, Ant \emph{understands} \hyperlink{el}{EL} references like \texttt{\#\-\{\-.\-.\-\}} in addition to standard property references \texttt{\$\-\{\-.\-.\-\}}. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:when test="expr">
- <fail />
-</c:when>\end{lstlisting}
+ <echo>
+    #{3 * 4}
+ </echo>
+ <c:install-property-handler />
+ <echo>
+    #{3 * 4}
+ </echo>\end{lstlisting}
+
+This is the output of above's snippet:
+
+\begin{lstlisting}[firstnumber=1,]
+ [echo] [1] #{3 * 4}
+ [echo] [2] 12\end{lstlisting}
+
+\subsubsection{Attributes}
+\label{_attributes_17}\hyperlabel{_attributes_17}%
+
+{\centering \savetablecounter \begingroup%
+\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
+
+\begin{longtable}{lllll}\hline
+\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+Attributes
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+Type
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+Default
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+EL
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+Description
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+type
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{e\-l\-o\-n\-l\-y}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\#\{\}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+Install handler with certain additional features  enabled (see below)
+%
+}\tabularnewline
+\hline
+\end{longtable}\endgroup%
+\restoretablecounter%
+}
+
+\subsubsection{Behaviour}
+\label{_behaviour_15}\hyperlabel{_behaviour_15}%
+
+If \texttt{t\-y\-p\-e} is \texttt{e\-l\-o\-n\-l\-y} (exactly as written), then the new handler will only handle \texttt{\#\-\{\-.\-.\-\}} in addition. If \texttt{t\-y\-p\-e} is \texttt{r\-e\-m\-o\-v\-e}, then unresolved property references are discarded.
 
 \subsection{rescue}
 \label{task_rescue}\hyperlabel{task_rescue}%
@@ -3906,12 +4159,12 @@ Task \texttt{r\-e\-s\-c\-u\-e} is essentially a container for an arbitrary numbe
 No matter what will happen with property \texttt{v\-a\-r} and variable \texttt{f\-o\-o} within \texttt{s\-e\-q\-u\-e\-n\-t\-i\-a\-l}, this will be unoticable outside of \texttt{r\-e\-s\-c\-u\-e} cause the values (or better: state) will be restored after having executed all embedded tasks. This will of course also work in case an exception is thrown by one of the tasks.
 
 \subsubsection{Attributes}
-\label{_attributes_14}\hyperlabel{_attributes_14}%
+\label{_attributes_18}\hyperlabel{_attributes_18}%
 
 This task does not define attributes.
 
 \subsubsection{Elements}
-\label{_elements_12}\hyperlabel{_elements_12}%
+\label{_elements_13}\hyperlabel{_elements_13}%
 
 {\centering \savetablecounter \begingroup%
 \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
@@ -3964,387 +4217,9 @@ A (arbitrary) task or macro to be excecuted
 }
 
 \subsubsection{Behaviour}
-\label{_behaviour_13}\hyperlabel{_behaviour_13}%
-
-Executes all embedded tasks. Variables and properties listed in \texttt{v\-a\-r\-s} and \texttt{p\-r\-o\-p\-e\-r\-t\-i\-e\-s} are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
-
-\subsection{throw}
-\label{task_throw}\hyperlabel{task_throw}%
-
-A task to re-{}throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
-
-Note that throw would re-{}throw the last thrown exception -{} regardless of the current context. The following would therefore work:
-
-\begin{lstlisting}[firstnumber=1,]
- <c:trycatch>
-  <try>
-    <fail message="4711" />
-  </try>
-  <catch>
-    -- handle the exception ..
-  <catch>
- </c:trycatch>
- ..
- .. -- very much later
- ..
- <c:throw /> -- re-throws "4711" exception!!!\end{lstlisting}
-
-\subsubsection{Attributes}
-\label{_attributes_15}\hyperlabel{_attributes_15}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-Attribute
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Type
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Default
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\hyperlink{el}{EL}
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Description
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-string
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-The name of the reference holding the previously thrown exception
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{v\-a\-r}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Same as reference
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-\subsubsection{Behaviour}
-\label{_behaviour_14}\hyperlabel{_behaviour_14}%
-
-A typical usage example:
-
-\begin{lstlisting}[firstnumber=1,]
- <c:trycatch>
-  <try> ..<fail message="4711"/> </try>
-  <catch>
-    <echo>caught exception ..</echo>
-    <c:throw />
-  </c:catch>
- </c:trycatch>\end{lstlisting}
-
-When being executed, Ant would receive a build exception (re-{}thrown within the catch clause) containing "4711" and terminate.
-
-\subsection{trycatch}
-\label{task_trycatch}\hyperlabel{task_trycatch}%
-
-A task mirroring try-{}catch-{}finally exception handling found in various languages.
-
-All tasks inside try are executed in order. If an exception is thrown by one of tehm, then several things may happen:
-\begin{itemize}
-
-\item{} If there is a matching catch clause, then all tasks in that clause are executed. If there isn’t a catch clause, the exception will be passed to the enclosing environment (except if an exception is also thrown in the finally clause -{} see below).
-
-
-
-\item{} An optional finally clause is always executed, regardless of whether an exception gets thrown or or whether a try or catch clause exists.
-
-
-
-\item{} If a property is set, then that property will hold the message of the exception thrown in a try clause. If a reference is given, then that reference will hold the exception object thrown in the try clause. If an exception is also thrown in a catch or finally clause, then neither will the property or reference update nor set.
-
-
-
-\item{} If a exception is thrown in a matching catch clause and in a finally clause, then the latter will be passed to the enclosing environment and the former will be discarded.
-
-
-\end{itemize}
-
-A catch clause can be given a type and a match argument. Both arguments expect a regular or pattern expression. A catch clauses matches if the type and match matches. The type argument is matched against the classname of the thrown exception. The match argument is matched against the exception message (if any). Both default values ensure that a build exception thrown by Ant is caught while an implementation dependent exception passes.
-
-When matching against the error message, be aware that the actual error message might be slightly different from the actual message given: usually the error message contains also information about where the exception got thrown. It is therefore wise to accepted any leading and trailing space. For example:
-
-\begin{lstlisting}[firstnumber=1,]
- <c:trycatch>
-  <try><fail message="4711" /></try>
-  <catch match="4711">
-    -- does (very likely) not match
-  </catch>
-  <catch match="4711*">
-    -- neither this one ..
-  </catch>
-  <catch match="*4711">
-    -- bon chance
-  </catch>
-  <catch match="*4711*">
-    -- this is it!
-  </catch>
- </c:trycatch>\end{lstlisting}
-
-\subsubsection{Attributes}
-\label{_attributes_16}\hyperlabel{_attributes_16}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-Attribute
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Type
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-Default
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\hyperlink{el}{EL}
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-Description
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{p\-r\-o\-p\-e\-r\-t\-y}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-string
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-The name of the property that should hold the exception message
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{r\-e\-f\-e\-r\-e\-n\-c\-e}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-string
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{t\-r\-y\-c\-a\-t\-c\-h\-.\-o\-b\-j\-e\-c\-t}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
->{}The name of the reference to hold the exception object
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{c\-a\-t\-c\-h\-.\-t\-y\-p\-e}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-glob
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{*\-.\-B\-u\-i\-l\-d\-E\-x\-c\-e\-p\-t\-i\-o\-n}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-A pattern against the type (Java classname) of the exception object
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{c\-a\-t\-c\-h\-.\-m\-a\-t\-c\-h}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-glob
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-\texttt{*}
-%
-}&\multicolumn{1}{p{11\newtblstarfactor}|}{\raggedright%
-no
-%
-}&\multicolumn{1}{p{52\newtblstarfactor}|}{\raggedright%
-A pattern to be applied against the exception message
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-\subsubsection{Elements}
-\label{_elements_13}\hyperlabel{_elements_13}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{ll}\hline
-\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-try
-%
-}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
-A task container to hold tasks and macros to be given a try.
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-catch
-%
-}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
-A task container to be executed if an exception gets thrown
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-finally
-%
-}&\multicolumn{1}{p{85\newtblstarfactor}|}{\raggedright%
-A task container to be executed in any case
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-Note that all elements are optional. However, if there’s no try element, then there’s no chance to execute catch at all, so this constellation does not make too much sense. The optional finally clause will be executed regardless of whether a try clause exists or not.
-
-It is allowed to have more multiple try, catch or finally clauses and further does the oder in which they appear not matter. Be aware though that eventually all try and finally clauses are merged into one try resp. finally clause.
-
-\subsubsection{Behaviour}
-\label{_behaviour_15}\hyperlabel{_behaviour_15}%
-
-The following snippet demonstrates the usage of trycatch:
-
-\begin{lstlisting}[firstnumber=1,]
- <c:trycatch property="reason">
-   <try>
-     <echo>1st try ..</echo>
-   </try>
-   <try>
-     <echo>2nd try ..</echo>
-     <fail message="fail within 2nd try" />
-   </try>
-   <try>
-     <fail message="fail within 3rd try" />
-   </try>
-   <catch type="*.BuildException" match="*">
-     <echo>..caught : ${reason}</echo>
-   </catch>
-   <finally>
-     <echo>..finally</echo>
-   </finally>
- </c:trycatch>\end{lstlisting}
-
-Giving:
-
-\begin{lstlisting}[firstnumber=1,]
-    [echo] 1st try ..
-    [echo] 2nd try ..
-    [echo] ..caught : fail within 2nd try
-    [echo] ..finally\end{lstlisting}
-
-\section{Other Tasks}
-\label{part9}\hyperlabel{part9}%
-
-\subsection{install-{}property-{}handler}
-\label{task_install_property_handler}\hyperlabel{task_install_property_handler}%
-
-A task to install Flaka's property handler. When installed, Ant \emph{understands} \hyperlink{el}{EL} references like \texttt{\#\-\{\-.\-.\-\}} in addition to standard property references \texttt{\$\-\{\-.\-.\-\}}. Consider:
-
-\begin{lstlisting}[firstnumber=1,]
- <echo>
-    #{3 * 4}
- </echo>
- <c:install-property-handler />
- <echo>
-    #{3 * 4}
- </echo>\end{lstlisting}
-
-This is the output of above’s snippet:
-
-\begin{lstlisting}[firstnumber=1,]
- [echo] [1] #{3 * 4}
- [echo] [2] 12\end{lstlisting}
-
-\subsubsection{Attributes}
-\label{_attributes_17}\hyperlabel{_attributes_17}%
-
-{\centering \savetablecounter \begingroup%
-\setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
-\setlength{\newtblstarfactor}{\newtblsparewidth / \real{100}}%
-
-\begin{longtable}{lllll}\hline
-\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
-Attributes
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Type
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Default
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-EL
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Description
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
-type
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-string
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-\texttt{e\-l\-o\-n\-l\-y}
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-\#\{\}
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Install handler with certain additional features  enabled (see below)
-%
-}\tabularnewline
-\hline
-\end{longtable}\endgroup%
-\restoretablecounter%
-}
-
-\subsubsection{Behaviour}
 \label{_behaviour_16}\hyperlabel{_behaviour_16}%
 
-If \texttt{t\-y\-p\-e} is \texttt{e\-l\-o\-n\-l\-y} (exactly as written), then the new handler will only handle \texttt{\#\-\{\-.\-.\-\}} in addition. If \texttt{t\-y\-p\-e} is \texttt{r\-e\-m\-o\-v\-e}, then unresolved property references are discarded.
+Executes all embedded tasks. Variables and properties listed in \texttt{v\-a\-r\-s} and \texttt{p\-r\-o\-p\-e\-r\-t\-i\-e\-s} are restored to their previous state, i.e. if not existing before the execution, they will not exist afterwards. If existed, their value will be restored.
 
 \section{Flaka Glossary}
 \label{glossary}\hyperlabel{glossary}%

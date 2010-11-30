@@ -2,7 +2,7 @@
 [[introduction]]
 == Introduction ==
 
-Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like `cp`, `mkdir` and `find`. However, Ant lacks any decent control structures. There is no `if-then-else` and there is no `while` footnote:[`if` and `while` can be implemented in terms of calling targets depending on whether a property exists or not. Rather akward ..]. What\'s more, you have to use a rather unfriendly, sometimes even hostile, http://en.wikipedia.org/wiki/XML[XML] syntax. On the bright side however, conside this Ant snippet:
+Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like `cp`, `mkdir` and `find`. However, Ant lacks any decent control structures. There is no `if-then-else` and there is no `while` footnote:[`if` and `while` can be implemented in terms of calling targets depending on whether a property exists or not. Rather awkward ..]. What\'s more, you have to use a rather unfriendly, sometimes even hostile, http://en.wikipedia.org/wiki/XML[XML] syntax. On the bright side however, consider this Ant snippet:
 
 -------------------------------
 <copy todir="${destdir}">
@@ -12,7 +12,7 @@ Writing a project\'s build script is serious business. And so it is when using A
 </copy>
 -------------------------------
 
-It\'s its expressiveness which makes me list this example on the bright side as it is easy to graps what will happen: files ending in `.jar` are copied from one folder into another folder. Now assume that you have to include some further logic in that snippet above: 
+It\'s its expressiveness which makes me list this example on the bright side as it is easy to grasp what will happen: files ending in `.jar` are copied from one folder into another folder. Now assume that you have to include some further logic in that snippet above: 
 
 * _if a certain folder exists, copy files matching `*.zip`, otherwise stick with `*.jar`._
 
@@ -22,13 +22,13 @@ When staying with Ant, you define a property and use it like
 <include name="${jar_or_zip}"/>
 -------------------------------
 
-The problem is that you have to define that property elswehere thus you start to miss part of the logic. This is where I believe that Ant has a true deficit and this is where Flaka kicks in. Flaka provides, amongst other things, with an expression language (EL). Thus you could write
+The problem is that you have to define that property elsewhere thus you start to miss part of the logic. This is where I believe that Ant has a true deficit and this is where Flaka kicks in. Flaka provides, amongst other things, with an expression language (EL). Thus you could write
 
 -------------------------------
 <include name=" *.#{ mydir.exists ? 'zip' : 'jar'} " />
 -------------------------------
 
-However, even having such a powerfull extension like EL I am missing the full power of a programming language\'s control structures. Yes, I want to have conditionals, repetevitve constructs and a decent exception handling. Furthermore, I want to have variables which I can set or remove for pleasure. I don\'t want to be restricted that such variables may carry strings only. Any data object must be allowed. In summary, this is what Flaka currently is all about:
+However, even having such a powerful extension like EL I am missing the full power of a programming language\'s control structures. Yes, I want to have conditionals, repetitive constructs and a decent exception handling. Furthermore, I want to have variables which I can set or remove for pleasure. I don\'t want to be restricted that such variables may carry strings only. Any data object must be allowed. In summary, this is what Flaka currently is all about:
 
 * Expression Language
 * Well known control structures 
@@ -52,7 +52,7 @@ Ant build file examples show a mix of tasks provided by Flaka and by Ant. Ant ta
 antlib:it.haefelinger.flaka
 -----------------------------
 
-and whithin this manual, the abbreviation `c` will be used for this namespace. Therefore it becomes easy to see who is the provider of a task:
+and within this manual, the abbreviation `c` will be used for this namespace. Therefore it becomes easy to see who is the provider of a task:
 
 -----------------------------
 <echo> Ant </echo>

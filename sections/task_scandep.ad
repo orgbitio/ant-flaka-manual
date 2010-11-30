@@ -26,7 +26,7 @@ Then, assume that you have a _dependency_ like
  </c:dependency>
 -------------------------------------
 
-in `build.xml`. Construct `<c:dependency /> is provided by Flaka. It is implemented as macro and does nothing. It's only purpose is to allow an author to express an artifact via a Maven like dependency structure. 
+in `build.xml`. Construct `<c:dependency /> is provided by Flaka. It is implemented as macro and does nothing. It\'s only purpose is to allow an author to express an artifact via a Maven like dependency structure. 
 
 After `<c:scandeps /> has been executed, variable `dependencies` exists in any case and can be used in EL expressions like
 
@@ -62,7 +62,7 @@ This would download the `junit` artefact from `http://repo1.maven.org` into fold
 
 -------------------------------------
 
-Here we set the destination folder where we would like to store downloaded dependencies. Notice that `<:scandeps />` does not download any dependencies. It mererly creates dependency data objects. Most information carried with such a data object is retrieved from the dependency itself. Other information, like where to store locally, is not part of a dependency\'s declaration. It's subject to the build file. This is what the `decorate` element is good for. It can be used to `set` properties on objects. Notice that EL does not provide a way of changing object properties. Basically, EL is for reading only.
+Here we set the destination folder where we would like to store downloaded dependencies. Notice that `<:scandeps />` does not download any dependencies. It mererly creates dependency data objects. Most information carried with such a data object is retrieved from the dependency itself. Other information, like where to store locally, is not part of a dependency\'s declaration. It\'s subject to the build file. This is what the `decorate` element is good for. It can be used to `set` properties on objects. Notice that EL does not provide a way of changing object properties. Basically, EL is for reading only.
 
 ==== Attributes ====
 

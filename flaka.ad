@@ -1,4 +1,4 @@
-= The flaka manual =
+= The Flaka Manual =
 author wh@haefelinger.it
 1.1, October 2010
 
@@ -25,15 +25,15 @@ include::sections/install.ad[]
 == EL ==
 include::sections/el.ad[]
 
-[[part3,Assignment Tasks]]
-== Assignment Tasks ==
-include::sections/task_let.ad[]
-include::sections/task_list.ad[]
-
 [[part4,Property Tasks]]
 == Property Tasks ==
 include::sections/task_properties.ad[]
 include::sections/task_unset.ad[]
+
+[[part3,Assignment Tasks]]
+== Assignment Tasks ==
+include::sections/task_let.ad[]
+include::sections/task_list.ad[]
 
 [[part5,Reporting Tasks]]
 == Reporting Tasks
@@ -59,14 +59,14 @@ include::sections/task_continue.ad[]
 [[part8,Exceptional Tasks]]
 == Exceptional Tasks ==
 include::sections/overview_except.ad[]
-include::sections/task_fail.ad[]
-include::sections/task_rescue.ad[]
-include::sections/task_throw.ad[]
 include::sections/task_trycatch.ad[]
+include::sections/task_throw.ad[]
+include::sections/task_fail.ad[]
 
 [[part9, Other Tasks]]
 == Other Tasks ==
 include::sections/task_install-property-handler.ad[]
+include::sections/task_rescue.ad[]
 
 //
 // The glossary

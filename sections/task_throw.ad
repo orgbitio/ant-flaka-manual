@@ -2,48 +2,47 @@
 [[task_throw,throw]]
 === throw ===
 
-A task to re-throw a previously thrown exception. If no exception has been thrown before, a new exception is thrown. In that case, throw acts like standard fail task .
-
-Note that throw would re-throw the last thrown exception - regardless of the current context. The following would therefore work:
+A task to re-throw a previously thrown exception. 
 
 --------------------------------------
- <c:trycatch>
-  <try> 
-    <fail message="4711" />
+<c:trycatch>
+  <try>
+     <fail message="houston,.."/> 
   </try>
   <catch>
-    -- handle the exception ..
-  <catch>
- </c:trycatch>
- ..
- .. -- very much later
- .. 
- <c:throw /> -- re-throws "4711" exception!!!
+    <echo level="DEBUG">*** exception seen ***</echo>
+    <c:throw />
+  </c:catch>
+</c:trycatch>
 --------------------------------------
 
+
 ==== Attributes ====
-// cols=5
-[cols="15%,3*11%,52%"]
+[cols="15%,15%,20%,50%"]
 |===========================
-| Attribute | Type | Default | <<el>> | Description 
-| `reference` | string | `trycatch.object` | no | The name of the reference holding the previously thrown exception 
-| `var` | | | no | Same as reference 
+| Attribute | Type | Default | Description 
+| `reference` | string | `trycatch.object` |  The name of the reference holding the previously thrown exception 
+| `var` | string | `trycatch.object` | An alias for attribute `reference` 
 |===========================
 
 ==== Behaviour ====
 
-A typical usage example:
+When this task is executed, it looks-up whether the current project contains a specific reference. By default, the name of that reference is `trycatch.object`. The name of this reference can be changed  by using attribute `reference`. If that reference exists and an exception is attached with that reference, then that exception is thrown. Otherwise, a standard build exception is generated and thrown. In that case, `throw` acts like Ant\'s standard task `fail`.
+
+Note that `throw` works in any context. Consider
 
 --------------------------------------
- <c:trycatch>
-  <try> ..<fail message="4711"/> </try>
-  <catch>
-    <echo>caught exception ..</echo>
-    <c:throw />
-  </c:catch>
- </c:trycatch>
+<c:trycatch>
+ <try> 
+   <fail message="houston,.." />
+ </try>
+ ; ignores build exception
+ <catch />
+</c:trycatch>
+..
+; very much later
+.. 
+; throws build exception 'houston,..'  
+<c:throw />
 --------------------------------------
-
-When being executed, Ant would receive a build exception (re-thrown within the catch clause) containing "4711" and terminate.
-
 

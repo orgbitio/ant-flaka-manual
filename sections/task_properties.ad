@@ -3,35 +3,32 @@
 [[task_properties,properties]]
 === properties ===
 
-
-A task to set multiple properties in one go. It is typically used to _inline_ properties otherwise written in an additional properties file. Thus using this task reduces the clutter on your top level directory:
+This task essentially allows one to move the contents of a Ant property file footnote:[see http://ant.apache.org/manual/Tasks/property.html] into a build file. 
 
 -------------------------------------
-
 <c:properties>
-  ; this is \
-  a comment
-
-  ; assume that variable 'foo' has been defined here and that
-  ; foo.name resolves into 'foo', then the next line will set
-  ; property foo to be the string `foo'.
-  foo     = #{foo.name}
-  ; next lines creates property `foobar' to be the string `foobar'.
-  foobar  = ${name}bar
+  ; this is a comment
+  
+  ; regular properties
+  p0 = hello
+  p1 : ${p0}, \
+       world!
+  
+  ; EL references enabled by default
+  p2 = hello, #{ 'world' }!
 </c:properties>
-
 -------------------------------------
 
-
+This task is quite similar to <<tasks_let,let>>. The major difference is that this task is about creating properties in the spirit of Ant while <<tasks_let,let>> on the other side, supports in addition the creation of variables, overriding and deleting of properties. 
 
 ==== Attributes ====
 
 // cols=5
-[cols="15%,3*11%,52%"]
+[cols="15%,10%,15%,60%"]
 |===========================
-| Attribute | Type    | Default | EL | Description 
-| debug     | boolean | `false` | no | Turn extra debug information on 
-| comment   | String  | `;`     | no | The character that starts a comment line 
+| Attribute | Type    | Default | Description 
+| `debug`     | boolean | `false` | Turn extra debug information on 
+| `comment`   | string  | `;`     | The character that starts a comment line 
 |===========================
 
 ==== Elements ====
@@ -40,25 +37,14 @@ This task accepts a implicit text element.
 
 ==== Behaviour ====
 
-This task is similar to <<tasks_let,let>>. The difference is that this task only allows to define properties while  <<tasks_let,let>> also supports the creation of variables. Furthermore, the right side of `=` will be literally taken as string value. This is different from <<tasks_let,let>> where the right side will be additionally evaluted as <<el>> expression. The following example defines each property foobar, once done with task  <<tasks_let,let>> and once with this _properties_ task:
+The format to define properties within a this task is a subset of the format supported by Ant. Consider:
 
--------------------------------------
+* The first non-whitespace character of a comment is by default `;` while a Ant property files use `#` and `!`. The comment character can be changed using attribute `comment`.
+* Ant comment lines do not support continuation lines, this task does.
+* This task requires that either `=` or `:` separates the key from it\'s value. 
+* Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant footnote:[.. and responsible for unexpected and hard to track script behaviour].
+*  EL-references `#{..}` are resolved regardless of whether EL has been enabled or not.
 
-<c:let>
-  foobar := 'foobar'
-</c:let>
-<c:properties>
-  foobar = foobar
-</c:properties>
 
--------------------------------------
-
-Notice the usage of the quote character `'` in the former example and the absence of it in the latter.
-
-Task _properties_ supports, like task <<tasks_let,let>> does, continuation lines and comments. Furthermore, variable references `#{..}` and property references `${..}` are resolved on both sides of `=`.
-
-If the right side is empty, then no property will be created and an existing property will not be changed. If the right side is `null`, a property with string value `null` will be assigned if the property does not already exist (this is very much different than when using task <<task_let>> to create properties.
-
-Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant (and responsible for unexpected and hard to track script behaviour).
 
 

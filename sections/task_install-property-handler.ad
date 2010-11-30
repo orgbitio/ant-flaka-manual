@@ -15,7 +15,7 @@ A task to install Flaka\'s property handler. When installed, Ant _understands_  
  </echo>
 -------------------------------------
 
-This is the output of above's snippet:
+This is the output of above\'s snippet:
 
 -------------------------------------
  [echo] [1] #{3 * 4}

@@ -30,7 +30,7 @@ The first expression (1) shows a algebraic equation. Notice the usage of `5.0` b
 [[el_enabling_el,Embedding EL]]
 === EL References ===
 
-It turned out that it is a good idear to have a clear distinction between properties and EL expressions. Therefore, an EL expression must be enclosed by `#{..}` rather than by `${..}`. A enclosed EL expression is called an reference to a EL expression. Similarly is `${..}` named a reference to a Ant property. Consider:
+It turned out that it is a good idea to have a clear distinction between properties and EL expressions. Therefore, an EL expression must be enclosed by `#{..}` rather than by `${..}`. A enclosed EL expression is called an reference to a EL expression. Similarly is `${..}` named a reference to a Ant property. Consider:
 
 ---------------------------
 <echo>
@@ -69,7 +69,7 @@ Starting with version 1.8 Ant provides a task for switching property helpers. Th
 </project>
 ---------------------------
 
-For those who want to stay more inline with Ant property references, Flaka ships with a property evaluator. When this evaluator is plugged in, then `${..}` will be evaluated as EL reference. Consider:
+For those who want to stay more in-line with Ant property references, Flaka ships with a property evaluator. When this evaluator is plugged in, `${..}` will be evaluated as EL reference. Consider:
 
 ---------------------------
 <project xmlns:prop="antlib:it.haefelinger.flaka.prop">
@@ -125,20 +125,20 @@ How about to print a text sequence like `#{ 3 * 4}`. In other words, how to disa
 
 Please notice that escaping a property reference is different than escaping a EL reference. By default, Ant stops evaluation of property references if the reference is prefixed with a dollar character. In addition, every double dollar sequence `$$` is reduced into a single dollar character.
 
-Escaping in EL is different as the example above demonstrates. The prefered way is to prefix the EL reference with a backslash character `\\`.
+Escaping in EL is different as the example above demonstrates. The preferred way is to prefix the EL reference with a backslash character `\`.
 
 ==== Whitespace ====
 
 Trailing and leading whitespace is meaningless within EL references. This is different from Ant properties where whitespace is meaning full. Consider:
 
 -------------------------------------
-<property name=" p " value="weired name ` p '" />
-<property name="p" value="regular name `p'" />
+<property name=" p " value="weired name ' p '" />
+<property name="p" value="regular name 'p'" />
 <c:echo>
-     ${p}                 ; regular name `p'
-     ${ p }               ; weired name ` p '
-     #{ p }               ; regular name `p'
-     #{ property[' p '] } ; weired name ` p '
+     ${p}                 ; regular name 'p'
+     ${ p }               ; weired name ' p '
+     #{ p }               ; regular name 'p'
+     #{ property[' p '] } ; weired name ' p '
 </c:echo>
 -------------------------------------
 
@@ -209,7 +209,7 @@ nullp('')      ; false
 
 ==== String Literals ====
 
-A string literal starts and ends with the same quotation character. Quotation characters are either the single quote `'` or the double quote `"` character. If the quotation character is needed within the literal, then the escape character `\\` must be used. The escape character must also be used if the escape character itself is to be expressed in the literal. The escape character can\'t be used to escape other characters than the quotation character and the escape character.
+A string literal starts and ends with the same quotation character. Quotation characters are either the single quote `'` or the double quote `"` character. If the quotation character is needed within the literal, then the escape character `\` must be used. The escape character must also be used if the escape character itself is to be expressed in the literal. The escape character can\'t be used to escape other characters than the quotation character and the escape character.
 -------------------------------------
 "abc"        ; abc
 'abc'        ; abc
@@ -264,7 +264,7 @@ in this particular order, consider:
 </echo>
 -------------------------------------
 
-If no entry can be associated with _name_, then `null` will be the lookup\'s result. This has the interessting consequence, that EL references are _always_ disappearing, i.e. can always be resolved. Whereas unknown properties remain as  property references. Consider:
+If no entry can be associated with _name_, then `null` will be the look-up\'s result. This has the interesting consequence, that EL references are _always_ disappearing, i.e. can always be resolved. Whereas unknown properties remain as  property references. Consider:
 
 -------------------------------------
 <echo>
@@ -413,16 +413,16 @@ file(a,list(b,c),d)  ; file(list(a,b,c,d))
 ===== `concat(T..):string` =====
 Creates a string by concatenating all _stringized_ objects. If no object is provided, the empty string is returned. Thus to create the string `foobar`, try
 -------------------------------------
-concat('foo','bar')  ; `foobar'
+concat('foo','bar')  ; 'foobar'
 -------------------------------------
 
 ===== `format(string,T..):string` =====
 This function is a Swiss army knife for creating a string based on existing objects. The functions expects a format string as first argument followed by any number of arguments. The optional arguments are used to construct the result string based on format instructions embedded in the first argument. Some examples:
 -------------------------------------
-format('foobar')           ; `foobar'
-format('foo%s','bar')      ; `foobar'
-format('%s%S','foo','bar'  ; `fooBAR'
-format('%s',list('a',2))   ; `[a, 2]'
+format('foobar')           ; 'foobar'
+format('foo%s','bar')      ; 'foobar'
+format('%s%S','foo','bar') ; 'fooBAR'
+format('%s',list('a',2))   ; '[a, 2]'
 -------------------------------------
 
 The number of format options to be used are almost infinite footnote:[Compare http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html].
@@ -433,7 +433,7 @@ Create a new string by replacing substrings. Substrings to be replaced are descr
 -------------------------------------
 replace('a, b')              ; 'ab'
 replace('a, b','')           ; 'ab'
-replace('a, b','','\s*,\s*)  ; 'ab'
+replace('a, b','','\s*,\s*')  ; 'ab'
 replace(true,'false','true') ; 'false' 
 -------------------------------------
 
@@ -495,9 +495,9 @@ append(1,list('a',2),true)     ; list(1,'a',2,true)
 
 This functions creates a string by joining elements in `list` with the first argument. The first argument is stringized. If the second argument not given, the empty string is returned. Otherwise, if the second argument is not a list, then the stringized second argument is returned. The behaviour is undefined if called without arguments.
 -------------------------------------
-join(':')                    ; `'
-join(':',5)                  ; `5'
-join(':',list('a',2))        ; `a:2'
+join(':')                    ; ''
+join(':',5)                  ; '5'
+join(':',list('a',2))        ; 'a:2'
 -------------------------------------
 
 If this function is called with more then two arguments, then all arguments but the first are collected into a list object and then processed like described above. 
@@ -534,14 +534,14 @@ It\'s best to introduce properties with three simple examples. It\'s about to as
 'abc'['tofile'].mkdir   ; true/false
 -------------------------------------
 
-The specification of EL provides only a notation to query an object for a property. EL does not specfic which properties must exists nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how the query a property must be written. Consider:
+The specification of EL provides only a notation to query an object for a property. EL does not specify which properties must exist nor does it require that an object must have any properties. Each implementation is free to define properties according to the underlying implementation and usage domain. What is specified however is, how to query a property. Consider:
 
 -------------------------------------
 obj.name
 obj['name.with.dot']
 -------------------------------------
 
-The first variation is the standard notation to lookup property `name` on object `obj`. Here `name` can be composed of almost any character but character `.` itself. After all, `.` is the lookup operator here. This limitation can cause problems in certain domains. Therefore, an alternative lookup operator `[]` has been defined by the specification.
+The first variation is the standard notation to look-up property `name` on object `obj`. Here `name` can be composed of almost any character but character `.` itself. After all, `.` is the look-up operator here. This limitation can cause problems in certain domains. Therefore, an alternative look-up operator `[]` has been defined by the specification.
 
 Another important point to keep in mind is about looking up a property on the `null` object and what is the result of asking for a property which does not exist? The perhaps surprising answer is that both case do not cause an error or worse but are perfectly legal and well defined. The result is in both cases the `null` object. Consider:
 
@@ -644,8 +644,29 @@ A _matcher object_ is created by task <<task_switch>> if a regular expression ma
 | `n`       | int     | Same as `groups` 
 | `pattern` | string  | The regular expression that was used for this match. Notice that glob expressions are translated into regular expressions. 
 | `p`       | string  | Same as `pattern` 
-| _i_       | matcher | The matcher object for _i_\'th capturing group. See task <<task_switch>> for examples. 
+| _i_       | matcher | The matcher object for _i_-th capturing group. See task <<task_switch>> for examples. 
 |=================================
+
+The following example shows how to utilize matcher properties:
+
+--------------------------------------
+<c:switch value="foobar">
+   <re expr="^(.*)(b.*)$" var="m">
+     <echo>
+       #{ m          }   ; 'foobar'
+       #{ m[0]       }   ; 'foobar'
+       #{ m.start    }   ; 0
+       #{ m.end      }   ; 5
+       #{ m.groups   }   ; 2
+       #{ m.pattern  }   ; '^(.*)(b.*)$'
+       #{ m[1]       }   ; 'foo'
+       #{ m[2]       }   ; 'bar'
+       #{ m[1].end   }   ; 2
+       #{ m[2].start }   ; 3
+     <echo>
+   </re>
+</c:switch>
+--------------------------------------
 
 [[el_project_properties,Project Properties]]
 ==== Project Properties ====

@@ -4,7 +4,7 @@ Task <<task_when>> evaluates an <<el>> expressio. If the evaluation gives `true`
 
 -------------------------------------
 <c:when test=" expr ">
-   -- executed if expr evaluates to true
+   ; executed if expr evaluates to true
 </c:when>
 -------------------------------------
 
@@ -12,7 +12,7 @@ The logical negation of `when` is task <<task_unless>> which executes the sequen
 
 -------------------------------------
  <c:unless test=" expr ">
-   -- executed if expr evaluates to false
+   ; executed if expr evaluates to false
  </c:unless>
 -------------------------------------
 
@@ -25,11 +25,11 @@ Task <<task_choose>> tests each `when` condition in turn until an _expr_ evalute
 -------------------------------------
  <c:choose>
   <when test="expr_1">
-    -- body_1
+    ; body_1
   </when>
   ..
-  <otherwise> -- optional_
-    -- catch all body
+  <otherwise> ; optional_
+    ; catch all body
   </otherwise>
  <c:/choose>
 -------------------------------------
@@ -40,11 +40,11 @@ A programming task often seen is to check whether a (string) value matches a giv
 -------------------------------------
  <c:switch value=" 'some string' ">
   <matches re="regular expression or pattern" >
-    -- body_1
+    ; body_1
   </case>
   ..
-  <otherwise> -- optional
-    -- catch all body
+  <otherwise> ; optional
+    ; catch all body
   </otherwise>
  </c:switch>
 -------------------------------------

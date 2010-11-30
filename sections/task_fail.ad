@@ -2,15 +2,16 @@
 [[task_fail,fail]]
 === fail ===
 
-This task has been derived from http://ant.apache.org/manual/CoreTasks/fail.html[Ant's standard fail task]. All attributes and elements are supported. When defining a message however, EL references can be used:
+This task has been derived from Ant\'s core task `fail` footnote:[see http://ant.apache.org/manual/CoreTasks/fail.htm]. In addition, EL-references can be used regardless whether <<el>> has been enabled or not. Furthermore, attribute `test` has been added. The value of `test` will be evaluated as EL expression in a boolean context. Thus it is possible to throw a build exception not only based on whether a property exists or not but also whether an EL-expression is evaluated as `true`. 
+
 --------------------------------------
-<c:fail message="illegal state #{whichstate} seen" />
---------------------------------------
-Furthermore, attribute `test` has been added. The value of `test` will be evaluated as EL expression in a boolean context. Being `true`, fail will throw a build exception. When used in this way, `<c:fail test='expr' />` behaves exactly the same as
---------------------------------------
-<c:when test="expr">
- <fail />
-</c:when>
+<c:fail message="negative number #{ i } seen" test=" i lt 0 " />
 --------------------------------------
 
+==== Attributes ====
+[cols="15%,15%,70%"]
+|===========================
+| Attribute | Type | Description 
+| `test` | string | An arbitrary EL-expression.
+|===========================
 

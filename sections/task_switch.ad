@@ -1,4 +1,4 @@
-
+ 
 [[task_switch,switch]]
 === switch ===
 
@@ -12,13 +12,13 @@ Task `switch` provides text based pattern matching. An illustrative example:
     </c:echo>
   </re>
   <glob expr"*.jar">                            (2)
-   <echo>It's a -- jar!</echo>
+   <echo>It is a -- jar!</echo>
   </glob>
   <cmp eq="foo" lt="foo">                       (3)
     <!--  ${val} is less or equals "foo" -->
   </cmp>
   <otherwise>
-    <! none of the above clauses matched -->
+    <!-- none of the above clauses matched -->
   </otherwise>
  </c:switch>
 --------------------------------------
@@ -100,9 +100,9 @@ When applying a regular or glob expression on a test value, then by default, the
 
 Attribute *find* does not apply on clause `cmp`.
 
-Use attribute *debug* to enable extra output of debug information on your attached standard error stream, bypassing Ant's logging mechanics.
+Use attribute *debug* to enable extra output of debug information on your attached standard error stream, bypassing Ant\'s logging mechanics.
 
-The semantics of attribute *literally* varies depending on it's context. A build failure is thrown if an illegal regular expression pattern - like `*` - is seen. If literally is enabled, the regular expression string is taken literally instead, no exception is thrown while a warning message is reported. If attribute *literally* is enabled in context of a glob expression, then any meta characters are taken as regular characters. Attribute *literally* has no meaning in the context of clause `cmp`. 
+The semantics of attribute *literally* varies depending on it\'s context. A build failure is thrown if an illegal regular expression pattern - like `*` - is seen. If literally is enabled, the regular expression string is taken literally instead, no exception is thrown while a warning message is reported. If attribute *literally* is enabled in context of a glob expression, then any meta characters are taken as regular characters. Attribute *literally* has no meaning in the context of clause `cmp`. 
 
 The remaining part of this section describes attributes *ignorecase*, .., *multiline*. This attributes can be used to change the characteristics of the underlying regular expression engine. Modern regular expression engines also allow to their characteristics on the fly by using embedded flags. Embedded flag alternatives are also listed.
 
@@ -155,7 +155,7 @@ String attribute `value` is applied against a series of _case_-clauses in their 
 
 Tests based on regular expressions
 --------------------------------------
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <re expr="^foobar$" />     ; matches 
    <re expr="foobar" />       ; matches
    <re expr="foo" />          ; no
@@ -166,7 +166,7 @@ Tests based on regular expressions
 
 The following example shows how to utilize matcher properties:
 --------------------------------------
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <re expr="^(.*)(b.*)$" var="m">
      <echo>
        #{ m          }   ; 'foobar'
@@ -186,7 +186,7 @@ The following example shows how to utilize matcher properties:
 
 Tests using glob expressions
 --------------------------------------
-<c:switch value=" foobar ">
+<c:switch value="foobar">
    <glob expr="foobar" />          ; matches 
    <glob expr="f*r" />             ; matches
    <glob expr="foo" />             ; no
@@ -198,8 +198,8 @@ Tests using glob expressions
 Matcher properties can also be used when using glob expressions. However, since glob expressions do not have enough semantics to express capturing groups, their use is limited. Consider:
 
 --------------------------------------
-<c:switch value=" foobar ">
-   <glob expr=" f*r " var="m">
+<c:switch value="foobar">
+   <glob expr="f*r" var="m">
      <echo>
        #{ m          }   ; 'foobar'
        #{ m[0]       }   ; 'foobar'
@@ -216,21 +216,21 @@ Matcher properties can also be used when using glob expressions. However, since 
 Finally use element `cmp` to do text based comparison in absence of any meta characters. Since element `cmp` is not based on an regular expression engine, matcher properties are not available. Consider
 
 --------------------------------------
-<c:switch value=" foobar ">
-   <cmp eq=" foobar " />           ; matches
-   <cmp eq=" f*r "    />           ; no
-   <cmp eq=" foo " find="true"/>   ; no
+<c:switch value="foobar">
+   <cmp eq="foobar" />           ; matches
+   <cmp eq="f*r"    />           ; no
+   <cmp eq="foo" find="true"/>   ; no
 </c:switch>
 --------------------------------------
 
 Element `cmp` can be used to sort text in alphabetical order. Consider:
 
 --------------------------------------
-<c:switch value=" b ">
-   <cmp eq=" b " />           ; true
-   <cmp lt=" c " />           ; true
-   <cmp gt=" a " />           ; true
-   <cmp lt=" a " eq="b" />    ; true
+<c:switch value="b">
+   <cmp eq="b" />           ; true
+   <cmp lt="c" />           ; true
+   <cmp gt="a" />           ; true
+   <cmp lt="a" eq="b" />    ; true
 </c:switch>
 --------------------------------------
 
@@ -242,22 +242,14 @@ Switch has been designed to be rather tolerant. No elements are required in whic
 <c:switch value="foobar" />
 --------------------------------------
 
-Arbitrary `otherwise` elements might be present. In addition, `otherwise` elements are carried out if not _case_-clause matches. 
+An `otherwise` elements is carried out if not _case_-clause matches, especially in the case of absent _case_-clauses:
 --------------------------------------
 <c:switch>
  <otherwise>
-  <echo>first otherwise</echo>
- </otherwise>
- <otherwise>
-    <echo>second otherwise</echo>
+  <echo>executed, cause nothing matched.</echo>
  </otherwise>
 </c:switch>
 --------------------------------------
 
-Being executed, it would print 
---------------------------------------
-[echo] first otherwise
-[echo] second otherwise
---------------------------------------
 
 

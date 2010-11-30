@@ -1,8 +1,8 @@
 %%
 %% This is a DocBook LaTeX style example
 %%
-\def\flakaversion{1.02}
-
+\def\flakaversion{1.2}
+\def\documentversion{1.1}
 %%%\NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{flaka}[2010/02/10 haefelinger IT flaka]
 
@@ -15,64 +15,61 @@
 
 % If defined, process the options
 \ProcessOptions\relax
-
-% PACKAGES
-% dblatex depends on this, do not remove.
-\usepackage{ifxetex}
-\usepackage{cmbright}
-
-% Fancy package to easily define \section, \subsection etc the way you
-% like it. 
-\usepackage{titlesec}
-
-\usepackage[T1]{fontenc}
-\usepackage[subfigure]{tocloft}
-\usepackage[usenames]{xcolor}
-\usepackage{lastpage}
-\usepackage{fancyhdr}
-\usepackage{everypage}
-\usepackage{afterpage}
-\usepackage{float}
-\usepackage{ellipsis,ragged2e,marginnote}
-% Make sure that dbk_core is using default values of package listings 
 \newcommand{\lstparamset}{}
-\usepackage{dbk_core}
+% PACKAGES
 \usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
+\usepackage{cmbright}
+\usepackage{titlesec}                      % define \section and the like
+\usepackage{listings}                      % fancy listings
+\usepackage[T1]{fontenc}                   % how fonts are encoded
+\usepackage[subfigure]{tocloft}
+\usepackage[svgnames]{xcolor}              % color 
+\usepackage{lastpage}                      % how many pages
+\usepackage{fancyhdr}                      % change header/footer
+\usepackage{everypage}
+\usepackage{afterpage}                 
+\usepackage{float}             
+\usepackage{ellipsis}
+\usepackage{ragged2e}
+\usepackage{marginnote}
+\usepackage{ifxetex}                       % required by dblatex
+\usepackage{dbk_core}                      % dblatex core package
+\usepackage{xunicode}                      % tranlate "TeX chars" into unicode
 
 
 % FONTS
-\usepackage{xltxtra}  % provides also \XeTeX
-
-%\usepackage{fontsmpl}
+\usepackage{xltxtra}                       % provides also \XeTeX
+\usepackage{fontsmpl}
 \usepackage[infoshow]{tracefnt}
 
-\usepackage{xunicode}
-% \usepackage{xltxtra}
 % \defaultfontfeatures{Mapping=tex-text} % converts LaTeX specials (``quotes'' --- dashes etc.) to unicode
 % \setromanfont [Ligatures={Common}, Numbers={OldStyle}]{Hoefler Text}
-\setmonofont[Scale=0.8]{Monaco} 
+%\setmonofont[Scale=0.8]{Monaco} 
 % \setsansfont[Scale=0.9]{Optima Regular} 
+
+
+\colorlet{myred}{red!65}
+\colorlet{bgcolorcover}{myred}     % background color : cover
+\colorlet{bgcolordefault}{white}    % background color : default 
+\colorlet{fgcolordefault}{black}    % text color: default
+
+
+
+\titleformat*{\section}{\pagebreak\LARGE\color{myred}}
+\titleformat*{\subsection}{\Large\color{myred}}
+\titleformat*{\subsubsection}{\large\color{myred}}
+
 
 % Move the whole layout one centimeter left.
 \addtolength{\hoffset}{-1cm}
 
-
-\xdefinecolor{red}{rgb}{1.0,0.0,0.0}
-\xdefinecolor{greenyellow}{rgb}{0.85,1,0.31}
-\xdefinecolor{ForestGreen}{rgb}{0,0.44,0}
-
-\newcommand{\fgcolordefault}{black}
-\newcommand{\bgcolordefault}{white}
-
-
-\titleformat*{\section}{\pagebreak\LARGE\color{red}}
-\titleformat*{\subsection}{\Large\color{red}}
-\titleformat*{\subsubsection}{\large\color{red}}
-
-
 % do not indend a paragraph
 \setlength{\parindent}{0cm}
 
+%
+% gap between lines
+%
+\renewcommand{\baselinestretch}{1.1}
 
 \title{}
 \author{}
@@ -89,15 +86,9 @@
 }
 
 
-
-%
-% gap between lines
-%
-\renewcommand{\baselinestretch}{1.1}
-
 \newcommand{\coverpage}{
   \thispagestyle{empty}
-  \pagecolor{red}
+  \pagecolor{bgcolorcover}
   \color{white}
   \begin{flushright}
     \Huge Flaka, The Manual\\[1em]
@@ -105,7 +96,7 @@
     Wolfgang H\"afelinger\\
     h\"afelinger IT\\[1cm]
     Flaka, version \textbf{\flakaversion}\\[2cm]
-    \today\\ document version 1.0\\[1cm]
+    \today\\[1cm]
  \end{flushright}
 }
 
@@ -148,12 +139,12 @@
 \rhead{ 
   \begin{picture}(0,0) 
     \put(60,0){\parbox[t][2cm]{5cm}{
-        \color{red}
+        \color{bgcolorcover}
         \vspace{1cm}
         Flaka \flakaversion\\
         h\"afelinger IT\\[1em]
         \thepage/\pageref{LastPage}
-        \color{\fgcolordefault}
+        \color{fgcolordefault}
       }
     } 
   \end{picture}
@@ -168,8 +159,8 @@
 \AtBeginDocument{
   \coverpage
   \clearpage
-  \pagecolor{\bgcolordefault}
-  \color{\fgcolordefault}
+  \pagecolor{bgcolordefault}
+  \color{fgcolordefault}
 }
 
 \AtEndDocument{
@@ -182,24 +173,35 @@ This document got written in Asciidoc markup and translated into DocBook by usin
 \setlength{\headheight}{15pt}
 
 \lstset{ %
-  basicstyle=\ttfamily,
-  language=XML,
-  xleftmargin=1em,
+  %framerule=0pt, %
   aboveskip=1em,
+  backgroundcolor=\color{white}, %
+  basicstyle=\ttfamily\small,
   belowskip=1em,
-  frame=leftline,
+  breakatwhitespace=false,
+  breakautoindent=true, %
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{colComments}, %
+  escapeinside={\%*}{*)},
+  extendedchars=true, %
+  %frame=leftline,
   framexleftmargin=1ex,
-  rulecolor=\color{red},
+  frameshape={}{y}{}{},
+  identifierstyle=\color{colIdentifier}, %
+  keywordstyle=\color{colKeys}, %
+  language=XML,
   numbers=none,
-  stepnumber=2,
   numbersep=5pt,
-  backgroundcolor=\color{white},
+  numberstyle=\tiny, %
+  prebreak={\space\wrapsign}, %
+  rulecolor=\color{red},
+  showlines=true, %
   showspaces=false,
   showstringspaces=false,
   showtabs=false,
+  stepnumber=2,
+  stringstyle=\itshape\color{colString}, %
   tabsize=2,
-  captionpos=b,
-  breaklines=true,
-  breakatwhitespace=false,
-  escapeinside={\%*}{*)}
+  xleftmargin=1em
 }

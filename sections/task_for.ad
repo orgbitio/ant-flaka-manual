@@ -28,7 +28,7 @@ A task that implements a loop statement. Iterating over a list of _objects_:
 
 ==== Behaviour ====
 
-This is the shortest possible for statement. It's legal albeit completely useless.
+This is the shortest possible for statement. It\'s legal albeit completely useless.
 --------------------------------------
  <c:for />
 --------------------------------------

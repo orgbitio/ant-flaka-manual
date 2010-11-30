@@ -19,7 +19,7 @@ A elementary task to create a variable containing a _list_ of objects.
 
 |=======================
 | Attribute | Type   | Default | <<el>> | Meaning 
-| var       | string |         |  r   | The name of the variabled to be assigned.
+| var       | string |         |  r   | The name of the variable to be assigned.
 | comment   | string | `;`     |      | The comment character                    
 | debug     | bool   | false   |      | Turn on extra debug information.         
 | el        | bool   | true    |   no | Enable evaluation as EL expression       
@@ -31,7 +31,7 @@ This task may contain a implicit text element.
 
 ==== Behaviour ====
 
-This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The variable's name is given by attribute `var`. This attribute may contain references to EL expressions.
+This task creates and assigns in any case a (possible) empty list, especially if no text element is present. The name of the variable is given by attribute `var`. This attribute may contain references to EL expressions.
 
 If given text element is parsed on a line by line basis, honouring comments and continuation lines. Each line will be evaluated as EL expression after having resolved `${..}` and `#{..}` references. A illegal EL expression will be discarded while the evaluation of lines continues. Turn on extra debug information in case of problems. 
 
@@ -57,5 +57,5 @@ Use attribute `el` to disable the interpretation of a line as <<el>> expression:
 </c:list>
 -------------------------------------
 
-This creates a list variable `mystrings` containing two elements. The first element will be string `3 * 5` and the second element will be string `hello, world`. Notice thateven if EL evaluation has been turned off, EL references can still be used.
+This creates a list variable `mystrings` containing two elements. The first element will be string `3 * 5` and the second element will be string `hello, world`. Notice that even if EL evaluation has been turned off, EL references can still be used.
 

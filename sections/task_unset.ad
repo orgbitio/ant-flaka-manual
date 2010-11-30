@@ -1,25 +1,29 @@
 [[task_unset,unet]]
 === unset ===
 
-The unset statement allows the removal of properties. Use this task with care as properties are not meant to be changed during execution of a project. 
+The unset statement allows the removal of properties footnote:[Removal of user-properties is currently not supported] . Use this task with care as properties are not meant to be changed during execution of a project. 
 
 --------------------------------------
  <c:unset>
+   ; remove property p1 ..
    p1
-   ;; use embedded EL references for dynamic names
-   p#{ index }
+   ; .. and p2
+   p\
+   2
  </c:unset>
+ <fail if="p1" />
+ <fail if="p2" />
 --------------------------------------
 
-This example demonstrates how to remove properties `p1` and a property whose name dependes on the curent value of `index`. 
+You may also use the more universal task <<task_let>> for property removal.
 
 ==== Attributes ====
 // cols=5
-[cols="15%,3*11%,52%"]
+[cols="15%,15%,15%,55%"]
 |===========================
-| Attribute | Type    | Default | EL | Description 
-| debug     | boolean | `false` | no | Turn extra debug information on 
-| comment   | String  | `;`     | no | The character that starts a comment line 
+| Attribute | Type    | Default | Description 
+| debug     | boolean | `false` | Turn extra debug information on 
+| comment   | string  | `;`     | The character that starts a comment line 
 |===========================
 
 ==== Elements ====
@@ -28,22 +32,15 @@ This element accepts implicit text.
 
 ==== Behaviour ====
 
-Each non comment line defines a property name to be removed. The property does not need to exist to be removed. User properties (i.e. given by command line) and system properties (i.e. `ant.file`) are also removed.
+Each non comment line defines a property name to be removed. Comment lines and empty lines are ignored. Continuation lines are accumulated before being processed. EL-references are resolved. Consider:
 
-Comment lines and empty lines are ignored. Continuation lines, i.e. lines ending in `\` but not in `\\`, are accumulated before being processed.
-
-References to properties `${..}` and expressions `#{..}` are resolved.
-
-The content of a line defines the property name, for example:
 --------------------------------------
 <c:unset>
- ;; property 'foo bar', not 'foo' and 'bar'
+ ; property 'foo bar', not 'foo' and 'bar'
  foo bar
 
- ;; a line is *not* a EL expression (this will be property '3 * 5')
- 3 * 5
-
- ;; use #{..} references for dynamic content (this will be 'p15')
+ ; EL references are resolve, so this will remove
+ ; property p15.
  p#{3*5}
 </c:unset>
 --------------------------------------

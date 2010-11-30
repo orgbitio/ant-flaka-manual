@@ -102,7 +102,7 @@ Use task run-macro for this task.
 
 -------------------------------------
 
- -- just a normal macro .. 
+ ; just a normal macro .. 
  <macrodef name="greeting">
   <attribute name="message" />
   <sequential>
@@ -110,10 +110,10 @@ Use task run-macro for this task.
   </sequential>
  </macrodef>
 
- -- call it statically
+ ; call it statically
  <greeting message="hello, static" />
 
- -- or dynamically
+ ; or dynamically
  <c:run-macro name="greeting">
    <arg name="message" value="hello, world"/>
  </c:run-macro>

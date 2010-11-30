@@ -1,6 +1,6 @@
 === export ===
 
-Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file.  This task's usefulness is rather limited for public use, however it allows you to have a look at Flaka\'s `antlib.xml`.
+Use this task to dump an arbitrary file from Flaka\'s `jar`  to stdout or a file.  This task\'s usefulness is rather limited for public use, however it allows you to have a look at Flaka\'s `antlib.xml`.
 
 ==== Attributes ====
 [cols="15%,3*11%,52%"]
@@ -103,8 +103,8 @@ A task to invoke a macro or task (or a list of them) dynamically.
  <macrodef>
  ..
  ..
- <foobar />                     -- conventional way of using macro foobar
- <c:run-macro name="foobar" />  -- dynamic way
+ <foobar />                     ; conventional way of using macro foobar
+ <c:run-macro name="foobar" />  ; dynamic way
 
 -------------------------------------
 
@@ -206,7 +206,7 @@ Note: The current version allows only the specification of one task or macro wit
 
 === set-default-target ===
 
-A task to define the project's default target. 
+A task to define the project\'s default target. 
 
 -------------------------------------
 
@@ -398,7 +398,7 @@ Attribute `dir` is evaluated as <<el>> expression. If the result is a file objec
 
 This task may take any elements which are applicable for a http://ant.apache.org/manual/CoreTypes/fileset.html[fileset] type. If no elements are used, then all files and folders beneth `dir` are scanned. Otherwise the elements applied will limit the scan for specific files or folders.
 
-A dependency is just recognized by it's element name regardless any namespace. Therefore something like
+A dependency is just recognized by it\'s element name regardless any namespace. Therefore something like
 
 
 -------------------------------------

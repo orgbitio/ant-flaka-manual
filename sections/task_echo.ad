@@ -2,201 +2,109 @@
 [[task_echo,echo]]
 === echo ===
 
-Ant has an echo task to dump some text on a screen or into a file. A problem with this task is, that the output produced is rather fragile when it comes to reformatting your XML source. Here is a simple example. 
+Task `<c:echo/>` is an extension of Ant\'s standard `echo` task footnote:[see http://ant.apache.org/manual/Tasks/echo.html] to generate nicly formatted output.  Ant\'s standard `echo` task is rather fragile when it comes to reformatting XML. Here is a simple example where the output dumped is shown on the right side:
 
 -------------------------------------
-<echo>foobar</echo>
+<echo>foobar</echo>       ; '[echo] foobar'
 -------------------------------------
 
-When executed by Ant, this dumps 
+Then, one day you reformat your XML input footnote::[http://xmlsoft.org/xmllint.html[xmlint] is a good choice] ending up in footnote:[In order to visualize space characters, character dot (`.`) is going to be used within this chapter]
 
 -------------------------------------
-[echo] foobar
+<echo>                   ; '[echo]'
+...foobar                ; '[echo] ...foobar'
+</echo>                  ; '[echo]'
 -------------------------------------
 
-However, one day you reformat your XML build file footnote::[http://xmlsoft.org/xmllint.html[xmlint] is a good choice] and you end up in
-
--------------------------------------
-<echo>
-...foobar
-</echo>
--------------------------------------
-
-Notice the usage of character `.` (dot) in this example and the rest of this (and only this) chapter to visualize a _space_ footnote::[Also known as _blank_ character] character. If you execute this, you will get 
--------------------------------------
-[echo] 
-[echo] ...foobar
-[echo]
--------------------------------------
-
-This is definitly not what you had in mind.
-
-Task `<c:echo/>` is an extension of Ant\'s standard `echo` task. That standard task is used for doing all that low level work, i.e. dumping text on streams on loggers. On top of it, some features have been implemented intented to generate nicly formatted output.
-
-Here is the `foobar` example again:
+All of a sudden there are three more space characters in front of `foobar` and, to make matters worse, there are two additional empty lines printed. Compare this output with Flaka\'s `echo`
 
 -------------------------------------
 <c:echo>
-
-  foo\
-  bar
-  ; supports continuation and \
-  comment lines
+  foobar                 ; '[c:echo] foobar'
 </c:echo>
 -------------------------------------
 
-This would output
-
--------------------------------------
-[c:echo] foobar
--------------------------------------
-
-which I believe is just what you had in mind.
+which I believe is what you had in mind. Besides being invariant regarding formatting, `echo` supports other features in helping to generate pretty output.
 
 ==== Attributes ====
 
-This tasks supports all attributes inherited from Ant's echo task. In addition, further supported attributes are:
+This tasks supports all attributes inherited from Ant\'s echo task. In addition, further supported attributes are:
 [cols="3*15%,55%"]
 |=============================
 | Attribute | Type    | Default | Description 
 | `debug`   | boolean | false   | Enables additional debug output for this particular task.
-| `comment` | string  | `;`      | Allows for comments. 
-| `shift`   | string  | ``       | Allows to prefix each line with `shift` characters. See also Behaviour below. 
+| `comment` | string  | `;`     | Change the start-of-commentline character 
+| `shift`   | string  | ``      | Prefix for each output line
 |=============================
 
 Notice that *debug* output will be written on stream `stderr` regardless whether `debug` has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. 
 
-The trimmed *`comment`* attribute value is used to construct a regular expression like `^\s*\Q<<comment>>\E`. Every line matching this regular expression will not show up in the output. Notice that the comment value given does not allow for regular expression meta characters. Thus something like `(;|#)` does _not_ mean either `;` or `#`. Instead it means that a line starting with `(;#)` is ignored from output. By default, lines starting with character `;` - like in Lisp - are ignored.
 
 ==== Elements ====
 
-This task optionally accepts implicit text. That text may contain Ant property `${..}` or <<el>> `#{..}` references. 
-
+This task optionally accepts implicit text.
 
 ==== Behaviour ====
 
-*Continuation Lines* are lines where the last character before the line termination character is the backslash character. Such a line is continued, i.e. the line will be merged with the next one (which could also be a continuation line).   
+Comment lines are stripped from input. A comment line is a natural line starting with whitespace characters followed by character `;` or character sequence given via attribute `comment`. In a subsequent step, continuation lines merged into logical lines.
 
-A (merge continuation) line starting with an arbitrary number of whitespace characters followed by the characters given in attribute `comment` is a *comment line*. Such lines are removed from output. The characters given are taken literaly and have no meta character functionality. To disable comment lines altogether use an empty string footnote::[A string consisting only of whitespace characters].
-
-To allow a *decent formatting* unnecessary whitespace characters are removed. The process is illustrated footnote::[Again character dot `.` is used to illustrate a whitespace character with the exception of line ending characters] using the introduction example used above:
+To support *decent formatting*, unnecessary whitespace characters are removed. The process is illustrated footnote::[Again character dot `.` is used to illustrate a whitespace character with the exception of line ending characters] using the introduction example used above:
 
 ------------------------------------
 <c:echo>
-
-..foo\
-..bar
+..foo                ; 'foo'
+...bar               ; '.bar'
+.baz                 ; 'baz'
 </c:echo>
 -------------------------------------
 
-In a first step is the first non-whitespace character determined. In the example above, this is character `f`. From there Flaka counts backwards until a line termination character or the begin of input is reached. The counted number is the amount of whitespace characters stripped from the begin of each line. If a line starts with less than that amount of whitespace characters, then only those available are removed. Additionally, all whitespace characters before the first non-whitespace character are removed from the input.
+In a first step, the number of whitespace characters before the first non-whitespace character is determined. This will be `2` in the example above. Then the whole printable content is being left shifted by this amount. This gives then the output shown as above. Notice that `foo` and `baz` are now on the same idendation level by this left-shift.
 
-There are two whitespace characters before `foo\`. If support for continuation lines would have been disabled, Flaka would dump the following:
-
--------------------------------------
-[c:echo] foo\
-[c:echo] bar
--------------------------------------
-
-Handling of continuation lines takes place *after* whitespace has been stripped. Thus Flaka prints
-
--------------------------------------
-[c:echo] foobar
--------------------------------------
-
-as shown in the introduction example. A slight variation of the example above is given next:
-------------------------------------
-<c:echo>
-
-..foo\
-.bar
-...indended by one character, right?
-</c:echo>
--------------------------------------
-
-Notice that in front of `bar` is only one whitespace character while there are three in the line after. What will be Flaka's output?
- 
--------------------------------------
-[c:echo] foobar
-[c:echo] .indended by one character, right?
--------------------------------------
-
-As you can see, no more than the initial counted amount of whitespace is removed from each line.
-
-However, assume that you really want to have a couple of empty lines dumped before any real content. How can this be done. There are two options. Firstly you can always fall back to use Ant's standard `echo` task. Secondly, you can use a comment line like shown next
-
-------------------------------------
-<c:echo>
-..; two empty lines following
-
-
-..foobar
-</c:echo>
--------------------------------------
-
-which would dump:
-
--------------------------------------
-[c:echo] 
-[c:echo] 
-[c:echo] foobar
--------------------------------------
-
-This all works because comment lines are removed from the input *after* the position of the first non-whitespace character gets determined. It obviously means that this kind of comments do matter and can't simply be stripped off. They may carry some semantics, so it's probably best to avoid this kind of trick. Make use of it when approbriate. 
-
-We have seen how to force leading empty lines in the example above. What needs to be done if some leading whitespace is intended? Again there are two options. First you may attack the problem using the comment line trick:
-------------------------------------
-<c:echo>
-..; dummy comment
-.......foobar
-</c:echo>
--------------------------------------
-
-This would produce like `[c:echo] .....foobar`. Or you may use the *shift* attribute to right-shift the whole output by an arbitrary amount of characters like
+It is possible to perform a right-shift of content _after_ the automatic left shift: 
 
 ------------------------------------
 <c:echo shift="5">
-..foobar
+..foo                ; '.....foo'
 </c:echo>
--------------------------------------
-
-producing the same as before, namely
-
--------------------------------------
-[c:echo] .....foobar
 -------------------------------------
 
 Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different _shift_ character sequence as show next:
 
 ------------------------------------
-<c:echo shift="5>">
-..foobar
+<c:echo shift="5> ">
+..foobar              ; '> > > > >foobar'
 </c:echo>
 -------------------------------------
 
-This produces `>>>>>` as shift character sequence for every line dumped as shown next:
+==== Examples ====
 
--------------------------------------
-[c:echo] >>>>>foobar
--------------------------------------
-
-Notice that every character after the integral number counts. Thus `5> ` would produce
-
--------------------------------------
-[c:echo] > > > > > foobar
+Create a single output line consisting of 20 times character `%`:
+------------------------------------
+<c:echo shift="20%" />   ; '%%%%%%%%%%%%%%%%%%%%'
 -------------------------------------
 
-instead.
-
-This feature also allows to create some horizontal lines which might be useful to get attention for a particular message of importance like
-
--------------------------------------
-[c:echo] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
--------------------------------------
-
-Those line of 40 per cent character `%` got created simply by using 
+Type a comment in echo to document what will be echoed:
 
 ------------------------------------
-<c:echo shift="40%"/>
+<c:echo>
+  ; make sure that property p is defined here
+  p : ${p}         ; 'p : ..'
+</c:echo>
 -------------------------------------
 
+Follow the guideline that lines should not exceed 80 characters by using continuation lines if necessary
+
+------------------------------------
+<c:echo>
+  a very long \    ; 'a very long line'
+  line
+</c:echo>
+------------------------------------
+
+<<el,EL>> is enabled by default:
+
+------------------------------------
+<c:echo>
+  #{3 * 4}   ; '12'
+</c:echo>
+------------------------------------

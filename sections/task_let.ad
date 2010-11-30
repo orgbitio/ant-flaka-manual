@@ -2,13 +2,13 @@
 
 [[task_let,let]]
 === let ===
-XML is not particular easy to read for humans. When assigning a couple of varables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
+XML is not particular easy to read for humans. When assigning a couple of variables and properties, this becomes obvious. This elementary task allows to set multiple variables and properties in one go. In addition, comments and continuation lines are allowed for additional readability and comfort. For example:
 
 --------------------------------------
   <c:let>
-    f = 'folder'
+    f = 'my/path'
     ; turn f into a file object
-    f = f.tofile
+    f = file(f)
     b = f.isdir ? true : false
     ; assign a *property* 
     p := 'hello world'
@@ -18,108 +18,92 @@ XML is not particular easy to read for humans. When assigning a couple of varabl
   </c:let>
 --------------------------------------
 
-In this example, `f` is first assigned to be string `"folder"`. The comment line - the one starting with character `;` - tells what the next line is going to do: turn `f` into a file object which can then be used further. Here we assign a variable `b` which becomes `true` if `f` is a directory.
+In this example, variable `f` is first assigned to be a string object (`'my/path'`). The comment line, the one starting with character `;`, tells what the next line is going to do: turn `f` into a file object which can then be used for further processing. Here we create variable `b` which becomes `true` if `f` is a directory and `false` otherwise.
 
-While character `=` is used to assign a variable, use character sequence `:=` to assign a property instead. If such a property already exists, it will not be changed in accordance with Ant's standard behaviour. 
-If you dare and insist to override a property, use `::=` to do so. 
+Character `=` is used to create or set a variable while `:=` indicates to create a property instead. If such a property already exists, it will not be changed in accordance with Ant\'s standard behaviour. If you however dare to override a property, then you may do so using `::=` as the last example shows. 
 
-Notice that the right side of `=`, `:=` and `::=` are in any cases a EL expression while the left side are expected to contain valid identifiers for variables and properties.
+Notice that the right side of `=`, `:=` and `::=` is evaluated as EL expression while the left side is expected to constitute a valid identifier for a variable or property.
 
 
 ==== Attributes ====
 
 |=======================
-| Attribute | Type | Default    | <<el>> | Meaning 
-| comment   | string | `;`      |  no  | The comment character sequence. 
-| debug     | bool   | `false`  |  no  | Turn on extra debug information.
+| Attribute | Type | Default       | Description 
+| comment   | string    | `;`      | The comment character sequence. 
+| debug     | boolean   | `false`  | Turn on extra debug information.
 |=======================
 
-All attributes follow the rule that leading and trailing whitespace is ignored. Any attribute combination is allowed and will not result necessarily in a build error. If in doubt, turn on extra debug information.
 
 ==== Elements ====
 
-This task accepts implicit text. Text may contain any amount of <<el>> and property references references. Continuation and comment lines are supported. 
+This task accepts an implicit text element. 
 
 ==== Behaviour ====
 
-The comment character sequence is `";"` by default. It can be changed to an arbitrary sequence using attribute `comment`. Once set, it can't be changed during the execution of this task. A comment characters are used to identify lines to be ignored from execution. Such a line is given if the first non whitespace characters of that line are identical with the sequence of comment characters. In other words, a line is being ingnored if matches the regular expression `^\s*<comment>`. The comment characters itself are not interpreted as regular expression characters. Therefore a given comment sequence like `"(#|;)"` does not mean that either `";"` or `"#"` start a comment. Instead it means that a comment line starts with the characters `"(#|;)"` which would be rather awkward (while perfectly _legal_). 
+A comment line is indicated by starting with character `;` as first non white-space character. This character can be changed to any character sequence using attribute `comment`. Comment lines are ignored from further processing.
 
-To support readability continuation lines are supported. Such a line is indicated by having `\` as last character. Be careful not to put any whitespace characters after `\`, otherwise the line will not be recognized as such. Continuation lines are also working on comments as the example above shows. If a line is a continuation line, the last character `\` is removed, the line is accumulated and the next line is read. If finally a non-continuation line is red (and only then), an evaluation of the accumulated line takes place: If the accumlated line is a comment it will be ignored and otherwise either treated as property or variable assignment.
+Any logical line can be spread across an arbitrary number of contiguous physical lines. A physical line is continued if there is an odd number of contiguous backslash characters `\` before the line-terminator sequence. The escape character before the line-terminator sequence, the line-terminator sequence and any whitespace after the line-terminator sequence are ignored within a logical line.
 
-Leading and trailing whitespace characters ignored in every (accumulated) line. For example, the property assignment  `x := 'foo bar'` will assign the string `foo bar` to property `x`. Notice that whitespace before and after `x` and before and _after_ `'foo bar'` is ignored. This is slightly different from reading Java properties where whitespace after `'foo bar'` would _not_ have been ignored!
- 
-When evaluating, each line is independent of other lines evaluated. Each line is evaluated in the order written. Evaluating means that the right side of the assignment is evaluated as <<el>> expression and the resulting object is assigned to the variable stated on the left side. When evaluating properties, then the right side is evaluted into an object and additionally streamed into a sequence of characters (string).
+Line terminating sequences are `\r`, `\n` or `\r\n`. Whitespace characters are tab (`\t`), formfeed (`\f`) and the blank character (space). The escape character is backslash (`\`). 
 
-Notice that it is perfectly legal to use property or variable references as the following example shows:
---------------------------------------
-<c:let>
- f = '${ant.file}'
- F = '#{f}'
-</c:let>
---------------------------------------
-
-Be aware that property references are evaluated _before_ <<el>> expressions. Consider:
---------------------------------------
-<c:let>
-  ;; let s hold string ant.file
-  s = 'ant.file'
-  ;; bad, f will not assigned
-  f = ${#{s}}
-</c:let>
---------------------------------------
-The second assignment will not work as expected because, in a first step, all occurrences of `${..}` are resolved by Ant itself. In a second step, the expression `${#{s}}` will be evaluated. Since this expression is invalid, `f` will not be assigned.
-
-Each line is evaluated in order. Therefore the following works as expected:
---------------------------------------
-<c:let>
-  s := '3 * 5'
-  ;; defines r as 15
-  r = ${s}
-</c:let>
---------------------------------------
-
-The following kind of meta programming will not work for `let`:
---------------------------------------
-<c:let>
-  property_or_var := condition ? '=' : ':='
-
-  name ${property_or_var} expr
-</c:let>
---------------------------------------
-In a first step all continuation lines are accumulated. Then each line is split in left and right part and in addition the assignment type. After that, properties are resolved on both sides by Ant's property resolver. In an additonal step are _EL references_ evaluated on both sides. Eventually, the right side is evaluated as EL expression and its result is assigned to the stringized and whitespace-chopped left side.
+When the text element is processed, then all comment lines are removed in a first step and all physical lines are transformed into logical lines. Then each logical line is processed in syntactical order. Empty footnote:[A line is considered empty if consisting of whitespace characters only] logical lines are discarded. Otherwise, each non-empty logical line is broken up into a key and value part by using the first occurrance of sequence `=`, `:=` or `::=`. Leading and trailing whitespace characters are removed from key and value and escaped characters are replaced. Then, property and EL references are resolved in key and value. Eventually the value is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
 
 ==== Then meaning of `null` and _void_ ====
 
-Task `let` can also be used to _remove_ variables and even properties. To illustrate this, here are example behaviours:
+This task can also be used to _remove_ variables and properties. The following table gives an overview of the meaning of `null` and _void_ footnote::[_void_ means that the absence of any characters] on the right side of an assignment:
+|=======================
+| Assignment Type| Evaluated Value | Description 
+| `=`        | `null`     | Remove variable if existing, else do nothing
+| `=`        | _void_     | Same as `= null`
+| `:=`       | `null`     | Nothing
+| `:=`       | _void_     | Same as `:= null` 
+| `::=`      | `null`     | Remove property 
+| `::=`      | _void_     | Same as `::= null` 
+|=======================
+
+==== Examples ====
+
+To start with, some basic examples.
 --------------------------------------
 <c:let>
- x = 3 * 5 
- ;; remove x
- x =  
- ;; remove x 
- x = null
- 
- ;; let property p to '3*5' (a string)
- p := 3 * 5
- ;; ignored 
- p := null
- ;; remove property 'p'
- p ::= null
- ;; .. same as
- p ::= 
+ ; a comment line
+ ; variable x will hold integer 12
+ x   = 3 * 4
+ ; property p will hold string '12'             
+ p  := 3 * 4
+ ; ignored, cause property p exists already
+ p  := 'twelve' 
+ ; override property p to hold string value '12'
+ p ::= 'twelve'
 </c:let>
 --------------------------------------
 
-The following table gives an overview of the meaning of `null` and _void_ footnote::[_void_ means that the absense of any characters] on the right side of an assignement:
-|=======================
-| Assignment | Right Side | Result 
-| `=`        | `null`     | If the right side evaluates to `null`, then the variable will be removed if existing.
-| `=`        | _void_     | The evaluation of an empty expression is `null`. See above how `null` is handled` 
-| `:=`       | `null`     | Cause a _read only_ property can't be removed, nothing will happen with this assignment. The property will also not be created. 
-| `:=`       | _void_     | Same as `:= null` 
-| `::=`      | `null`     | Removes the property denoted by the left side 
-| `::=`      | _void_     | Same as `::= null` 
-|=======================
+It is perfectly legal to use property or variable references. Variables and properties created within `let` can also be used. Be aware that property references are resolved _before_ EL references. Consider:
+--------------------------------------
+<property name="a" value="a" />
+<c:let>
+ ; variabe v becomes the string object 'bar' and property p
+ ; becomes 'foobar'
+ v  = 'b${a}r'
+ p := 'foo#{v}'
+ ; property- and El-references can be used on both sides. Here we
+ ; override property 'a' to become string value `bar`
+ ${a} ::= '#{v}'
+ ; This will not work as planned cause there is no property
+ ; with that weired name '#{v}'.
+ f = ${#{v}}
+</c:let>
+--------------------------------------
+
+The following kind of meta programming will _not_ work for `let` cause property and EL references are resolved after the logical line has been broken up in a key and value part:
+--------------------------------------
+<c:let>
+  ; This example will NOT work as planned
+  assigntype := condition ? '=' : ':='
+  key ${assigntype} el-expr
+</c:let>
+--------------------------------------
+
 
 
 

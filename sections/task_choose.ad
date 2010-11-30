@@ -9,10 +9,10 @@ A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then
 // cols=5
 [cols="15%,3*11%,52%"]
 |===========================
-| Attribute   | Type     | Default | EL | Description 
-| _when_.test | string   | `false` |  = | A EL condition. When `true` corresponding clause will be executed. 
-| _unless_.text | string | `true`  |  = | A EL condition. When `false` corresponding clause will be executed. 
-| debug       | boolean  | `false` |  = | Turn on extra debug information. 
+| Attribute     | Type     | Default | EL | Description 
+| _when_.test   | string   | `false` |  = | A EL condition. When `true` corresponding clause will be executed. 
+| _unless_.test | string | `true`  |  = | A EL condition. When `false` corresponding clause will be executed. 
+| debug         | boolean  | `false` |  = | Turn on extra debug information. 
 |===========================
 
 ==== Elements ====
@@ -28,14 +28,14 @@ A task implementing a series of _ifelse_ statements, i.e. a generalized _if-then
 
 ==== Behaviour ====
 
-Each `when` and `unless` clause's conditions are evaluated in order given until a claus get's executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
+Each `when` and `unless` clause\'s conditions are evaluated in order given until a claus get\'s executed. Then, further processing stops ignoring all further elements not taken into account so far. If no `when` or `unless` clause got executed, then a present `otherwise` or `default` clause gets executed.
 
 The shortest possible `choose` statement is
 --------------------------------------
  <c:choose />
 --------------------------------------
 
-It's useless and does nothing, it's completely harmless.
+It\'s useless and does nothing, it\'s completely harmless.
 
 The following example would execute all macros or tasks listed in the `otherwise` clause cause no `when` or `unless` clause got executed.
 --------------------------------------
