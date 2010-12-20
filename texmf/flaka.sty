@@ -1,24 +1,34 @@
-%%
-%% This is a DocBook LaTeX style example
-%%
-\def\flakaversion{1.2}
-\def\documentversion{1.1}
-%%%\NeedsTeXFormat{LaTeX2e}
+%
+% This file defines the Flaka layout style
+%
+
+\NeedsTeXFormat{LaTeX2e}
+% Declare this package
 \ProvidesPackage{flaka}[2010/02/10 haefelinger IT flaka]
 
-% The defined options
+% Declare options
 \DeclareOption{hyperlink}{ \def\DBKhyperlink{yes} }
 \DeclareOption{nohyperlink}{ \def\DBKhyperlink{no} }
 
-% Default values
+% Provide default settings for my options
 \ExecuteOptions{hyperlink}
 
-% If defined, process the options
+% Eventually process my options
 \ProcessOptions\relax
+
+%%%
+
+% Undefine \lstparamset, otherwise my settings are defined by dblatex
+% rather than be me.
 \newcommand{\lstparamset}{}
+
+% XeTeX  - This flaka is assumed to be used with XeTeX.
+\usepackage{xunicode}                      % tranlate "TeX chars" into unicode
+\usepackage{xltxtra}                       % provides also \XeTeX
+
 % PACKAGES
 \usepackage[a4paper,textwidth=13cm,top=2cm,bottom=3cm]{geometry}
-\usepackage{cmbright}
+%\usepackage{cmbright}
 \usepackage{titlesec}                      % define \section and the like
 \usepackage{listings}                      % fancy listings
 \usepackage[T1]{fontenc}                   % how fonts are encoded
@@ -34,20 +44,19 @@
 \usepackage{marginnote}
 \usepackage{ifxetex}                       % required by dblatex
 \usepackage{dbk_core}                      % dblatex core package
-\usepackage{xunicode}                      % tranlate "TeX chars" into unicode
-
-
-% FONTS
-\usepackage{xltxtra}                       % provides also \XeTeX
 \usepackage{fontsmpl}
+
+%%% FONTS %%%
+
 \usepackage[infoshow]{tracefnt}
 
-% \defaultfontfeatures{Mapping=tex-text} % converts LaTeX specials (``quotes'' --- dashes etc.) to unicode
-% \setromanfont [Ligatures={Common}, Numbers={OldStyle}]{Hoefler Text}
-%\setmonofont[Scale=0.8]{Monaco} 
-% \setsansfont[Scale=0.9]{Optima Regular} 
+% \defaultfontfeatures{Mapping=tex-text} % converts LaTeX specials
+% (``quotes'' --- dashes etc.) to unicode
+%\setromanfont[Ligatures={Common}, Numbers={OldStyle}]{Myriad Pro}
+%\setmonofont[Scale=0.8]{TeX Gyre Cursor} 
+%\setsansfont[Scale=0.1]{Herculanum} 
 
-
+%%% COLOR %%%
 \colorlet{myred}{red!65}
 \colorlet{bgcolorcover}{myred}     % background color : cover
 \colorlet{bgcolordefault}{white}    % background color : default 
@@ -63,9 +72,9 @@
 % Move the whole layout one centimeter left.
 \addtolength{\hoffset}{-1cm}
 
-% do not indend a paragraph
+% do not indend a paragraph while put extra space between two paragraphs
 \setlength{\parindent}{0cm}
-
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 %
 % gap between lines
 %

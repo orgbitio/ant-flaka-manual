@@ -4,8 +4,7 @@
 % -----------------------------------------  
 %%<params>
 %%</params>
-\documentclass{article}
-\usepackage{flaka}
+\documentclass{flaka}
 %
 % Define title and author
 %
@@ -315,22 +314,48 @@ Ant property references \texttt{\$\-\{\-.\-.\-\}} are resolved before any EL ref
 \subsubsection{The Great Escape}
 \label{_the_great_escape}\hyperlabel{_the_great_escape}%
 
-How about to print a text sequence like \texttt{\#\-\{ 3 * 4\-\}}. In other words, how to disable evaluation of an EL reference? Consider:
+How about getting a character sequence like \texttt{\#\-\{ 3 * 4\-\}}?. In other words, how to prevent a EL reference from being evaluated? There are basically two techniques available. Consider:
 
 \begin{lstlisting}[firstnumber=1,]
-<c:echo>
-     #{ 3 * 4 }        ; 12
-    \#{ 3 * 4 }        ; #{ 3 * 4 }
-  #{'{'}3 * 4 }        ; #{ 3 * 4 }
-    ##{ 3 * 4 }        ; #12
-    \#{                ; \#{
-    $${twelve}         ; ${twelve}
-    $$x                ; $x
-</c:echo>\end{lstlisting}
+<echo>
+ #{ '#{3 * 4}' }        ;    #{ 3 * 4 }
+     \#{ 3 * 4 }        ;    #{ 3 * 4 }
+</echo>\end{lstlisting}
 
-Please notice that escaping a property reference is different than escaping a EL reference. By default, Ant stops evaluation of property references if the reference is prefixed with a dollar character. In addition, every double dollar sequence \texttt{\$\-\$} is reduced into a single dollar character.
+The first line shows the recommended technique, i.e. embed the character sequence \texttt{\#\-\{} in a EL string. The second line demonstrates the usage of \texttt{\textbackslash{}\-\#\-\{} as escape sequence. Using this escape sequence is counter intuitive. Consider:
 
-Escaping in EL is different as the example above demonstrates. The preferred way is to prefix the EL reference with a backslash character \texttt{\textbackslash{}}.
+\begin{lstlisting}[firstnumber=1,]
+<echo>
+     #{ 3 * 4 }        ;    12
+    \#{ 3 * 4 }        ;    #{ 3 * 4 }
+   \\#{ 3 * 4 }        ;   \#{ 3 * 4 }
+  \\\#{ 3 * 4 }        ;  \\#{ 3 * 4 }
+ \\\\#{ 3 * 4 }        ; \\\#{ 3 * 4 }
+</echo>\end{lstlisting}
+
+In other words, when character sequence \texttt{\textbackslash{}\-\#\-\{} is seen, then character \texttt{\textbackslash{}} is consumed and \texttt{\#\-\{} does not start an EL reference, i.e. the sequence is taken literally.  It has to be noted, that character \texttt{\textbackslash{}} alone does not have any meaning and is especially not a general escape character. Thus any number of contiguous backslash characters before an EL reference successfully disables its evaluation.
+
+Given this behaviour, how is it then possible to create backslash characters before an evaluated EL reference? As an example, assume that we have a EL variable named \texttt{h\-o\-s\-t} and our task is to generate a UNC \footnote{
+Uniform Naming Convention, see also \href{http://en.wikipedia.org/wiki/Path_(computing)\#Uniform_Naming_Convention}{http://en.wikipedia.org/\-wiki/\-Path\_(computing)\#Uniform\_Naming\_Convention}
+} notation. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<echo>
+ \\#{ host }                   ;    \#{ host }
+ #{ format('\\\\%s',host) }    ;    \\myhostname
+</echo>\end{lstlisting}
+
+Please notice that escaping a property reference is different than escaping a EL reference. A property reference is taken literally if prefixed by character \texttt{\$}. In addition, \emph{every} double dollar sequence \texttt{\$\-\$} is reduced into a single dollar character. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<echo>
+   ${foo}          ; bar
+  $${foo}          ; ${foo}
+ $$${foo}          ; $bar
+$$$${foo}          ; $${foo}
+ foo $ bar         ; foo $ bar
+foo $$ bar         ; foo $ bar
+</echo>\end{lstlisting}
 
 \subsubsection{Whitespace}
 \label{_whitespace}\hyperlabel{_whitespace}%
@@ -346,6 +371,16 @@ Trailing and leading whitespace is meaningless within EL references. This is dif
      #{ p }               ; regular name 'p'
      #{ property[' p '] } ; weired name ' p '
 </c:echo>\end{lstlisting}
+
+\subsubsection{Syntax Errors}
+\label{_syntax_errors}\hyperlabel{_syntax_errors}%
+
+A syntax error in a EL expression will be silently ignored. Furthermore, the EL engine will tries to recover by ignoring all characters until either character \texttt{\}} or \texttt{<{}\-e\-o\-f\->{}}, the end of input, is seen. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+0#{ 3 * 3    ; 0
+0#{ 3 * }3   ; 03
+0#{ 3 * 4 }3 ; 0123\end{lstlisting}
 
 \subsubsection{EL Awareness}
 \label{_el_awareness}\hyperlabel{_el_awareness}%
@@ -1728,20 +1763,7 @@ Description
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{d\-e\-b\-u\-g}
-%
-}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
-boolean
-%
-}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
-\texttt{f\-a\-l\-s\-e}
-%
-}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
-Turn extra debug information on
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{c\-o\-m\-m\-e\-n\-t}
+\texttt{c\-s}
 %
 }&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
 string
@@ -1750,13 +1772,41 @@ string
 \texttt{;}
 %
 }&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
-The character that starts a comment line
+The sequence starting a comment-{}line
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{i\-c\-s}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
+The sequence starting a inline-{}comment
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{c\-l}
+%
+}&\multicolumn{1}{p{10\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-u\-e}
+%
+}&\multicolumn{1}{p{60\newtblstarfactor}|}{\raggedright%
+Whether continuation lines shall be supported
 %
 }\tabularnewline
 \hline
 \end{longtable}\endgroup%
 \restoretablecounter%
 }
+
+Use an empty attribute value ("") to turn comments off.
 
 \subsubsection{Elements}
 \label{_elements}\hyperlabel{_elements}%
@@ -1769,8 +1819,14 @@ This task accepts a implicit text element.
 The format to define properties within a this task is a subset of the format supported by Ant. Consider:
 \begin{itemize}
 
-\item{} The first non-{}whitespace character of a comment is by default \texttt{;} while a Ant property files use \texttt{\#} and \texttt{!}. The comment character can be changed using attribute \texttt{c\-o\-m\-m\-e\-n\-t}.
+\item{} Ant uses character \texttt{\#} to start a comment while Flaka uses \texttt{;} \footnote{
+Use attribute \texttt{c\-s} to change the comment-{}line character
+} 
 
+
+\item{} Ant does not support inline comments \footnote{
+Use attribute \texttt{i\-c\-s} to change the comment-{}line character or to turn off this feature
+} 
 
 
 \item{} Ant comment lines do not support continuation lines, this task does.
@@ -1933,7 +1989,7 @@ Description
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
-comment
+\texttt{c\-s}
 %
 }&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 string
@@ -1942,26 +1998,41 @@ string
 \texttt{;}
 %
 }&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
-The comment character sequence.
+The sequence starting a comment-{}line
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
-debug
+\texttt{i\-c\-s}
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
+The sequence starting a inline-{}comment
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{25\newtblstarfactor}|}{\raggedright%
+\texttt{c\-l}
 %
 }&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
 boolean
 %
 }&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
-\texttt{f\-a\-l\-s\-e}
+\texttt{t\-r\-u\-e}
 %
 }&\multicolumn{1}{p{25\newtblstarfactor}|}{\raggedright%
-Turn on extra debug information.
+Whether continuation lines shall be supported
 %
 }\tabularnewline
 \hline
 \end{longtable}\endgroup%
 \restoretablecounter%
 }
+
+Use an empty attribute value ("") to turn comments off.
 
 \subsubsection{Elements}
 \label{_elements_3}\hyperlabel{_elements_3}%
@@ -1971,15 +2042,9 @@ This task accepts an implicit text element.
 \subsubsection{Behaviour}
 \label{_behaviour_3}\hyperlabel{_behaviour_3}%
 
-A comment line is indicated by starting with character \texttt{;} as first non white-{}space character. This character can be changed to any character sequence using attribute \texttt{c\-o\-m\-m\-e\-n\-t}. Comment lines are ignored from further processing.
+In a first step, physical lines are processed into logical lines by taking continuation lines into accout. Then, any comments and lines containing only whitespace charactes are stripped from input.
 
-Any logical line can be spread across an arbitrary number of contiguous physical lines. A physical line is continued if there is an odd number of contiguous backslash characters \texttt{\textbackslash{}} before the line-{}terminator sequence. The escape character before the line-{}terminator sequence, the line-{}terminator sequence and any whitespace after the line-{}terminator sequence are ignored within a logical line.
-
-Line terminating sequences are \texttt{\textbackslash{}\-r}, \texttt{\textbackslash{}\-n} or \texttt{\textbackslash{}\-r\-\textbackslash{}\-n}. Whitespace characters are tab (\texttt{\textbackslash{}\-t}), formfeed (\texttt{\textbackslash{}\-f}) and the blank character (space). The escape character is backslash (\texttt{\textbackslash{}}).
-
-When the text element is processed, then all comment lines are removed in a first step and all physical lines are transformed into logical lines. Then each logical line is processed in syntactical order. Empty \footnote{
-A line is considered empty if consisting of whitespace characters only
-} logical lines are discarded. Otherwise, each non-{}empty logical line is broken up into a key and value part by using the first occurrance of sequence \texttt{=}, \texttt{:\-=} or \texttt{:\-:\-=}. Leading and trailing whitespace characters are removed from key and value and escaped characters are replaced. Then, property and EL references are resolved in key and value. Eventually the value is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
+Then, each line is taken apart into a key and value by using the first occurrance of \texttt{=}, \texttt{:\-=} or \texttt{:\-:\-=}.  as breaking point. Leading and trailing whitespace characters are removed from key and value. Then, property and EL references are resolved . Eventually the value part is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
 
 \subsubsection{Then meaning of \texttt{n\-u\-l\-l} and \emph{void}}
 \label{_then_meaning_of_literal_null_literal_and_emphasis_void_emphasis}\hyperlabel{_then_meaning_of_literal_null_literal_and_emphasis_void_emphasis}%
@@ -2165,36 +2230,6 @@ The name of the variable to be assigned.
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
-comment
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-string
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-\texttt{;}
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-The comment character
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
-debug
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-bool
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-false
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-%
-}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
-Turn on extra debug information.
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
 el
 %
 }&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
@@ -2210,10 +2245,44 @@ no
 Enable evaluation as EL expression
 %
 }\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+\texttt{c\-s}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+The sequence starting a comment-{}line
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{i\-c\-s}
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\cline{5-5}\multicolumn{1}{|p{20\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+The sequence starting a inline-{}comment
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+\texttt{c\-l}
+%
+}&\multicolumn{1}{p{20\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}\tabularnewline
 \hline
 \end{longtable}\endgroup%
 \restoretablecounter%
 }
+
+Use an empty attribute value ("") to turn comments off.
 
 \subsubsection{Elements}
 \label{_elements_4}\hyperlabel{_elements_4}%
@@ -2305,20 +2374,7 @@ Description
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{d\-e\-b\-u\-g}
-%
-}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
-boolean
-%
-}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
-false
-%
-}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
-Enables additional debug output for this particular task.
-%
-}\tabularnewline
-\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
-\texttt{c\-o\-m\-m\-e\-n\-t}
+\texttt{c\-s}
 %
 }&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
 string
@@ -2327,7 +2383,46 @@ string
 \texttt{;}
 %
 }&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
-Change the start-{}of-{}commentline character
+The sequence starting a comment-{}line
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{i\-c\-s}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+The sequence starting a inline-{}comment
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{c\-l}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-u\-e}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+Whether continuation lines shall be supported
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{w\-s}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-u\-e}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+Whether whitespace shall be stripped off
 %
 }\tabularnewline
 \cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
@@ -2348,8 +2443,6 @@ Prefix for each output line
 \restoretablecounter%
 }
 
-Notice that \textbf{debug} output will be written on stream \texttt{s\-t\-d\-e\-r\-r} regardless whether \texttt{d\-e\-b\-u\-g} has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is \texttt{f\-a\-l\-s\-e}, i.e. no additional output is created.
-
 \subsubsection{Elements}
 \label{_elements_5}\hyperlabel{_elements_5}%
 
@@ -2358,9 +2451,7 @@ This task optionally accepts implicit text.
 \subsubsection{Behaviour}
 \label{_behaviour_5}\hyperlabel{_behaviour_5}%
 
-Comment lines are stripped from input. A comment line is a natural line starting with whitespace characters followed by character \texttt{;} or character sequence given via attribute \texttt{c\-o\-m\-m\-e\-n\-t}. In a subsequent step, continuation lines merged into logical lines.
-
-To support \textbf{decent formatting}, unnecessary whitespace characters are removed. The process is illustrated \footnote{
+In an initial step, continuation lines are merged into logical lines. Then any comments are stripped from input. Afterwards, unwanted whitespace characters are removed. The process is illustrated \footnote{
 Again character dot \texttt{.} is used to illustrate a whitespace character with the exception of line ending characters
 } using the introduction example used above:
 
@@ -2371,16 +2462,14 @@ Again character dot \texttt{.} is used to illustrate a whitespace character with
 .baz                 ; 'baz'
 </c:echo>\end{lstlisting}
 
-In a first step, the number of whitespace characters before the first non-{}whitespace character is determined. This will be \texttt{2} in the example above. Then the whole printable content is being left shifted by this amount. This gives then the output shown as above. Notice that \texttt{f\-o\-o} and \texttt{b\-a\-z} are now on the same idendation level by this left-{}shift.
-
-It is possible to perform a right-{}shift of content \emph{after} the automatic left shift:
+The whitespace sequence before the first non-{}whitespace character is analyzsed: if this sequence does not contain any line-{}ending characters, no whitespace handling will occur. Otherwise, the number of whitespace characters before the first non-{}whitespace character and after the last line-{}ending character is determined. This will be \texttt{2} in the example above. Then, the whole printable content is being \texttt{l\-e\-f\-t s\-h\-i\-f\-t\-e\-d} by this amount. Eventually, the content is trimmed: leading whitespace up and inclusive the first line-{}ending character as well as the last line-{}ending character followed by trailing whitespace is removed. This gives then the output shown as above. Notice that \texttt{f\-o\-o} and \texttt{b\-a\-z} are now on the same idendation level by this left-{}shift. It is possible to perform a \texttt{r\-i\-g\-h\-t\--{}\-s\-h\-i\-f\-t} of content \emph{after} the automatic left shift:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:echo shift="5">
 ..foo                ; '.....foo'
 </c:echo>\end{lstlisting}
 
-Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different \emph{shift} character sequence as show next:
+Attribute \texttt{s\-h\-i\-f\-t} expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different \emph{shift} character sequence as show next:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:echo shift="5> ">
@@ -2416,6 +2505,27 @@ Follow the guideline that lines should not exceed 80 characters by using continu
 \begin{lstlisting}[firstnumber=1,]
 <c:echo>
   #{3 * 4}   ; '12'
+</c:echo>\end{lstlisting}
+
+The comment character sequence can be changed or disabled:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:echo cl="#" ic="">
+  #{3 * 4}   you cannot see me
+  not ; any longer an inline comment!
+</c:echo>\end{lstlisting}
+
+You can use \texttt{\textbackslash{}} as start of an escape sequence while however \texttt{\textbackslash{}\-\textbackslash{}} does not escape \texttt{\textbackslash{}} from it's meaning. Consider:
+
+\begin{lstlisting}[firstnumber=1,]
+<c:echo>
+  \#{3 * 4}            ; '#{3 * 4}'
+  \\#{3 * 4}           ; '\#{3 * 4}'
+  #{ '\\' }#{3 * 4}    ; '\12'
+  #{ concat('\\',3*4)} ; '\12'
+  ; comment            ;
+  \; not a comment     ; '; not a comment'
+  \\; not a comment    ; '\; not a comment'
 </c:echo>\end{lstlisting}
 
 \subsection{logo}
@@ -2487,10 +2597,51 @@ integer
 Width of one line in terms of regular characters.
 %
 }\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{c\-s}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+The sequence starting a comment-{}line
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{i\-c\-s}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+string
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{;}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+The sequence starting a inline-{}comment
+%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\cline{4-4}\multicolumn{1}{|p{15\newtblstarfactor}|}{\raggedright%
+\texttt{c\-l}
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+boolean
+%
+}&\multicolumn{1}{p{15\newtblstarfactor}|}{\raggedright%
+\texttt{t\-r\-u\-e}
+%
+}&\multicolumn{1}{p{55\newtblstarfactor}|}{\raggedright%
+Whether continuation lines shall be supported
+%
+}\tabularnewline
 \hline
 \end{longtable}\endgroup%
 \restoretablecounter%
 }
+
+Use an empty attribute value ("") to turn comments off.
 
 \subsubsection{Elements}
 \label{_elements_6}\hyperlabel{_elements_6}%
@@ -4226,17 +4377,44 @@ Executes all embedded tasks. Variables and properties listed in \texttt{v\-a\-r\
 
 A compilation of words and their meaning in Flaka.
 
-\subsection{Continuation Lines}
+\subsection{Whitespace}
 \label{glossary_continuation_lines}\hyperlabel{glossary_continuation_lines}%
 
-A continuation line is a sequence of characters ending in \texttt{\textbackslash{}\-N\-L} and not in \texttt{\textbackslash{}\-\textbackslash{}\-N\-L} (where NL is the line ending characters \texttt{C\-R L\-F} or \texttt{L\-F}. Tasks supporting continuation lines will accumulate the content of such a line with the (accumulated) content of the following line. The continuation character and the line ending characters are not accumulated.
+Whitespace characters are the blank character (\emph{SP},\`{} \texttt{)\-, t\-h\-e h\-o\-r\-i\-z\-o\-n\-t\-a\-l t\-a\-b c\-h\-a\-r\-a\-c\-t\-e\-r (\-\_\-H\-T\-\_\-,}\textbackslash{}t\`{}) and the form feed character (\emph{FF},\texttt{\textbackslash{}\-f}). End-{}of-{}line characters are not considered whitespace in this document.
+
+\subsection{End-{}of-{}Line}
+\label{_end_of_line}\hyperlabel{_end_of_line}%
+
+A line-{}ending character sequence is either a carriage-{}return character followed by a line-{}feed character or the single line-{}feed character.
+
+\subsection{Continuation Lines}
+\label{_continuation_lines}\hyperlabel{_continuation_lines}%
+
+A continuation line is a sequence of characters with a non-{}escaped backslash character as last character before the end-{}of-{}line sequence. Tasks supporting continuation lines will accumulate the content of such a line with the \emph{accumulated} content of the following physical line. The continuation character, the line-{}ending character sequence and all immediate whitespace characters are not accumulated.
 
 \begin{lstlisting}[firstnumber=1,]
-a \
-b\\
-c\\end{lstlisting}
+a\
+ b\\\
+c\end{lstlisting}
 
-Defines two accumulated lines: (1) \texttt{a b\-\textbackslash{}} and (2) \texttt{c}.
+Defines two logical lines: (1) \texttt{a b\-\textbackslash{}\-\textbackslash{}} and (2) \texttt{c}.
+
+\subsection{Comment Lines}
+\label{_comment_lines}\hyperlabel{_comment_lines}%
+
+A comment line is a sequence of character where the first non-{}whitespace character is the comment character -{} usually the character \emph{;}:
+
+\begin{lstlisting}[firstnumber=1,]
+    ; a comment line
+ no ; comment line
+   \; not a comment line\end{lstlisting}
+
+Here, only the first line defines a comment line. The second line contains an inline-{}comment. When processed, comment-{}line get entirely removed from input up and including the end-{}of-{}line character sequence. In case a line must start with the comment-{}line character, then sequence \texttt{\textbackslash{}\-;} can be used to do so. It must be noted, that escape character \texttt{\textbackslash{}} has no other meaning, i.e. \texttt{\textbackslash{}\-\textbackslash{}} will not produce single character \texttt{\textbackslash{}} but rather \texttt{\textbackslash{}\-\textbackslash{}}.
+
+\subsection{Inline Comments}
+\label{_inline_comments}\hyperlabel{_inline_comments}%
+
+A inline-{}comment is a sequence of characters starting with the inline-{}comment character and ending -{} while not including -{} the end-{}of-{}line sequence or end of input. Inline comments are discarded when processed. In case character \texttt{;} shall keep it's usual meaning, then \texttt{\textbackslash{}\-;} can be used to do so.
 
 \subsection{Property Reference}
 \label{glossary_property_reference}\hyperlabel{glossary_property_reference}%

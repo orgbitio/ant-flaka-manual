@@ -110,22 +110,49 @@ Ant property references `${..}` are resolved before any EL reference is resolved
 
 ==== The Great Escape ====
 
-How about to print a text sequence like `#{ 3 * 4}`. In other words, how to disable evaluation of an EL reference? Consider:
+How about getting a character sequence like `#{ 3 * 4}`?. In other words, how to prevent a EL reference from being evaluated? There are basically two techniques available. Consider:
 -------------------------------------
-<c:echo>
-     #{ 3 * 4 }        ; 12
-    \#{ 3 * 4 }        ; #{ 3 * 4 }
-  #{'{'}3 * 4 }        ; #{ 3 * 4 }
-    ##{ 3 * 4 }        ; #12
-    \#{                ; \#{
-    $${twelve}         ; ${twelve}
-    $$x                ; $x
-</c:echo>
+<echo>
+ #{ '#{3 * 4}' }        ;    #{ 3 * 4 }
+     \#{ 3 * 4 }        ;    #{ 3 * 4 }
+</echo>
 -------------------------------------
 
-Please notice that escaping a property reference is different than escaping a EL reference. By default, Ant stops evaluation of property references if the reference is prefixed with a dollar character. In addition, every double dollar sequence `$$` is reduced into a single dollar character.
+The first line shows the recommended technique, i.e. embed the character sequence `#{` in a EL string. The second line demonstrates the usage of `\#{` as escape sequence. Using this escape sequence is counter intuitive. Consider:
+-------------------------------------
+<echo>
+     #{ 3 * 4 }        ;    12
+    \#{ 3 * 4 }        ;    #{ 3 * 4 }
+   \\#{ 3 * 4 }        ;   \#{ 3 * 4 }
+  \\\#{ 3 * 4 }        ;  \\#{ 3 * 4 }
+ \\\\#{ 3 * 4 }        ; \\\#{ 3 * 4 }
+</echo>
+-------------------------------------
 
-Escaping in EL is different as the example above demonstrates. The preferred way is to prefix the EL reference with a backslash character `\`.
+In other words, when character sequence `\#{` is seen, then character `\` is consumed and `#{` does not start an EL reference, i.e. the sequence is taken literally.  It has to be noted, that character `\` alone does not have any meaning and is especially not a general escape character. Thus any number of contiguous backslash characters before an EL reference successfully disables its evaluation. 
+
+Given this behaviour, how is it then possible to create backslash characters before an evaluated EL reference? As an example, assume that we have a EL variable named `host` and our task is to generate a UNC footnote:[Uniform Naming Convention, see also http://en.wikipedia.org/wiki/Path_(computing)#Uniform_Naming_Convention] notation. Consider:
+
+-------------------------------------
+<echo>
+ \\#{ host }                   ;    \#{ host }  
+ #{ format('\\\\%s',host) }    ;    \\myhostname
+</echo>
+-------------------------------------
+
+Please notice that escaping a property reference is different than escaping a EL reference. A property reference is taken literally if prefixed by character `$`. In addition, _every_ double dollar sequence `$$` is reduced into a single dollar character. Consider:
+
+-------------------------------------
+<echo>
+   ${foo}          ; bar
+  $${foo}          ; ${foo}
+ $$${foo}          ; $bar
+$$$${foo}          ; $${foo}
+ foo $ bar         ; foo $ bar
+foo $$ bar         ; foo $ bar
+</echo>
+-------------------------------------
+
 
 ==== Whitespace ====
 
@@ -141,6 +168,17 @@ Trailing and leading whitespace is meaningless within EL references. This is dif
      #{ property[' p '] } ; weired name ' p '
 </c:echo>
 -------------------------------------
+
+==== Syntax Errors ====
+
+A syntax error in a EL expression will be silently ignored. Furthermore, the EL engine will tries to recover by ignoring all characters until either character `}` or `<eof>`, the end of input, is seen. Consider:
+
+-------------------------------------
+0#{ 3 * 3    ; 0
+0#{ 3 * }3   ; 03
+0#{ 3 * 4 }3 ; 0123 
+-------------------------------------
+
 
 ==== EL Awareness ====
 

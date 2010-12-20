@@ -28,11 +28,13 @@ Notice that the right side of `=`, `:=` and `::=` is evaluated as EL expression 
 ==== Attributes ====
 
 |=======================
-| Attribute | Type | Default       | Description 
-| comment   | string    | `;`      | The comment character sequence. 
-| debug     | boolean   | `false`  | Turn on extra debug information.
+| Attribute | Type | Default    | Description 
+| `cs`      | string  | `;`     | The sequence starting a comment-line
+| `ics`     | string  | `;`     | The sequence starting a inline-comment
+| `cl`      | boolean | `true`  | Whether continuation lines shall be supported
 |=======================
 
+Use an empty attribute value ("") to turn comments off.
 
 ==== Elements ====
 
@@ -40,13 +42,9 @@ This task accepts an implicit text element.
 
 ==== Behaviour ====
 
-A comment line is indicated by starting with character `;` as first non white-space character. This character can be changed to any character sequence using attribute `comment`. Comment lines are ignored from further processing.
+In a first step, physical lines are processed into logical lines by taking continuation lines into accout. Then, any comments and lines containing only whitespace charactes are stripped from input.
 
-Any logical line can be spread across an arbitrary number of contiguous physical lines. A physical line is continued if there is an odd number of contiguous backslash characters `\` before the line-terminator sequence. The escape character before the line-terminator sequence, the line-terminator sequence and any whitespace after the line-terminator sequence are ignored within a logical line.
-
-Line terminating sequences are `\r`, `\n` or `\r\n`. Whitespace characters are tab (`\t`), formfeed (`\f`) and the blank character (space). The escape character is backslash (`\`). 
-
-When the text element is processed, then all comment lines are removed in a first step and all physical lines are transformed into logical lines. Then each logical line is processed in syntactical order. Empty footnote:[A line is considered empty if consisting of whitespace characters only] logical lines are discarded. Otherwise, each non-empty logical line is broken up into a key and value part by using the first occurrance of sequence `=`, `:=` or `::=`. Leading and trailing whitespace characters are removed from key and value and escaped characters are replaced. Then, property and EL references are resolved in key and value. Eventually the value is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
+Then, each line is taken apart into a key and value by using the first occurrance of `=`, `:=` or `::=`.  as breaking point. Leading and trailing whitespace characters are removed from key and value. Then, property and EL references are resolved . Eventually the value part is evaluated as EL expression and stored as variable or property. When stored as property, the evaluated value will be coerced into a string.
 
 ==== Then meaning of `null` and _void_ ====
 

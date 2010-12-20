@@ -30,7 +30,12 @@ where `chr` defines the _wrap character_ - here `::` and `width` defines the ove
 | Attributes | Type    | Default  | Description 
 | chr        | string  | `:`      | The wrapping character ..
 | width      | integer | `80`     | Width of one line in terms of regular characters.
+| `cs`      | string  | `;`       | The sequence starting a comment-line
+| `ics`     | string  | `;`       | The sequence starting a inline-comment
+| `cl`      | boolean | `true`    | Whether continuation lines shall be supported
 |==========================
+
+Use an empty attribute value ("") to turn comments off.
 
 ==== Elements ====
 

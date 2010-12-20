@@ -18,7 +18,7 @@ flaka.tex : flaka.db4
 #
 
 
-flaka.pdf : Makefile texmf/flaka.sty flaka.specs
+flaka.pdf : Makefile texmf/flaka.cls texmf/flaka.sty flaka.specs
 flaka.db4 : \
  	Makefile \
  	xsl/flaka.xsl \

@@ -27,9 +27,12 @@ This task is quite similar to <<tasks_let,let>>. The major difference is that th
 [cols="15%,10%,15%,60%"]
 |===========================
 | Attribute | Type    | Default | Description 
-| `debug`     | boolean | `false` | Turn extra debug information on 
-| `comment`   | string  | `;`     | The character that starts a comment line 
+| `cs`      | string  | `;`     | The sequence starting a comment-line
+| `ics`     | string  | `;`     | The sequence starting a inline-comment
+| `cl`      | boolean | `true`  | Whether continuation lines shall be supported
 |===========================
+
+Use an empty attribute value ("") to turn comments off.
 
 ==== Elements ====
 
@@ -39,7 +42,8 @@ This task accepts a implicit text element.
 
 The format to define properties within a this task is a subset of the format supported by Ant. Consider:
 
-* The first non-whitespace character of a comment is by default `;` while a Ant property files use `#` and `!`. The comment character can be changed using attribute `comment`.
+* Ant uses character `#` to start a comment while Flaka uses `;` footnote:[Use attribute `cs` to change the comment-line character]
+* Ant does not support inline comments footnote:[Use attribute `ics` to change the comment-line character or to turn off this feature]
 * Ant comment lines do not support continuation lines, this task does.
 * This task requires that either `=` or `:` separates the key from it\'s value. 
 * Leading and trailing (!) whitespace characters are ignored. This is different from standard Ant where trailing whitespace is significant footnote:[.. and responsible for unexpected and hard to track script behaviour].

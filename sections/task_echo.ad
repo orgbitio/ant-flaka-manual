@@ -32,13 +32,12 @@ This tasks supports all attributes inherited from Ant\'s echo task. In addition,
 [cols="3*15%,55%"]
 |=============================
 | Attribute | Type    | Default | Description 
-| `debug`   | boolean | false   | Enables additional debug output for this particular task.
-| `comment` | string  | `;`     | Change the start-of-commentline character 
+| `cs`      | string  | `;`     | The sequence starting a comment-line
+| `ics`     | string  | `;`     | The sequence starting a inline-comment
+| `cl`      | boolean | `true`  | Whether continuation lines shall be supported
+| `ws`      | boolean | `true`  | Whether whitespace shall be stripped off
 | `shift`   | string  | ``      | Prefix for each output line
 |=============================
-
-Notice that *debug* output will be written on stream `stderr` regardless whether `debug` has been globally enabled on Ant or not. Also standard Ant loggers and listeneres are ignored. The default value is `false`, i.e. no additional output is created. 
-
 
 ==== Elements ====
 
@@ -46,9 +45,7 @@ This task optionally accepts implicit text.
 
 ==== Behaviour ====
 
-Comment lines are stripped from input. A comment line is a natural line starting with whitespace characters followed by character `;` or character sequence given via attribute `comment`. In a subsequent step, continuation lines merged into logical lines.
-
-To support *decent formatting*, unnecessary whitespace characters are removed. The process is illustrated footnote::[Again character dot `.` is used to illustrate a whitespace character with the exception of line ending characters] using the introduction example used above:
+In an initial step, continuation lines are merged into logical lines. Then any comments are stripped from input. Afterwards, unwanted whitespace characters are removed. The process is illustrated footnote::[Again character dot `.` is used to illustrate a whitespace character with the exception of line ending characters] using the introduction example used above:
 
 ------------------------------------
 <c:echo>
@@ -58,9 +55,7 @@ To support *decent formatting*, unnecessary whitespace characters are removed. T
 </c:echo>
 -------------------------------------
 
-In a first step, the number of whitespace characters before the first non-whitespace character is determined. This will be `2` in the example above. Then the whole printable content is being left shifted by this amount. This gives then the output shown as above. Notice that `foo` and `baz` are now on the same idendation level by this left-shift.
-
-It is possible to perform a right-shift of content _after_ the automatic left shift: 
+The whitespace sequence before the first non-whitespace character is analyzsed: if this sequence does not contain any line-ending characters, no whitespace handling will occur. Otherwise, the number of whitespace characters before the first non-whitespace character and after the last line-ending character is determined. This will be `2` in the example above. Then, the whole printable content is being `left shifted` by this amount. Eventually, the content is trimmed: leading whitespace up and inclusive the first line-ending character as well as the last line-ending character followed by trailing whitespace is removed. This gives then the output shown as above. Notice that `foo` and `baz` are now on the same idendation level by this left-shift. It is possible to perform a `right-shift` of content _after_ the automatic left shift: 
 
 ------------------------------------
 <c:echo shift="5">
@@ -68,7 +63,7 @@ It is possible to perform a right-shift of content _after_ the automatic left sh
 </c:echo>
 -------------------------------------
 
-Attribute shift expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different _shift_ character sequence as show next:
+Attribute `shift` expects a unsigned integral number followed by an optinal arbitrary sequence of characters. This allows for a different _shift_ character sequence as show next:
 
 ------------------------------------
 <c:echo shift="5> ">
@@ -108,3 +103,26 @@ Follow the guideline that lines should not exceed 80 characters by using continu
   #{3 * 4}   ; '12'
 </c:echo>
 ------------------------------------
+
+The comment character sequence can be changed or disabled:
+
+------------------------------------
+<c:echo cl="#" ic="">
+  #{3 * 4}   you cannot see me
+  not ; any longer an inline comment!
+</c:echo>
+------------------------------------
+
+You can use `\` as start of an escape sequence while however `\\` does not escape `\` from it\'s meaning. Consider:
+------------------------------------
+<c:echo>
+  \#{3 * 4}            ; '#{3 * 4}'
+  \\#{3 * 4}           ; '\#{3 * 4}'
+  #{ '\\' }#{3 * 4}    ; '\12'
+  #{ concat('\\',3*4)} ; '\12'
+  ; comment            ; 
+  \; not a comment     ; '; not a comment'
+  \\; not a comment    ; '\; not a comment'
+</c:echo>
+------------------------------------
+

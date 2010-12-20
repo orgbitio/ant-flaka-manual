@@ -20,10 +20,13 @@ A elementary task to create a variable containing a _list_ of objects.
 |=======================
 | Attribute | Type   | Default | <<el>> | Meaning 
 | var       | string |         |  r   | The name of the variable to be assigned.
-| comment   | string | `;`     |      | The comment character                    
-| debug     | bool   | false   |      | Turn on extra debug information.         
 | el        | bool   | true    |   no | Enable evaluation as EL expression       
+| `cs`      | string  | `;`     | The sequence starting a comment-line
+| `ics`     | string  | `;`     | The sequence starting a inline-comment
+| `cl`      | boolean | `true`  | Whether continuation lines shall be supported
 |=======================
+
+Use an empty attribute value ("") to turn comments off.
 
 ==== Elements ====
 

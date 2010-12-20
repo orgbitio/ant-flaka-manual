@@ -4,19 +4,41 @@
 A compilation of words and their meaning in Flaka.
 
 [[glossary_continuation_lines]]
+=== Whitespace ===
+Whitespace characters are the blank character (_SP_,` `), the horizontal tab character (_HT_,`\t`) and the form feed character (_FF_,`\f`). End-of-line characters are not considered whitespace in this document.
+
+=== End-of-Line ===
+
+A line-ending character sequence is either a carriage-return character followed by a line-feed character or the single line-feed character.
+
 === Continuation Lines ===
 
-A continuation line is a sequence of characters ending in `\NL` and not in `\\NL` (where NL is the line ending characters `CR LF` or `LF`. Tasks supporting continuation lines will accumulate the content of such a line with the (accumulated) content of the following line. The continuation character and the line ending characters are not accumulated.
+A continuation line is a sequence of characters with a non-escaped backslash character as last character before the end-of-line sequence. Tasks supporting continuation lines will accumulate the content of such a line with the _accumulated_ content of the following physical line. The continuation character, the line-ending character sequence and all immediate whitespace characters are not accumulated.
 
 -------------------------------------
-
-a \
-b\\
-c\
-
+a\
+ b\\\
+c
 -------------------------------------
  
-Defines two accumulated lines: (1) `a b\` and (2) `c`.
+Defines two logical lines: (1) `a b\\` and (2) `c`.
+
+=== Comment Lines ===
+
+A comment line is a sequence of character where the first non-whitespace character is the comment character - usually the character ';':
+
+-------------------------------------
+    ; a comment line
+ no ; comment line
+   \; not a comment line
+-------------------------------------
+
+Here, only the first line defines a comment line. The second line contains an inline-comment. When processed, comment-line get entirely removed from input up and including the end-of-line character sequence. In case a line must start with the comment-line character, then sequence `\;` can be used to do so. It must be noted, that escape character `\` has no other meaning, i.e. `\\` will not produce single character `\` but rather `\\`.
+
+=== Inline Comments ===
+
+A inline-comment is a sequence of characters starting with the inline-comment character and ending - while not including - the end-of-line sequence or end of input. Inline comments are discarded when processed. In case character `;` shall keep it\'s usual meaning, then `\;` can be used to do so.
+
 
 [[glossary_property_reference]]
 === Property Reference ===
