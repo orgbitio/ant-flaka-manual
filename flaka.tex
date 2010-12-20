@@ -14,13 +14,12 @@
 % Let's rock!
 %
 \begin{document}
-
 \section{Introduction}
 \label{introduction}\hyperlabel{introduction}%
 
 Writing a project's build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like \texttt{c\-p}, \texttt{m\-k\-d\-i\-r} and \texttt{f\-i\-n\-d}. However, Ant lacks any decent control structures. There is no \texttt{i\-f\--{}\-t\-h\-e\-n\--{}\-e\-l\-s\-e} and there is no \texttt{w\-h\-i\-l\-e} \footnote{
 \texttt{i\-f} and \texttt{w\-h\-i\-l\-e} can be implemented in terms of calling targets depending on whether a property exists or not. Rather awkward ..
-}. What's more, you have to use a rather unfriendly, sometimes even hostile, \href{http://en.wikipedia.org/wiki/XML}{XML} syntax. On the bright side however, consider this Ant snippet:
+}. What's more, you have to use a rather unfriendly, sometimes even hostile XML syntax. On the bright side however, consider this Ant snippet:
 
 \begin{lstlisting}[firstnumber=1,]
 <copy todir="${destdir}">
@@ -64,7 +63,9 @@ This pillars are Flakas approach to simplify the process of writing a build scri
 \label{_where_to_go_from_here}\hyperlabel{_where_to_go_from_here}%
 \begin{itemize}
 
-\item{} \href{http://code.google.com/p/flaka/downloads/list}{Download} Flaka and read the \hyperlink{installation}{installation page}.
+\item{} Download \footnote{
+See \href{http://code.google.com/p/flaka/downloads/list}{http://code.google.com/\-p/\-flaka/\-downloads/\-list}
+} Flaka and read the \hyperlink{installation}{installation page}.
 
 
 
@@ -76,7 +77,9 @@ This pillars are Flakas approach to simplify the process of writing a build scri
 
 
 
-\item{} Start writing build scripts using Flaka and give \href{mailto:flaka@haefelinger.it}{feedback}.
+\item{} Start writing build scripts using Flaka and give feedback \footnote{
+\href{mailto:flaka@haefelinger.it}{flaka@haefelinger.it}
+}.
 
 
 \end{itemize}
@@ -116,11 +119,17 @@ see either \href{http://download.haefelinger.it/flaka}{http://download.haefeling
 The following \textbf{requirements} must be satisfied before you start:
 \begin{itemize}
 
-\item{} Flaka requires \href{http://java.sun.com/javase/downloads/index.jsp}{Java 1.5} or newer. You can change the version by setting environment variable \texttt{J\-A\-V\-A\-\_\-H\-O\-M\-E}. Have also a look into \href{http://ant.apache.org/manual/index.html}{the manual provided by Ant} for other environment variables to utilize.
+\item{} Flaka requires Java 1.5 or newer \footnote{
+\href{http://java.sun.com/javase/downloads}{http://java.sun.com/\-javase/\-downloads}
+} or newer. You can change the version by setting environment variable \texttt{J\-A\-V\-A\-\_\-H\-O\-M\-E}. Have also a look at Ant's manual \footnote{
+\href{http://ant.apache.org/manual}{http://ant.apache.org/\-manual}
+} for other environment variables to utilize.
 
 
 
-\item{} \href{http://ant.apache.org}{Ant} version 1.7.0 or newer.
+\item{} Ant, version 1.7.0 or newer \footnote{
+\href{http://ant.apache.org}{http://ant.apache.org}
+}.
 
 
 \end{itemize}

@@ -7,8 +7,8 @@ Download footnote::[see either http://download.haefelinger.it/flaka or use http:
 
 The following *requirements* must be satisfied before you start:
 
-* Flaka requires http://java.sun.com/javase/downloads/index.jsp[Java 1.5] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look into http://ant.apache.org/manual/index.html[the manual provided by Ant] for other environment variables to utilize.
-* http://ant.apache.org[Ant] version 1.7.0 or newer. 
+* Flaka requires Java 1.5 or newer footnote:[http://java.sun.com/javase/downloads] or newer. You can change the version by setting environment variable `JAVA_HOME`. Have also a look at Ant\'s manual footnote:[http://ant.apache.org/manual] for other environment variables to utilize.
+* Ant, version 1.7.0 or newer footnote:[http://ant.apache.org]. 
 
 
 === Charge, .. ===

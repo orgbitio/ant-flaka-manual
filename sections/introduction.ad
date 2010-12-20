@@ -2,7 +2,7 @@
 [[introduction]]
 == Introduction ==
 
-Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like `cp`, `mkdir` and `find`. However, Ant lacks any decent control structures. There is no `if-then-else` and there is no `while` footnote:[`if` and `while` can be implemented in terms of calling targets depending on whether a property exists or not. Rather awkward ..]. What\'s more, you have to use a rather unfriendly, sometimes even hostile, http://en.wikipedia.org/wiki/XML[XML] syntax. On the bright side however, consider this Ant snippet:
+Writing a project\'s build script is serious business. And so it is when using Ant. Ant does not provide you with any abstraction how the project needs to be build. There is no underlying logic. In fact all what Ant provides are a lot of small work units, calls tasks, that need to be glued together to implement the desired logic. Ant is therefore quite similar to writing a Shell script where you can utilize all those fine masterpieces like `cp`, `mkdir` and `find`. However, Ant lacks any decent control structures. There is no `if-then-else` and there is no `while` footnote:[`if` and `while` can be implemented in terms of calling targets depending on whether a property exists or not. Rather awkward ..]. What\'s more, you have to use a rather unfriendly, sometimes even hostile XML syntax. On the bright side however, consider this Ant snippet:
 
 -------------------------------
 <copy todir="${destdir}">
@@ -37,11 +37,10 @@ This pillars are Flakas approach to simplify the process of writing a build scri
 
 === Where to go from here? ===
 
- * http://code.google.com/p/flaka/downloads/list[Download] Flaka and read the <<installation,installation page>>.
-// * Jump right into chapter <<overview,Overview>> to get some ideas about elements provided by Flaka.  
+ * Download footnote:[See http://code.google.com/p/flaka/downloads/list] Flaka and read the <<installation,installation page>>.
  * Make sure to consult chapter <<el,EL, The Expression Language>>. It contains a lot of information on this enormous useful extension.
  * Have a closer look in the reference part of this manual for all the gory details.
- * Start writing build scripts using Flaka and give mailto:flaka@haefelinger.it[feedback].
+ * Start writing build scripts using Flaka and give feedback footnote:[flaka@haefelinger.it].
 
 
 === Conventions ===
