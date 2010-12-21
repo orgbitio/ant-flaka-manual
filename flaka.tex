@@ -14,6 +14,7 @@
 % Let's rock!
 %
 \begin{document}
+
 \section{Introduction}
 \label{introduction}\hyperlabel{introduction}%
 
@@ -3508,14 +3509,19 @@ Attribute \texttt{i\-n} will be evaluated as \hyperlink{el}{EL} expression. In t
 \subsection{while}
 \label{task_while}\hyperlabel{task_while}%
 
-A task implemening a \texttt{w\-h\-i\-l\-e} loop:
+A task using a \texttt{w\-h\-i\-l\-e} loop:
 
 \begin{lstlisting}[firstnumber=1,]
 <c:let>
-  i = 3
+  countdown = 3
 </c:let>
 <c:while test=" countdown >= 0 ">
-  <c:echo>#{countdown > 0 ? countdown : 'bang!' }</c:echo>
+  <c:echo>
+    #{countdown > 0 ? countdown : 'bang!' }..
+  </c:echo>
+  <c:let>
+    countdown = countdown - 1
+  </c:let>
 <c:while>\end{lstlisting}
 
 \subsubsection{Attributes}
