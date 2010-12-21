@@ -1,13 +1,18 @@
 
 [[task_while,while]]
 === while ===
-A task implemening a `while` loop:
+A task using a `while` loop:
 --------------------------------------
 <c:let>
-  i = 3
+  countdown = 3
 </c:let>
 <c:while test=" countdown >= 0 ">
-  <c:echo>#{countdown > 0 ? countdown : 'bang!' }</c:echo>
+  <c:echo>
+    #{countdown > 0 ? countdown : 'bang!' }..
+  </c:echo>
+  <c:let>
+    countdown = countdown - 1 
+  </c:let>
 <c:while>
 --------------------------------------
 
