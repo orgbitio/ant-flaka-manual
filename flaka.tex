@@ -894,6 +894,39 @@ Similar to function \texttt{t\-r\-i\-m\-(\-)} above but only trailing whitespace
 \begin{lstlisting}[firstnumber=1,]
 rtrim(s)              ; replace(s,'','\s*$')\end{lstlisting}
 
+\paragraph{\texttt{m\-a\-t\-c\-h\-e\-s\-(\-t\-e\-x\-t\-:\-o\-b\-j\-e\-c\-t\-:\-r\-e\-g\-e\-x\-:\-o\-b\-j\-e\-c\-t\-)\-:\-b\-o\-o\-l\-e\-a\-n}}
+\label{_literal_matches_text_object_regex_object_boolean_literal}\hyperlabel{_literal_matches_text_object_regex_object_boolean_literal}%
+
+A function to match a charater sequence against a regular expression. If the regular expression matches a subsequence of text, the function returns \texttt{t\-r\-u\-e}. If the regular expression is invalid, the function’s behaviour is undefined.
+
+\begin{lstlisting}[firstnumber=1,]
+matches('aZc','aZc')    ; true
+matches('aZc','Z')      ; true (!)
+matches('aZc','^Z$')    ; false
+matches('aZc','^\w+')   ; true
+matches('aZc,'[^ab[')   ; undef.\end{lstlisting}
+
+Be aware that \texttt{m\-a\-t\-c\-h\-e\-s\-(\-)} works on subsequences whereas Java's String method \texttt{m\-a\-t\-c\-h\-e\-s\-(\-)} works on the entire input sequence. However, it is rather easy to let \texttt{m\-a\-t\-c\-h\-e\-s\-(\-)} return \texttt{t\-r\-u\-e} only if the entire input sequence is covered by the regular expression: wrap the original regex using anchors:
+
+\begin{lstlisting}[firstnumber=1,]
+matches(concat('^',myregex,'$'),..)\end{lstlisting}
+
+\paragraph{\texttt{g\-l\-o\-b\-(\-t\-e\-x\-t\-:\-o\-b\-j\-e\-c\-t\-:\-r\-e\-g\-e\-x\-:\-o\-b\-j\-e\-c\-t\-)\-:\-b\-o\-o\-l\-e\-a\-n}}
+\label{_literal_glob_text_object_regex_object_boolean_literal}\hyperlabel{_literal_glob_text_object_regex_object_boolean_literal}%
+
+Similar to function \texttt{m\-a\-t\-c\-h\-e\-s\-(\-)} described in the previous section: the input is matched against a glob expression. A glob expression may contain wildcard characters like \texttt{*} for any number of characters, \texttt{?} for exactly one character and \texttt{[\-.\-.\-]} for a set of known characters. Furthermore wildcard characters can be escaped using character backslash \texttt{\textbackslash{}\-\textbackslash{}}. Function \texttt{g\-l\-o\-b\-(\-)} always takes the whole input sequence into account, thus
+
+\begin{lstlisting}[firstnumber=1,]
+glob('','')            ; true
+glob('a','a')          ; true
+glob('a','\w')         ; false, '\w' means just 'w'
+glob('w','\w')         ; true
+glob('abc','ab')       ; false
+glob('abc','ab*')      ; true
+glob('abc','ab?')      ; true
+glob('abc','ab[c]')    ; true
+glob('ab*','ab\*')     ; true\end{lstlisting}
+
 \subsubsection{List Functions}
 \label{_list_functions}\hyperlabel{_list_functions}%
 

@@ -504,6 +504,35 @@ Similar to function `trim()` above but only trailing whitespace is being removed
 rtrim(s)              ; replace(s,'','\s*$')
 -------------------------------------
 
+===== `matches(text:object:regex:object):boolean` =====
+A function to match a charater sequence against a regular expression. If the regular expression matches a subsequence of text, the function returns `true`. If the regular expression is invalid, the function's behaviour is undefined.
+-------------------------------------
+matches('aZc','aZc')    ; true
+matches('aZc','Z')      ; true (!)
+matches('aZc','^Z$')    ; false
+matches('aZc','^\w+')   ; true
+matches('aZc,'[^ab[')   ; undef.
+-------------------------------------
+Be aware that `matches()` works on subsequences whereas Java\'s String method `matches()` works on the entire input sequence. However, it is rather easy to let `matches()` return `true` only if the entire input sequence is covered by the regular expression: wrap the original regex using anchors:
+-------------------------------------
+matches(concat('^',myregex,'$'),..)
+-------------------------------------
+
+===== `glob(text:object:regex:object):boolean` =====
+Similar to function `matches()` described in the previous section: the input is matched against a glob expression. A glob expression may contain wildcard characters like `*` for any number of characters, `?` for exactly one character and `[..]` for a set of known characters. Furthermore wildcard characters can be escaped using character backslash `\\`. Function `glob()` always takes the whole input sequence into account, thus
+
+-------------------------------------
+glob('','')            ; true
+glob('a','a')          ; true
+glob('a','\w')         ; false, '\w' means just 'w'
+glob('w','\w')         ; true
+glob('abc','ab')       ; false
+glob('abc','ab*')      ; true
+glob('abc','ab?')      ; true
+glob('abc','ab[c]')    ; true
+glob('ab*','ab\*')     ; true
+-------------------------------------
+
 ==== List Functions ====
 
 This sections lists EL functions operating on lists where a list is a synonym for any collection of elements. In case you are missing a function to retrieve the n-th list element, then try 
