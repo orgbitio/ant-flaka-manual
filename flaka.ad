@@ -1,8 +1,11 @@
 = The Flaka Manual =
 author wh@haefelinger.it
-1.1, October 2010
+1.2, June 2011
+Updated for Flaka v1.2.2.
 
 // ChangeLog
+// 1.2
+// * matches, glob
 // 1.1
 // Rewriting <switch />
 // Partially rewriting EL

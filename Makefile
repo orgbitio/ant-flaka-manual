@@ -1,6 +1,6 @@
 
-
-all: flaka.db4 flaka.pdf flaka.tex
+VERSION=1.02.02
+all: flaka.db4 flaka.pdf flaka.tex flaka.html flaka-$(VERSION).db4 flaka-$(VERSION).pdf flaka-$(VERSION).html 
 
 
 flaka.pdf : flaka.db4
@@ -12,12 +12,26 @@ flaka.db4 : flaka.ad
 flaka.tex : flaka.db4
 	$(DBLATEX.cmd) --type=tex -o $@ $<
 
+flaka.html : flaka.ad
+	asciidoc -v -n -b xhtml11 -a stylesdir=$$(pwd) $<
+
+flaka-$(VERSION).html : flaka.html
+	cp $< $@
+
+flaka-$(VERSION).pdf : flaka.pdf
+	cp $< $@
+
+flaka-$(VERSION).ad : flaka.ad
+	cp $< $@
+
+flaka-$(VERSION).db4 : flaka.db4
+	cp $< $@
 
 #
 # Trigger
 #
 
-
+flaka.html: Makefile 
 flaka.pdf : Makefile texmf/flaka.cls texmf/flaka.sty flaka.specs
 flaka.db4 : \
  	Makefile \
