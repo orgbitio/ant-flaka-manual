@@ -53,8 +53,8 @@ This would execute all macros and tasks listed in the otherwise clause since no 
      <echo>new boolean logic detected ..</echo>
    </when>
    <unless test=" 'mydir'.tofile.isdir ">
-     <echo> directory mydir exists already </echo>
-   </when>
+     <echo>missing folder 'mydir'..</echo>
+   </unless>
    <otherwise>
      <echo> Hello,</echo>
      <echo>World</echo>
