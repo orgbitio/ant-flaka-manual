@@ -1,3 +1,12 @@
-before_install:
-- sudo apt-get install -y -qq asciidoc texlive make texlive-xetex
+# before_install:
+# - sudo apt-get install -y -qq asciidoc texlive make texlive-xetex
+sudo: false
+addons:
+  apt:
+    packages:
+    - make
+    - asciidoc
+    - texlive
+    - make
+    - texlive-xetex
 script: make clean all
