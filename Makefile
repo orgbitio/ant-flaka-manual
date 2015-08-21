@@ -1,5 +1,5 @@
 
-VERSION=1.02.02
+VERSION=1.02.02-$(shell date -u +'%y%m%d-%H%M%SUTC')
 all: flaka.db4 flaka.pdf flaka.tex flaka.html flaka-$(VERSION).db4 flaka-$(VERSION).pdf flaka-$(VERSION).html 
 
 

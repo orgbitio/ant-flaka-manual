@@ -11,5 +11,5 @@ env:
 after_success:
 - echo "pull request($TRAVIS_PULL_REQUEST) branch($TRAVIS_BRANCH)"
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && sshpass
-  -e scp -o stricthostkeychecking=no flaka-*.{pdf,html} $DEPLOY_USER_AT_HOST:$DEPLOYPATH
+  -e scp -o stricthostkeychecking=no flaka-*.{pdf,html,db4} $DEPLOY_USER_AT_HOST:$DEPLOYPATH
   && sshpass -e ssh -o stricthostkeychecking=no $DEPLOY_USER_AT_HOST $DEPLOYCMD
