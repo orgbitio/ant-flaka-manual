@@ -1,41 +1,54 @@
 
-VERSION=1.02.02-$(shell date -u +'%y%m%d-%H%M%SUTC')
-all: flaka.db4 flaka.pdf flaka.tex flaka.html flaka-$(VERSION).db4 flaka-$(VERSION).pdf flaka-$(VERSION).html 
+#
+# V E R S I O N
+#
+# This is the manual's version 
+VERSION_DOC=1.2.3
 
+# This is the ant-flaka version documented by this manual
+# Hint: Currently not used, instead change texmf/ant-flaka.cls!!
+VERSION_AF=1.2
 
-flaka.pdf : flaka.db4
+BASENAME=ant-flaka-$(VERSION_DOC)
+
+all: target target/ant-flaka.db4 target/ant-flaka.pdf target/ant-flaka.tex target/ant-flaka.html target/$(BASENAME).db4 target/$(BASENAME).pdf target/$(BASENAME).html 
+
+target:
+	mkdir target
+
+target/ant-flaka.pdf : target/ant-flaka.db4
 	$(DBLATEX.cmd) $<
 
-flaka.db4 : flaka.ad
+target/ant-flaka.db4 : ant-flaka.ad
 	$(ASCIIDOC.cmd)
 
-flaka.tex : flaka.db4
+target/ant-flaka.tex : target/ant-flaka.db4
 	$(DBLATEX.cmd) --type=tex -o $@ $<
 
-flaka.html : flaka.ad
-	asciidoc -v -n -b xhtml11 -a stylesdir=$$(pwd) $<
+target/ant-flaka.html : ant-flaka.ad
+	asciidoc -v -n -b xhtml11 -a stylesdir=$$(pwd) -o $@ $<
 
-flaka-$(VERSION).html : flaka.html
+target/$(BASENAME).html : target/ant-flaka.html
 	cp $< $@
 
-flaka-$(VERSION).pdf : flaka.pdf
+target/$(BASENAME).pdf : target/ant-flaka.pdf
 	cp $< $@
 
-flaka-$(VERSION).ad : flaka.ad
+target/$(BASENAME).ad : target/ant-flaka.ad
 	cp $< $@
 
-flaka-$(VERSION).db4 : flaka.db4
+target/$(BASENAME).db4 : target/ant-flaka.db4
 	cp $< $@
 
 #
 # Trigger
 #
 
-flaka.html: Makefile 
-flaka.pdf : Makefile texmf/flaka.cls texmf/flaka.sty flaka.specs
-flaka.db4 : \
+target/ant-flaka.html: Makefile 
+target/ant-flaka.pdf : Makefile texmf/ant-flaka.cls texmf/ant-flaka.sty ant-flaka.specs
+target/ant-flaka.db4 : \
  	Makefile \
- 	xsl/flaka.xsl \
+ 	xsl/ant-flaka.xsl \
  	sections/el.ad \
  	sections/glossary.ad \
  	sections/howto.ad \
@@ -69,11 +82,11 @@ flaka.db4 : \
 # Tools
 #
 
-DBLATEX.cmd  = dblatex --verbose -S flaka.specs -o $@
+DBLATEX.cmd  = dblatex --verbose -S ant-flaka.specs -o $@
 ASCIIDOC.cmd = asciidoc -b docbook -o $@ $<
 SAX.cmd      = java -jar ~/saxon/saxon9he.jar
 XSLT.cmd     = xsltproc --nonet --novalid
 XMLLINT.cmd  = xmllint --encode utf-8 --format 
 
 clean:
-	rm -f *.aux *.log *.toc *.cb *.db* *.out
+	rm -rf *.aux *.log *.toc *.cb *.db* *.out ant-flaka.{html,pdf,tex} target
