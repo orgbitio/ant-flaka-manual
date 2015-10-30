@@ -6,8 +6,8 @@
 %
 % Define some variables
 %
-\def\flakaversion{1.2}
-\def\documentversion{1.1}
+\ifdefined\flakaversion\else\def\flakaversion{\it{undefined}}\fi
+\ifdefined\documentversion\else\def\documentversion{\it{undefined}}\fi
 
 %
 % MISC

@@ -6,12 +6,13 @@
 # To use this file, apply option -S <file> when using dblatex
 
 TexInputs: texmf
-#TexStyle:  flaka
+
 # Hint: The name of this option is kind of misnamed. It defines the name of the XSLT
 # stylesheet to apply.
 XslParam:  xsl/ant-flaka.xsl
+
 # Hint: do not quote the -x args, cause quotes are not removed when passing the arg
 # down to the XSLT processor.
 # Hint: -o file  or --output=file do not work within this spec file.
 # --no-batch: ??
-Options: -T simple -b xetex  -x --nonet -x --novalid
+Options: -T simple  -x --nonet -x --novalid

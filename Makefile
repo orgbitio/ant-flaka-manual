@@ -16,8 +16,8 @@ all: target target/ant-flaka.db4 target/ant-flaka.pdf target/ant-flaka.tex targe
 target:
 	mkdir target
 
-target/ant-flaka.pdf : target/ant-flaka.db4
-	$(DBLATEX.cmd) $<
+target/ant-flaka.pdf : target/ant-flaka.tex
+	xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}" && xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}"
 
 target/ant-flaka.db4 : ant-flaka.ad
 	$(ASCIIDOC.cmd)
