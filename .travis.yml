@@ -11,6 +11,6 @@ env:
   - secure: "fL7r4B8Ya/PLemMYZyNoz3M3Qv72jzeLNWPkerrbsDBNwUQ4sANg1RXBCtu+HpEH9i5UtLIJhYxr7iJUmSm2U0oU4axGD+0akiQvNTc0lS0cWtbaJv9yIHu18VFkLSaBX5vURUudydnmncxArTu7RgW+W2yIgiykOqZ+Jkngt/jJ2LRllO25fknh9eIxKj9shtvj7K7RF61GYuxiEPrL76TLr47evoYiqk2F38o8ux6lp1mJiY5A9zhF+InXo3c1fayFonFz1VSUVUrWDts2jxhwBAGVjEBQbrCfKlNzor+Uf/9xU1l2GjVBb56hxyZIX2nS4VCfKS8BqemYrih0Mo7EEvLJdnmEAHxbUH5Tfozs91YBPtSspkm1qWjOQE2YFWUzp5PjAMeeSrvibmi7S8JznNnVP2FVQfERxLagmGvbjeZD8l8+spWWNbfsQgTwVavZD/nBM2HMDsMt7mC1iZlBJLXzxQM/1eZ8MM8FmlQlnwSannCQWcSIOCMSxIK7SMLYQOdzBB6yx2o2LgNGwB1VpSTGH7bL0sWJ9idToDJJEiFOdyPl5mtBfmWsbDXBTXWUt85MK8NachJ2z89b+6MtNsQvXzE6xvHmEC1uKUW0Zs3nNSQkQrM2QiIZPnWl6ME8gB1vHl1/pbtrSFpXt9rG6Xg7lufva763wTsFMd8="
 after_success:
 - echo "pull request($TRAVIS_PULL_REQUEST) branch($TRAVIS_BRANCH)"
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && sshpass
-  -e scp -o stricthostkeychecking=no target/ant-flaka*.{tex,pdf,html,db4} $DEPLOY_USER_AT_HOST:$DEPLOYPATH/$(date +%s:%Y-%m-%d:%H-%M-%S)
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && export mydate=$(date +%s:%Y-%m-%d:%H-%M-%S) && sshpass -e ssh -o stricthostkeychecking=no $DEPLOY_USER_AT_HOST "mkdir $DEPLOYPATH/$mydate" && sshpass
+  -e scp -o stricthostkeychecking=no target/ant-flaka*.{tex,pdf,html,db4} $DEPLOY_USER_AT_HOST:$DEPLOYPATH/$mydate
   && sshpass -e ssh -o stricthostkeychecking=no $DEPLOY_USER_AT_HOST $DEPLOYCMD
