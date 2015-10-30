@@ -17,7 +17,7 @@ target:
 	mkdir target
 
 target/ant-flaka.pdf : target/ant-flaka.tex
-	xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}" && xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}"
+	TEXINPUTS=.:./texmf: xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}" && TEXINPUTS=.:./texmf: xelatex --output-directory="$(dir $@)" "\\def\\flakaversion{$(VERSION_AF)}\\input{$<}"
 
 target/ant-flaka.db4 : ant-flaka.ad
 	$(ASCIIDOC.cmd)
